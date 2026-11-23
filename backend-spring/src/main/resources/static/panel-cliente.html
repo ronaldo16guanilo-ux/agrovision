@@ -1,0 +1,3762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel del Productor - Chiaway Agro & AgroVisión AI</title>
+  <link rel="icon" type="image/png" href="assets/logo-chiaway.png">
+  <link rel="stylesheet" href="agrovision-widget.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
+    :root {
+      --sidebar-bg: #002e26;
+      --sidebar-hover: #044e3b;
+      --primary: #059669;
+      --primary-dark: #064e3b;
+      --accent: #10b981;
+      --accent-light: #ecfdf5;
+      --accent-amber: #f59e0b;
+      --page-bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border-light: #e2e8f0;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-card: 0 8px 24px -4px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+      --shadow-hover: 0 16px 32px -4px rgba(15, 23, 42, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-dark);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ========================================= */
+    /* SIDEBAR (BARRA LATERAL IZQUIERDA)        */
+    /* ========================================= */
+    .sidebar {
+      width: 220px;
+      background-color: var(--sidebar-bg);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px 14px 18px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 22px;
+      text-decoration: none;
+      padding: 0 6px;
+    }
+    .brand-logo-img {
+      width: 140px;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Nav Links */
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+    }
+    .sidebar-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .sidebar-item a:hover {
+      background-color: var(--sidebar-hover);
+      color: #ffffff;
+    }
+    .sidebar-item a.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);
+    }
+    .sidebar-item a svg {
+      width: 19px;
+      height: 19px;
+      stroke-width: 2.2;
+      flex-shrink: 0;
+    }
+    .sidebar-badge {
+      margin-left: auto;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* Sidebar Promo Card */
+    .sidebar-bottom-card {
+      background: rgba(4, 78, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+    .sidebar-thumb-wrap {
+      width: 100%;
+      height: 68px;
+      overflow: hidden;
+    }
+    .sidebar-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .sidebar-card-text {
+      padding: 8px 10px;
+      text-align: center;
+    }
+    .sidebar-card-text p {
+      font-size: 11.5px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #ffffff;
+    }
+    .sidebar-leaf-icon {
+      font-size: 15px;
+      margin-top: 3px;
+    }
+
+    /* Sidebar Footer Buttons */
+    .sidebar-footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .btn-sidebar-link {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-align: left;
+      padding: 6px 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .btn-sidebar-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* ========================================= */
+    /* MAIN CONTAINER                           */
+    /* ========================================= */
+    .main-wrapper {
+      margin-left: 220px;
+      flex: 1;
+      padding: 24px 32px 110px;
+      min-width: 0;
+    }
+
+    /* Top Dashboard Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      background: #ffffff;
+      padding: 16px 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+    }
+    .welcome-title-wrap h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+    .welcome-title-wrap p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .header-user-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Botón Carrito en Topbar */
+    .topbar-cart-btn {
+      background: #ecfdf5;
+      border: 1.5px solid #10b981;
+      color: #065f46;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .topbar-cart-btn:hover {
+      background: #10b981;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+    .topbar-cart-badge {
+      background: #059669;
+      color: #ffffff;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+    .topbar-cart-btn:hover .topbar-cart-badge {
+      background: #ffffff;
+      color: #065f46;
+    }
+
+    .notif-bell-btn {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .notif-bell-btn:hover {
+      background: #f1f5f9;
+      transform: scale(1.04);
+    }
+    .notif-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+    }
+    .user-avatar-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #022c22;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 15px;
+      border: 2.5px solid #10b981;
+      transition: all 0.2s;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    .user-avatar-circle:hover {
+      transform: scale(1.08);
+      border-color: #34d399;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .user-avatar-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Tab Views Management */
+    .panel-view {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    .panel-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .view-header {
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .view-title-group h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .view-title-group p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Common Card Styles */
+    .dash-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: box-shadow 0.2s;
+    }
+    .dash-card:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-icon-chip {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .icon-chip-green { background-color: #d1fae5; color: #065f46; }
+    .icon-chip-blue { background-color: #dbeafe; color: #1e40af; }
+    .icon-chip-purple { background-color: #ede9fe; color: #5b21b6; }
+    .icon-chip-darkgreen { background-color: #064e3b; color: #ffffff; }
+
+    .card-title-group h3 {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    .btn-ver-todo {
+      background: none;
+      border: 1.5px solid #059669;
+      color: #059669;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-ver-todo:hover {
+      background-color: #059669;
+      color: #ffffff;
+    }
+    .btn-ver-todo-blue {
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+    .btn-ver-todo-blue:hover {
+      background-color: #2563eb;
+      color: #ffffff;
+    }
+
+    /* ========================================= */
+    /* VISTA 1: INICIO                           */
+    /* ========================================= */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.95fr;
+      gap: 22px;
+    }
+
+    .diag-cards-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .diag-item-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #ffffff;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .diag-item-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+      border-color: #cbd5e1;
+    }
+    .diag-thumb-wrap {
+      width: 100%;
+      height: 96px;
+      overflow: hidden;
+      background: #f1f5f9;
+    }
+    .diag-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .diag-content { padding: 10px 12px; }
+    .diag-crop-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .urgency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .urgency-high { background: #fee2e2; color: #dc2626; }
+    .urgency-medium { background: #fef3c7; color: #d97706; }
+    .urgency-low { background: #dcfce7; color: #15803d; }
+    .diag-rx-text { font-size: 11px; color: var(--text-muted); line-height: 1.35; margin-bottom: 8px; }
+    .diag-rx-prod { font-weight: 700; color: #065f46; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .diag-date { font-size: 10.5px; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
+
+    /* Orders summary table on dashboard */
+    .orders-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .orders-table th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 8px 10px;
+      border-bottom: 1.5px solid #f1f5f9;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .orders-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #f8fafc;
+      color: #1e293b;
+      vertical-align: middle;
+    }
+    .orders-table tr:hover td { background-color: #f8fafc; }
+    .order-code { font-weight: 700; color: #0f172a; }
+
+    /* Status Pills */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .status-pending { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .status-quoted { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .status-dispatch { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .status-paid { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+
+    .btn-table-action {
+      background: none;
+      border: 1px solid #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .btn-table-action:hover {
+      background: #059669;
+      color: #ffffff;
+      border-color: #059669;
+    }
+
+    .order-dispatch-alert {
+      margin-top: 16px;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #0369a1;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Fundo card in dashboard */
+    .fundo-card-layout {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+    .fundo-photo-box {
+      width: 160px;
+      height: 130px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      box-shadow: var(--shadow-sm);
+    }
+    .fundo-photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .fundo-info-list { display: flex; flex-direction: column; gap: 8px; }
+    .fundo-info-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+    .fundo-info-label { color: var(--text-muted); font-weight: 500; min-width: 120px; }
+    .fundo-info-val { font-weight: 700; color: #0f172a; }
+    .crop-pills-wrap { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+    .crop-pill {
+      background: #f1f5f9;
+      color: #334155;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Advisor in dashboard */
+    .advisor-dash-layout {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+    }
+    .advisor-avatar-circle-lg {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #d1fae5;
+      padding: 2px;
+      border: 2px solid #10b981;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .advisor-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+    .advisor-details { flex: 1; }
+    .advisor-name { font-size: 15.5px; font-weight: 800; color: #0f172a; }
+    .advisor-role { font-size: 12.5px; color: var(--text-muted); font-weight: 500; }
+    .advisor-zone { font-size: 11.5px; color: #065f46; font-weight: 700; margin-top: 3px; }
+    .btn-wsp-direct {
+      background-color: #25d366;
+      color: #ffffff;
+      padding: 9px 16px;
+      border-radius: 50px;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-wsp-direct:hover { background-color: #20ba5a; transform: translateY(-2px); }
+    .advisor-tip-banner {
+      margin-top: 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #1e40af;
+      text-align: center;
+    }
+
+    /* ========================================= */
+    /* VISTA: TIENDA DE INSUMOS CHIAWAY          */
+    /* ========================================= */
+    .store-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .store-search-box {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+    .store-search-input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border-radius: 50px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 13.5px;
+      font-family: inherit;
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .store-search-input:focus {
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    }
+    .store-search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 16px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+    }
+
+    /* Modern Filter Pills Bar */
+    .filter-pills-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+    .filter-btn {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      color: #475569;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      outline: none;
+    }
+    .filter-btn:hover {
+      background: #f8fafc;
+      border-color: #059669;
+      color: #059669;
+      transform: translateY(-1px);
+    }
+    .filter-btn.active {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+      border-color: #047857 !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.28) !important;
+    }
+
+    /* Diagnósticos Grid & Cards */
+    .diagnosticos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 22px;
+    }
+    .diag-card-media {
+      height: 180px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      background: #f1f5f9;
+      position: relative;
+    }
+    .diag-card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .product-card:hover .diag-card-media img {
+      transform: scale(1.03);
+    }
+    .product-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-card);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+    .prod-category-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 50px;
+      margin-bottom: 10px;
+      letter-spacing: 0.04em;
+    }
+    .cat-fungicida { background: #dcfce7; color: #15803d; }
+    .cat-insecticida { background: #fee2e2; color: #dc2626; }
+    .cat-acaricida { background: #fef3c7; color: #d97706; }
+    .cat-biologico { background: #e0f2fe; color: #0369a1; }
+    .cat-nutricion { background: #f3e8ff; color: #7e22ce; }
+
+    .prod-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    .prod-active-ing {
+      font-size: 12.5px;
+      color: #059669;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .prod-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 12px;
+      min-height: 36px;
+    }
+    .prod-dose-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      color: #334155;
+      margin-bottom: 14px;
+    }
+
+    .prod-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+      margin-top: auto;
+    }
+    .prod-price-box {
+      display: flex;
+      flex-direction: column;
+    }
+    .prod-unit-label {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    .prod-price-amount {
+      font-size: 18px;
+      font-weight: 900;
+      color: #047857;
+    }
+
+    .prod-qty-ctrl {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .btn-qty {
+      background: #f8fafc;
+      border: none;
+      width: 30px;
+      height: 32px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #334155;
+      transition: background 0.15s;
+    }
+    .btn-qty:hover { background: #e2e8f0; }
+    .qty-display {
+      width: 34px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .btn-add-cart {
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-add-cart:hover {
+      background: #047857;
+      transform: translateY(-1px);
+    }
+
+    /* ========================================= */
+    /* VISTA 3: MIS PEDIDOS (CON RASTREO Y PAGO) */
+    /* ========================================= */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .kpi-label { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em; }
+    .kpi-value { font-size: 24px; font-weight: 800; color: #0f172a; margin-top: 4px; }
+
+    .orders-detail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .order-card-detailed {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.2s;
+    }
+    .order-card-detailed:hover { box-shadow: var(--shadow-hover); }
+
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1.5px solid #f1f5f9;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .order-card-id-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .order-card-id {
+      font-size: 19px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .order-card-date {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Timeline Tracker */
+    .delivery-tracker {
+      display: flex;
+      justify-content: space-between;
+      margin: 22px 0 18px;
+      position: relative;
+    }
+    .delivery-tracker::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 35px;
+      right: 35px;
+      height: 3px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+    .step-node {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-align: center;
+    }
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #64748b;
+      transition: all 0.2s;
+    }
+
+    /* Completed state */
+    .step-node.completed .step-circle {
+      background: #059669;
+      border-color: #059669;
+      color: #ffffff;
+    }
+    .step-node.completed { color: #065f46; }
+
+    /* Active dispatch state */
+    .step-node.active-dispatch .step-circle {
+      background: #0284c7;
+      border-color: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 0 0 5px rgba(2, 132, 199, 0.25);
+      animation: pulseBlue 1.8s infinite;
+    }
+    .step-node.active-dispatch { color: #0284c7; }
+
+    /* Unpaid / Pending payment state */
+    .step-node.unpaid-node .step-circle {
+      background: #ef4444;
+      border-color: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.25);
+      animation: pulseRed 1.8s infinite;
+    }
+    .step-node.unpaid-node { color: #dc2626; }
+
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(2, 132, 199, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0); }
+    }
+    @keyframes pulseRed {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    /* Alerta de Pago Pendiente */
+    .unpaid-order-warning {
+      background: #fff1f2;
+      border: 1.5px solid #fecdd3;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .unpaid-warning-text {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #be123c;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .btn-pay-now {
+      background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-pay-now:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(225, 29, 72, 0.45);
+    }
+
+    /* Paid Alert Banner */
+    .paid-order-banner {
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #15803d;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Tabla de Productos del Pedido */
+    .order-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .order-items-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: #f8fafc;
+      color: #475569;
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1.5px solid #e2e8f0;
+    }
+    .order-items-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    .order-items-table tr:hover td { background-color: #fafafa; }
+    .unit-price-cell { font-weight: 600; color: #475569; }
+    .qty-cell { font-weight: 800; color: #0f172a; }
+    .subtotal-cell { font-weight: 800; color: #047857; text-align: right; }
+
+    .order-card-bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 14px;
+      border-top: 1.5px solid #f1f5f9;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .order-meta-info {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .order-total-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .order-total-sum {
+      font-size: 21px;
+      font-weight: 900;
+      color: #047857;
+    }
+
+    /* ========================================= */
+    /* VISTA 4: MI FUNDO                         */
+    /* ========================================= */
+    .fundo-hero-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .fundo-hero-banner {
+      width: 100%;
+      height: 240px;
+      position: relative;
+      background: #064e3b;
+      overflow: hidden;
+    }
+    .fundo-hero-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .fundo-banner-change-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.68);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 50px;
+      padding: 8px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      z-index: 5;
+    }
+    .fundo-banner-change-btn:hover {
+      background: #059669;
+      border-color: #10b981;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+    .fundo-hero-content {
+      padding: 24px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .fundo-hero-title h2 { font-size: 24px; font-weight: 800; color: #0f172a; }
+    .fundo-hero-title p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+    .fundo-details-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 22px; }
+    .lotes-list { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+    .lote-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lote-info h4 { font-size: 15px; font-weight: 800; color: #0f172a; }
+    .lote-info p { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+    .lote-badge {
+      background: #d1fae5;
+      color: #065f46;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 50px;
+    }
+
+    .weather-widget-card {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+    .weather-main-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .weather-temp { font-size: 36px; font-weight: 900; }
+    .weather-city { font-size: 14px; opacity: 0.9; }
+    .weather-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    /* ========================================= */
+    /* VISTA 5: SOPORTE Y ASESORES TÉCNICOS      */
+    /* ========================================= */
+    .advisors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 22px;
+    }
+    .advisor-full-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-card);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .advisor-full-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .advisor-card-top { display: flex; gap: 16px; margin-bottom: 16px; }
+    .advisor-big-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #10b981;
+      flex-shrink: 0;
+      background: #e2e8f0;
+    }
+    .advisor-big-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .advisor-card-intro h3 { font-size: 17.5px; font-weight: 800; color: #0f172a; }
+    .advisor-cip-badge {
+      display: inline-block;
+      font-size: 11px;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin: 3px 0 6px;
+    }
+    .advisor-specialty-title { font-size: 13px; font-weight: 700; color: #059669; }
+    .advisor-zone-pill { font-size: 11.5px; color: #64748b; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+    .advisor-help-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+    .advisor-help-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #064e3b;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .advisor-help-desc { font-size: 12.5px; color: #334155; line-height: 1.5; }
+    .advisor-tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .advisor-skill-tag {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .advisor-card-footer {
+      display: flex;
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .btn-advisor-wsp {
+      flex: 1;
+      background-color: #25d366;
+      color: #ffffff;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+      transition: all 0.2s;
+    }
+    .btn-advisor-wsp:hover { background-color: #20ba5a; transform: translateY(-2px); }
+    .btn-advisor-call {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-advisor-call:hover { background: #e2e8f0; color: #0f172a; }
+
+    /* ========================================= */
+    /* MODALES INTERACTIVOS Y CHECKOUT           */
+    /* ========================================= */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-box {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 560px;
+      max-width: 100%;
+      box-shadow: var(--shadow-hover);
+      overflow: hidden;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      animation: modalScale 0.2s ease-out;
+    }
+    @keyframes modalScale {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      padding: 18px 24px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .modal-header h3 { font-size: 18px; font-weight: 800; color: #0f172a; }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #94a3b8;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close-btn:hover { color: #0f172a; }
+    .modal-body {
+      padding: 22px 24px;
+      overflow-y: auto;
+    }
+    .modal-footer {
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Carrito / Checkout UI */
+    .cart-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: 12px;
+    }
+    .cart-item-info h4 { font-size: 13.5px; font-weight: 800; color: #0f172a; }
+    .cart-item-info p { font-size: 12px; color: var(--text-muted); }
+    .cart-item-actions { display: flex; align-items: center; gap: 14px; }
+    .cart-summary-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+    .cart-summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      color: #475569;
+    }
+    .cart-summary-total {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1.5px solid #cbd5e1;
+      font-size: 17px;
+      font-weight: 900;
+      color: #064e3b;
+    }
+
+    /* Payment selector */
+    .payment-methods-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .payment-opt {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #334155;
+      transition: all 0.2s;
+    }
+    .payment-opt:hover { border-color: #059669; background: #f0fdf4; }
+    .payment-opt.selected { border-color: #059669; background: #ecfdf5; color: #065f46; box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2); }
+
+    .btn-checkout-pay {
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-checkout-pay:hover { background: #047857; }
+
+    .btn-checkout-hold {
+      background: #ffffff;
+      color: #b45309;
+      border: 1.5px solid #f59e0b;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-checkout-hold:hover { background: #fef3c7; }
+
+
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .fundo-details-grid { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .sidebar { width: 70px; padding: 16px 8px; }
+      .sidebar-brand span, .sidebar-item a span, .sidebar-bottom-card, .btn-sidebar-link span, .sidebar-badge { display: none; }
+      .sidebar-item a { justify-content: center; padding: 12px; }
+      .main-wrapper { margin-left: 70px; padding: 16px 16px 110px; }
+      .diag-cards-row { grid-template-columns: 1fr; }
+      .fundo-card-layout { grid-template-columns: 1fr; }
+      .fundo-photo-box { width: 100%; height: 160px; }
+      .advisors-grid { grid-template-columns: 1fr; }
+      .payment-methods-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================= -->
+  <!-- SIDEBAR (BARRA LATERAL DE NAVEGACIÓN)     -->
+  <!-- ========================================= -->
+  <aside class="sidebar">
+    <div>
+      <a href="javascript:void(0)" onclick="switchView('inicio')" class="sidebar-brand">
+        <img src="assets/panel/logo-panel.png" alt="Chiaway Agro" class="brand-logo-img" onerror="this.src='assets/logo-chiaway.png';">
+      </a>
+
+      <!-- Menu Principal -->
+      <ul class="sidebar-nav">
+        <li class="sidebar-item">
+          <a href="javascript:void(0)" onclick="switchView('inicio')" id="nav-inicio" class="active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Inicio</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="javascript:void(0)" onclick="switchView('tienda')" id="nav-tienda">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Tienda Chiaway</span>
+            <span class="sidebar-badge" style="background:#f59e0b; color:#ffffff;">Catálogo</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="javascript:void(0)" onclick="switchView('pedidos')" id="nav-pedidos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+            <span>Mis Pedidos</span>
+            <span class="sidebar-badge" id="sidebar-orders-badge">3</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="javascript:void(0)" onclick="switchView('diagnosticos')" id="nav-diagnosticos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M11 9h4"/><path d="M13 7v4"/><path d="m9 9 3 3"/><path d="m9 15 6-6"/></svg>
+            <span>Mis Diagnósticos</span>
+            <span class="sidebar-badge">6</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="javascript:void(0)" onclick="switchView('fundo')" id="nav-fundo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Mi Fundo</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="javascript:void(0)" onclick="switchView('soporte')" id="nav-soporte">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+            <span>Soporte</span>
+            <span class="sidebar-badge" style="background:#10b981; color:#ffffff;">Asesores</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Promo Card Inferior del Sidebar -->
+    <div>
+      <div class="sidebar-bottom-card">
+        <div class="sidebar-thumb-wrap">
+          <img src="assets/panel/sidebar-campo.jpg" alt="Campo Chiaway" class="sidebar-thumb-img" onerror="this.src='assets/panel/fundo-campo.jpg';">
+        </div>
+        <div class="sidebar-card-text">
+          <p>Cultivos más saludables, mayor producción</p>
+          <div class="sidebar-leaf-icon">🌱</div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer-links">
+        <a href="demo-chiaway.html" class="btn-sidebar-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          <span>Regresar a la Tienda</span>
+        </a>
+        <button type="button" class="btn-sidebar-link" onclick="logoutCliente()" style="color:#f87171;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================= -->
+  <!-- ÁREA DE CONTENIDO PRINCIPAL              -->
+  <!-- ========================================= -->
+  <main class="main-wrapper">
+
+    <!-- CABECERA LIMPIA -->
+    <header class="dashboard-header">
+      <div class="welcome-title-wrap">
+        <h1 id="client-greeting-title">¡Hola, Productor!</h1>
+        <p>Aquí tienes un resumen de tu actividad en Chiaway Agro</p>
+      </div>
+
+      <div class="header-user-actions">
+        <!-- Carrito de Compras -->
+        <button type="button" class="topbar-cart-btn" onclick="openCartModal()">
+          <span>🛒</span>
+          <span>Carrito</span>
+          <span class="topbar-cart-badge" id="header-cart-count">0</span>
+        </button>
+
+        <!-- Notificaciones -->
+        <div class="notif-bell-btn" title="2 Notificaciones pendientes" onclick="openNotifModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-badge">2</span>
+        </div>
+
+        <div class="user-avatar-circle" id="user-avatar-wrap" title="Perfil de Productor - Clic para ver o cambiar foto" onclick="openEditFundoModal('perfil')">
+          <img id="user-avatar-img" src="assets/panel/perfil-productor.jpg" alt="Foto de perfil" style="width:100%; height:100%; border-radius:50%; object-fit:cover; display:block;">
+          <span id="user-avatar-initial" style="display:none;">P</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 1: INICIO (DASHBOARD GENERAL RESUMEN)              -->
+    <!-- ======================================================== -->
+    <section id="view-inicio" class="panel-view active">
+      <div class="dashboard-grid">
+
+        <!-- CARD 1: Historial de Diagnósticos con IA -->
+        <div class="dash-card">
+          <div>
+            <div class="card-top-bar">
+              <div class="card-title-group">
+                <div class="card-icon-chip icon-chip-green">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M11 9h4"/><path d="M13 7v4"/><path d="m9 9 3 3"/><path d="m9 15 6-6"/></svg>
+                </div>
+                <h3>Historial de Diagnósticos con IA</h3>
+              </div>
+              <button type="button" class="btn-ver-todo" onclick="switchView('diagnosticos')">
+                Ver todo &rarr;
+              </button>
+            </div>
+
+            <!-- Fila de 3 Diagnósticos Reales -->
+            <div class="diag-cards-row">
+              <div class="diag-item-card" onclick="switchView('diagnosticos')">
+                <div class="diag-thumb-wrap">
+                  <img src="assets/panel/cultivo-vid-hoja.jpg?v=20261123" alt="Mildiu en Vid" class="diag-thumb-img">
+                </div>
+                <div class="diag-content">
+                  <div class="diag-crop-name">Mildiu en Vid</div>
+                  <span class="urgency-badge urgency-high">⚠️ Alta Urgencia</span>
+                  <div class="diag-rx-text">
+                    🧪 Recomendado:
+                    <div class="diag-rx-prod">Mancozeb + Metalaxil</div>
+                  </div>
+                  <div class="diag-date">📅 28 oct. 2026</div>
+                </div>
+              </div>
+
+              <div class="diag-item-card" onclick="switchView('diagnosticos')">
+                <div class="diag-thumb-wrap">
+                  <img src="assets/panel/cultivo-uva-racimo.jpg?v=20261123" alt="Oídio en Vid" class="diag-thumb-img">
+                </div>
+                <div class="diag-content">
+                  <div class="diag-crop-name">Oídio en Vid</div>
+                  <span class="urgency-badge urgency-medium">⬇️ Urgencia Media</span>
+                  <div class="diag-rx-text">
+                    🧪 Recomendado:
+                    <div class="diag-rx-prod">Azufre + Tebuconazol</div>
+                  </div>
+                  <div class="diag-date">📅 25 oct. 2026</div>
+                </div>
+              </div>
+
+              <div class="diag-item-card" onclick="switchView('diagnosticos')">
+                <div class="diag-thumb-wrap">
+                  <img src="assets/panel/cultivo-palta-fruto.jpg?v=20261123" alt="Mancha Negra en Palto" class="diag-thumb-img">
+                </div>
+                <div class="diag-content">
+                  <div class="diag-crop-name">Mancha Negra en Palto</div>
+                  <span class="urgency-badge urgency-low">✓ Baja Urgencia</span>
+                  <div class="diag-rx-text">
+                    🧪 Recomendado:
+                    <div class="diag-rx-prod">Difenoconazol</div>
+                  </div>
+                  <div class="diag-date">📅 20 oct. 2026</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: Mis Cotizaciones y Pedidos -->
+        <div class="dash-card">
+          <div>
+            <div class="card-top-bar">
+              <div class="card-title-group">
+                <div class="card-icon-chip icon-chip-blue">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                </div>
+                <h3>Mis Cotizaciones y Pedidos</h3>
+              </div>
+              <button type="button" class="btn-ver-todo btn-ver-todo-blue" onclick="switchView('pedidos')">
+                Ver todo &rarr;
+              </button>
+            </div>
+
+            <!-- Tabla Resumen de Solicitudes -->
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>N.° Pedido</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th style="text-align:right;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="dash-orders-tbody">
+                <!-- Se inyectan dinámicamente con los últimos pedidos -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="order-dispatch-alert" id="dash-dispatch-banner">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span>🚛</span>
+              <span id="dash-dispatch-text">Tu pedido <strong>#CP-2026-1045</strong> está en camino al fundo.</span>
+            </div>
+            <span>🌱</span>
+          </div>
+        </div>
+
+        <!-- CARD 3: Ficha y Datos de mi Fundo -->
+        <div class="dash-card">
+          <div>
+            <div class="card-top-bar">
+              <div class="card-title-group">
+                <div class="card-icon-chip icon-chip-darkgreen">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <h3>Ficha y Datos de mi Fundo</h3>
+              </div>
+              <button type="button" class="btn-edit-fundo" onclick="openEditFundoModal()">
+                ✏️ Editar
+              </button>
+            </div>
+
+            <div class="fundo-card-layout">
+              <div class="fundo-photo-box" onclick="switchView('fundo')" style="cursor:pointer;" title="Click para ver la Ficha Completa">
+                <img src="assets/panel/fundo-campo.jpg" alt="Fundo Santa Rosa" class="fundo-photo-img" id="fundo-dash-thumb">
+              </div>
+
+              <div class="fundo-info-list">
+                <div class="fundo-info-item">
+                  <span class="fundo-info-label">🏡 Nombre del Fundo:</span>
+                  <span class="fundo-info-val" id="fundo-val-name">Santa Rosa</span>
+                </div>
+                <div class="fundo-info-item">
+                  <span class="fundo-info-label">📍 Valle Agrícola:</span>
+                  <span class="fundo-info-val" id="fundo-val-valley">Ica</span>
+                </div>
+                <div class="fundo-info-item">
+                  <span class="fundo-info-label">📐 Hectáreas:</span>
+                  <span class="fundo-info-val" id="fundo-val-area">10.00 ha</span>
+                </div>
+                <div>
+                  <span class="fundo-info-label" style="display:block; margin-bottom:4px;">🌱 Cultivos Principales:</span>
+                  <div class="crop-pills-wrap" id="crop-pills-container">
+                    <span class="crop-pill">Vid</span>
+                    <span class="crop-pill">Palto</span>
+                    <span class="crop-pill">Espárrago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: Asesor Técnico Asignado -->
+        <div class="dash-card">
+          <div>
+            <div class="card-top-bar">
+              <div class="card-title-group">
+                <div class="card-icon-chip icon-chip-purple">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <h3>Asesor Técnico Asignado</h3>
+              </div>
+              <button type="button" class="btn-ver-todo" onclick="switchView('soporte')">
+                Ver todos (4) &rarr;
+              </button>
+            </div>
+
+            <div class="advisor-dash-layout">
+              <div class="advisor-avatar-circle-lg">
+                <img src="assets/panel/asesor-carlos.jpg" alt="Ing. Carlos Mendoza" class="advisor-avatar-img">
+              </div>
+
+              <div class="advisor-details">
+                <div class="advisor-name">Ing. Carlos Mendoza</div>
+                <div class="advisor-role">Ingeniero Agrónomo &bull; Chiaway Agro</div>
+                <div class="advisor-zone">📍 Zona de Atención: Valle de Ica</div>
+              </div>
+
+              <div>
+                <a href="https://wa.me/51994233110?text=Hola%20Ing.%20Carlos%20Mendoza,%20le%20escribo%20desde%20el%20Panel%20Chiaway%20para%20solicitar%20asesor%C3%ADa%20fitosanitaria%20para%20mi%20fundo." target="_blank" class="btn-wsp-direct">
+                  💬 WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="advisor-tip-banner">
+            ¿Necesitas insumos? Explora el <a href="javascript:void(0)" onclick="switchView('tienda')" style="color:#1d4ed8; font-weight:800; text-decoration:underline;">Catálogo de la Tienda Chiaway</a> con entrega directa a tu predio.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 2: TIENDA DE INSUMOS CHIAWAY (NUEVA VENTANA)       -->
+    <!-- ======================================================== -->
+    <section id="view-tienda" class="panel-view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>
+            <span style="color:#059669;">🛍️</span> Tienda Oficial Chiaway &bull; Catálogo de Insumos
+          </h2>
+          <p>
+            Selecciona los insumos agrícolas, fertilizantes y biológicos para tus cultivos. Despacho directo a tu fundo desde nuestras 7 sedes.
+          </p>
+        </div>
+
+        <button type="button" class="btn-checkout-pay" onclick="openCartModal()" style="border-radius:50px; padding:10px 22px;">
+          🛒 Ver Carrito (<span id="store-cart-counter">0</span>) &bull; <span id="store-cart-total-badge">S/. 0.00</span>
+        </button>
+      </div>
+
+      <!-- Barra de Filtros y Búsqueda -->
+      <div class="store-toolbar">
+        <div class="store-search-box">
+          <span class="store-search-icon">🔍</span>
+          <input type="text" id="store-search" class="store-search-input" placeholder="Buscar por producto, ingrediente activo o patógeno..." onkeyup="filterProducts()">
+        </div>
+
+        <div class="filter-pills-bar" style="margin-bottom:0;">
+          <button class="filter-btn active" onclick="setProductCategory('all', this)">Todos</button>
+          <button class="filter-btn" onclick="setProductCategory('fungicida', this)">Fungicidas</button>
+          <button class="filter-btn" onclick="setProductCategory('insecticida', this)">Insecticidas</button>
+          <button class="filter-btn" onclick="setProductCategory('acaricida', this)">Acaricidas</button>
+          <button class="filter-btn" onclick="setProductCategory('biologico', this)">Biológicos</button>
+          <button class="filter-btn" onclick="setProductCategory('nutricion', this)">Nutrición y Bioestimulantes</button>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de Productos -->
+      <div class="products-grid" id="products-catalog-grid">
+        <!-- Renderizado dinámico desde JS -->
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 3: MIS PEDIDOS (CON TABLA DE PRECIOS Y RASTREO)    -->
+    <!-- ======================================================== -->
+    <section id="view-pedidos" class="panel-view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>
+            <span style="color:#2563eb;">📦</span> Mis Pedidos y Seguimiento de Despacho
+          </h2>
+          <p>Supervisa el detalle de productos, precios unitarios, cantidades, totales y el rastreo de camiones a tu fundo.</p>
+        </div>
+
+        <button type="button" class="btn-checkout-pay" onclick="switchView('tienda')" style="border-radius:50px; padding:10px 20px;">
+          ➕ Comprar Nuevos Insumos
+        </button>
+      </div>
+
+      <!-- KPIs del Historial -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Pedidos</div>
+          <div class="kpi-value" id="kpi-total-orders">3</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" style="color:#0369a1;">En Despacho a Campo</div>
+          <div class="kpi-value" style="color:#0369a1;" id="kpi-dispatch-orders">1</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" style="color:#dc2626;">Falta Pago (Pendientes)</div>
+          <div class="kpi-value" style="color:#dc2626;" id="kpi-unpaid-orders">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" style="color:#065f46;">Inversión Total en Insumos</div>
+          <div class="kpi-value" style="color:#065f46;" id="kpi-total-spent">S/. 2,062.00</div>
+        </div>
+      </div>
+
+      <!-- Lista Detallada de Pedidos -->
+      <div class="orders-detail-list" id="orders-full-list">
+        <!-- Renderizado dinámico desde JS -->
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 4: MIS DIAGNÓSTICOS                                -->
+    <!-- ======================================================== -->
+    <section id="view-diagnosticos" class="panel-view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>
+            <span style="color:#059669;">🔬</span> Historial Completo de Diagnósticos con IA
+          </h2>
+          <p>Registro fitopatológico de hojas y frutos analizados mediante visión computacional y modelos botánicos.</p>
+        </div>
+
+        <button type="button" class="btn-checkout-pay" onclick="openWidgetDiag()" style="padding:10px 20px; font-size:13.5px; border-radius:50px;">
+          📸 Nuevo Diagnóstico con IA
+        </button>
+      </div>
+
+      <div class="filter-pills-bar">
+        <button class="filter-btn active" onclick="filterDiagnostics('all', this)">Todos (7)</button>
+        <button class="filter-btn" onclick="filterDiagnostics('high', this)">Alta Urgencia (3)</button>
+        <button class="filter-btn" onclick="filterDiagnostics('medium', this)">Urgencia Media (2)</button>
+        <button class="filter-btn" onclick="filterDiagnostics('low', this)">Baja Urgencia (2)</button>
+        <button class="filter-btn" onclick="filterDiagnostics('vid', this)">🍇 Vid</button>
+        <button class="filter-btn" onclick="filterDiagnostics('palto', this)">🥑 Palto</button>
+        <button class="filter-btn" onclick="filterDiagnostics('esparrago', this)">🌾 Espárrago</button>
+        <button class="filter-btn" onclick="filterDiagnostics('mandarina', this)">🍊 Mandarina</button>
+      </div>
+
+      <div class="diagnosticos-grid">
+        <!-- 1. Mildiu en Vid -->
+        <div class="product-card" data-urgency="high" data-crop="vid">
+          <div class="diag-card-media">
+            <img src="assets/panel/cultivo-vid-hoja.jpg?v=20261123" alt="Mildiu en Hoja de Vid">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="prod-category-badge cat-fungicida">🍇 Vid Red Globe</span>
+            <span class="urgency-badge urgency-high">⚠️ Alta Urgencia</span>
+          </div>
+          <h3 class="prod-name">Mildiu en Vid (Plasmopara viticola)</h3>
+          <p class="prod-desc">Severidad foliar del 38% en hojas maduras. Condición favorecida por rocío matinal.</p>
+          <div class="prod-dose-box"><strong>Tratamiento:</strong> Mancozeb 80% WP (2.5 kg/ha) + Metalaxil 8%.</div>
+          <div class="prod-footer-row">
+            <button class="btn-add-cart" onclick="addCustomToCart(3, 'Metalaxil + Mancozeb (Ridomil Gold)', 95.00, 'kg')">
+              🛒 Pedir Insumo (S/. 95.00)
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Oídio en Vid -->
+        <div class="product-card" data-urgency="medium" data-crop="vid">
+          <div class="diag-card-media">
+            <img src="assets/panel/cultivo-uva-racimo.jpg?v=20261123" alt="Oídio en Racimo de Vid">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="prod-category-badge cat-fungicida">🍇 Vid Superior</span>
+            <span class="urgency-badge urgency-medium">⬇️ Urgencia Media</span>
+          </div>
+          <h3 class="prod-name">Oídio en Vid (Erysiphe necator)</h3>
+          <p class="prod-desc">Micelio blanco harinoso en el 22% del follaje y racimos en floración temprana.</p>
+          <div class="prod-dose-box"><strong>Tratamiento:</strong> Azufre micronizado 80% (3 kg/ha) + Penconazol.</div>
+          <div class="prod-footer-row">
+            <button class="btn-add-cart" onclick="addCustomToCart(1, 'Azufre micronizado 80% WP', 45.00, 'bolsa 1kg')">
+              🛒 Pedir Insumo (S/. 45.00)
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Mancha Negra en Palto -->
+        <div class="product-card" data-urgency="low" data-crop="palto">
+          <div class="diag-card-media">
+            <img src="assets/panel/cultivo-palta-fruto.jpg?v=20261123" alt="Mancha Negra en Fruto de Palta">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="prod-category-badge cat-fungicida">🥑 Palto Hass</span>
+            <span class="urgency-badge urgency-low">✓ Baja Urgencia</span>
+          </div>
+          <h3 class="prod-name">Mancha Negra (Pseudocercospora purpurea)</h3>
+          <p class="prod-desc">Lesiones angulares delimitadas por nervaduras en frutos y epidermis. Afección leve (12%).</p>
+          <div class="prod-dose-box"><strong>Tratamiento:</strong> Difenoconazol 250 EC (300 ml/ha) preventivo.</div>
+          <div class="prod-footer-row">
+            <button class="btn-add-cart" onclick="addCustomToCart(4, 'Difenoconazol 250 EC', 110.00, 'frasco 500ml')">
+              🛒 Pedir Insumo (S/. 110.00)
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Minador de Hoja en Mandarina -->
+        <div class="product-card" data-urgency="high" data-crop="mandarina">
+          <div class="diag-card-media">
+            <img src="assets/panel/cultivo-mandarina.jpg?v=20261123" alt="Minador en Hoja y Fruto de Mandarina">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="prod-category-badge cat-insecticida">🍊 Mandarina W. Murcott</span>
+            <span class="urgency-badge urgency-high">⚠️ Alta Urgencia</span>
+          </div>
+          <h3 class="prod-name">Minador de los Cítricos (Phyllocnistis citrella)</h3>
+          <p class="prod-desc">Galerías sinuosas y enrollamiento en brotes tiernos y hojas jóvenes (29% daño foliar).</p>
+          <div class="prod-dose-box"><strong>Tratamiento:</strong> Abamectina 1.8 EC (300 ml/ha) + Aceite Agrícola (0.5%).</div>
+          <div class="prod-footer-row">
+            <button class="btn-add-cart" onclick="addCustomToCart(2, 'Abamectina 1.8% EC', 68.00, 'frasco 1L')">
+              🛒 Pedir Insumo (S/. 68.00)
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Arañita Roja en Palto -->
+        <div class="product-card" data-urgency="medium" data-crop="palto">
+          <div class="diag-card-media">
+            <img src="assets/panel/cultivo-palta-hoja.jpg?v=20261123" alt="Arañita Roja en Hojas de Palto">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="prod-category-badge cat-acaricida">🥑 Palto Hass</span>
+            <span class="urgency-badge urgency-medium">⬇️ Urgencia Media</span>
+          </div>
+          <h3 class="prod-name">Arañita Roja (Oligonychus yothersi)</h3>
+          <p class="prod-desc">Bronceado y amarillamiento a lo largo de nervaduras del haz foliar en brotes (26% follaje).</p>
+          <div class="prod-dose-box"><strong>Tratamiento:</strong> Abamectina 1.8 EC (250 ml/ha) + Aceite Agrícola parafínico.</div>
+          <div class="prod-footer-row">
+            <button class="btn-add-cart" onclick="addCustomToCart(2, 'Abamectina 1.8% EC', 68.00, 'frasco 1L')">
+              🛒 Pedir Insumo (S/. 68.00)
+            </button>
+          </div>
+        </div>
+
+        <!-- 6. Roya del Espárrago -->
+        <div class="product-card" data-urgency="low" data-crop="esparrago">
+          <div class="diag-card-media">
+            <img src="assets/panel/cultivo-esparrago.jpg?v=20261123" alt="Roya en Planta de Espárrago">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="prod-category-badge cat-fungicida">🌾 Espárrago UC-157</span>
+            <span class="urgency-badge urgency-low">✓ Baja Urgencia</span>
+          </div>
+          <h3 class="prod-name">Roya del Espárrago (Puccinia asparagi)</h3>
+          <p class="prod-desc">Pústulas de color canela en tallos y cladodios secundarios en etapa de brotación (14%).</p>
+          <div class="prod-dose-box"><strong>Tratamiento:</strong> Tebuconazol 250 EW (400 ml/ha) rotado con Azoxystrobin.</div>
+          <div class="prod-footer-row">
+            <button class="btn-add-cart" onclick="addCustomToCart(1, 'Tebuconazol 250 EW', 88.00, 'L')">
+              🛒 Pedir Insumo (S/. 88.00)
+            </button>
+          </div>
+        </div>
+
+        <!-- 7. Botrytis en Vid -->
+        <div class="product-card" data-urgency="high" data-crop="vid">
+          <div class="diag-card-media">
+            <img src="assets/panel/cultivo-vid-botrytis.jpg?v=20261123" alt="Botrytis en Racimo de Vid">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="prod-category-badge cat-fungicida">🍇 Vid Red Globe</span>
+            <span class="urgency-badge urgency-high">⚠️ Alta Urgencia</span>
+          </div>
+          <h3 class="prod-name">Podredumbre Gris (Botrytis cinerea)</h3>
+          <p class="prod-desc">Pudrición acuosa y moho grisáceo en racimos compactos antes del envero (31% daño).</p>
+          <div class="prod-dose-box"><strong>Tratamiento:</strong> Pyrimethanil 400 SC (1.5 L/ha) o Fenhexamid 500 SC.</div>
+          <div class="prod-footer-row">
+            <button class="btn-add-cart" onclick="addCustomToCart(3, 'Pyrimethanil 400 SC (Botrytis)', 135.00, 'L')">
+              🛒 Pedir Insumo (S/. 135.00)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 5: MI FUNDO                                        -->
+    <!-- ======================================================== -->
+    <section id="view-fundo" class="panel-view">
+      <div class="fundo-hero-card">
+        <div class="fundo-hero-banner">
+          <img src="assets/panel/fundo-campo.jpg" alt="Fundo Agrícola Chiaway" id="fundo-hero-banner-img">
+          <button type="button" class="fundo-banner-change-btn" onclick="openEditFundoModal('fundo')" title="Cambiar Foto de Portada">
+            📷 Cambiar Foto de Portada
+          </button>
+        </div>
+        <div class="fundo-hero-content">
+          <div class="fundo-hero-title">
+            <h2 id="fundo-title-hero">Fundo Santa Rosa</h2>
+            <p>Valle Agrícola de Ica &bull; Sector San Juan Bautista &bull; Coordenadas: 14°04'12"S 75°43'55"W</p>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button class="btn-checkout-pay" onclick="openEditFundoModal('fundo')" style="padding:10px 22px; font-size:13px; border-radius:50px;">
+              ✏️ Editar Datos del Fundo
+            </button>
+            <a href="https://www.google.com/maps/search/?api=1&query=Valle+de+Ica,+Peru" target="_blank" class="btn-table-action" style="padding:10px 18px; border-radius:50px; text-decoration:none;">
+              🗺️ Ver en Maps
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="fundo-details-grid">
+        <div class="dash-card">
+          <div>
+            <div class="card-top-bar">
+              <div class="card-title-group">
+                <div class="card-icon-chip icon-chip-green">🌱</div>
+                <h3>Lotes y Variedades Instaladas</h3>
+              </div>
+              <span class="crop-pill" style="background:#059669; color:#ffffff;" id="fundo-area-badge">10.00 ha Totales</span>
+            </div>
+
+            <div class="lotes-list">
+              <div class="lote-item">
+                <div class="lote-info">
+                  <h4>🍇 Lote A: Vid Red Globe & Superior</h4>
+                  <p>4.50 ha &bull; Parral español &bull; Marco 3.5m x 2.0m &bull; Riego por goteo doble línea</p>
+                </div>
+                <div class="lote-badge">4.50 ha</div>
+              </div>
+              <div class="lote-item">
+                <div class="lote-info">
+                  <h4>🥑 Lote B: Palto Hass</h4>
+                  <p>3.50 ha &bull; Patrón antillano resistente &bull; Marco 6.0m x 3.0m</p>
+                </div>
+                <div class="lote-badge">3.50 ha</div>
+              </div>
+              <div class="lote-item">
+                <div class="lote-info">
+                  <h4>🌾 Lote C: Espárrago Verde UC-157</h4>
+                  <p>2.00 ha &bull; Densidad 28,000 plantas/ha &bull; Riego presurizado</p>
+                </div>
+                <div class="lote-badge">2.00 ha</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="weather-widget-card">
+            <div class="weather-main-row">
+              <div>
+                <div class="weather-temp">26.4°C</div>
+                <div class="weather-city">Valle de Ica &bull; Soleado con brisa</div>
+              </div>
+              <div style="font-size:42px;">☀️</div>
+            </div>
+            <div class="weather-stats-row">
+              <div>Humedad: <strong>64%</strong></div>
+              <div>Viento: <strong>11 km/h</strong></div>
+              <div>Riesgo Oídio: <strong style="color:#fef08a;">Medio</strong></div>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="card-title-group" style="margin-bottom:14px;">
+              <div class="card-icon-chip icon-chip-blue">💧</div>
+              <h3>Parámetros de Riego y Suelo</h3>
+            </div>
+            <div class="fundo-info-list" style="font-size:12.5px;">
+              <div class="fundo-info-item">
+                <span class="fundo-info-label">Fuente de Agua:</span>
+                <span class="fundo-info-val">Pozo tubular (Caudal: 25 L/s)</span>
+              </div>
+              <div class="fundo-info-item">
+                <span class="fundo-info-label">Conductividad (CE):</span>
+                <span class="fundo-info-val">1.15 dS/m (Óptimo)</span>
+              </div>
+              <div class="fundo-info-item">
+                <span class="fundo-info-label">Textura de Suelo:</span>
+                <span class="fundo-info-val">Franco-Arenoso profundo (pH 7.4)</span>
+              </div>
+              <div class="fundo-info-item">
+                <span class="fundo-info-label">Sede de Abastecimiento:</span>
+                <span class="fundo-info-val">Sede Central Ica (Av. San Martín 1026)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 6: SOPORTE Y ASESORES TÉCNICOS                    -->
+    <!-- ======================================================== -->
+    <section id="view-soporte" class="panel-view">
+      <div class="view-header">
+        <div class="view-title-group">
+          <h2>
+            <span style="color:#10b981;">👨‍🌾</span> Equipo de Asesores e Ingenieros Agrícolas Chiaway
+          </h2>
+          <p>
+            Elige al especialista técnico según la afección de tu cultivo o zona geográfica. Contáctalos directamente por WhatsApp.
+          </p>
+        </div>
+      </div>
+
+      <div class="advisors-grid">
+        <!-- Asesor 1 -->
+        <div class="advisor-full-card">
+          <div>
+            <div class="advisor-card-top">
+              <div class="advisor-big-avatar">
+                <img src="assets/panel/asesor-carlos.jpg" alt="Ing. Carlos Mendoza">
+              </div>
+              <div class="advisor-card-intro">
+                <h3>Ing. Carlos Mendoza</h3>
+                <span class="advisor-cip-badge">CIP N.° 184290 &bull; Agrónomo</span>
+                <div class="advisor-specialty-title">Fitosanidad y Hongos en Vid y Palto</div>
+                <div class="advisor-zone-pill">📍 Sedes Ica y Villacurí</div>
+              </div>
+            </div>
+            <div class="advisor-help-box">
+              <div class="advisor-help-title">🛡️ ¿Cómo te ayuda en tu fundo?</div>
+              <p class="advisor-help-desc">
+                Diagnóstico de Mildiu, Oídio y Botrytis. Calibración de boquillas de aspersión y cálculo de volumen de caldo por hectárea.
+              </p>
+            </div>
+          </div>
+          <div class="advisor-card-footer">
+            <a href="https://wa.me/51994233110?text=Hola%20Ing.%20Carlos%20Mendoza,%20le%20escribo%20desde%20el%20Panel%20Chiaway%20para%20solicitar%20asesor%C3%ADa%20fitosanitaria%20para%20mi%20fundo." target="_blank" class="btn-advisor-wsp">
+              💬 WhatsApp: 994233110
+            </a>
+          </div>
+        </div>
+
+        <!-- Asesor 2 -->
+        <div class="advisor-full-card">
+          <div>
+            <div class="advisor-card-top">
+              <div class="advisor-big-avatar">
+                <img src="assets/panel/asesor-andrea.jpg" alt="Inga. Andrea Quispe">
+              </div>
+              <div class="advisor-card-intro">
+                <h3>Inga. Andrea Quispe Rivas</h3>
+                <span class="advisor-cip-badge">CIP N.° 210452 &bull; Nutrición</span>
+                <div class="advisor-specialty-title">Nutrición Vegetal y Fertirriego</div>
+                <div class="advisor-zone-pill">📍 Sedes Chincha y Pisco</div>
+              </div>
+            </div>
+            <div class="advisor-help-box">
+              <div class="advisor-help-title">🧪 ¿Cómo te ayuda en tu fundo?</div>
+              <p class="advisor-help-desc">
+                Diseño de planes nutricionales N-P-K por etapa fenológica, corrección de clorosis y programas de bioestimulantes anti-estrés.
+              </p>
+            </div>
+          </div>
+          <div class="advisor-card-footer">
+            <a href="https://wa.me/51998373236?text=Hola%20Inga.%20Andrea%20Quispe,%20le%20escribo%20desde%20el%20Panel%20Chiaway%20para%20solicitar%20apoyo%20en%20nutrici%C3%B3n%20vegetal%20y%20fertirriego." target="_blank" class="btn-advisor-wsp">
+              💬 WhatsApp: 998373236
+            </a>
+          </div>
+        </div>
+
+        <!-- Asesor 3 -->
+        <div class="advisor-full-card">
+          <div>
+            <div class="advisor-card-top">
+              <div class="advisor-big-avatar">
+                <img src="assets/panel/asesor-roberto.jpg" alt="Ing. Roberto Valdivia">
+              </div>
+              <div class="advisor-card-intro">
+                <h3>Ing. Roberto Valdivia</h3>
+                <span class="advisor-cip-badge">CIP N.° 195741 &bull; Sanidad</span>
+                <div class="advisor-specialty-title">Manejo Integrado de Plagas (MIP)</div>
+                <div class="advisor-zone-pill">📍 Sedes Nazca e Ica Sur</div>
+              </div>
+            </div>
+            <div class="advisor-help-box">
+              <div class="advisor-help-title">🦗 ¿Cómo te ayuda en tu fundo?</div>
+              <p class="advisor-help-desc">
+                Control de arañita roja, trips, queresas y mosca de la fruta. Rotación química para evitar residuos en fruta de exportación.
+              </p>
+            </div>
+          </div>
+          <div class="advisor-card-footer">
+            <a href="https://wa.me/51955309025?text=Hola%20Ing.%20Roberto%20Valdivia,%20le%20escribo%20desde%20el%20Panel%20Chiaway%20para%20asistencia%20en%20control%20de%20plagas." target="_blank" class="btn-advisor-wsp">
+              💬 WhatsApp: 955309025
+            </a>
+          </div>
+        </div>
+
+        <!-- Asesor 4 -->
+        <div class="advisor-full-card">
+          <div>
+            <div class="advisor-card-top">
+              <div class="advisor-big-avatar">
+                <img src="assets/panel/asesor-manuel.jpg" alt="Ing. Manuel Carranza">
+              </div>
+              <div class="advisor-card-intro">
+                <h3>Ing. Manuel Carranza</h3>
+                <span class="advisor-cip-badge">CIP N.° 203118 &bull; Hortalizas</span>
+                <div class="advisor-specialty-title">Semillas, Riego y Hortalizas</div>
+                <div class="advisor-zone-pill">📍 Sedes Cañete y Mala</div>
+              </div>
+            </div>
+            <div class="advisor-help-box">
+              <div class="advisor-help-title">🌱 ¿Cómo te ayuda en tu fundo?</div>
+              <p class="advisor-help-desc">
+                Selección de semillas híbridas de cebolla, tomate y pimiento. Mantenimiento y diagnóstico de goteros y bombas de riego.
+              </p>
+            </div>
+          </div>
+          <div class="advisor-card-footer">
+            <a href="https://wa.me/51953377637?text=Hola%20Ing.%20Manuel%20Carranza,%20le%20escribo%20desde%20el%20Panel%20Chiaway%20para%20apoyo%20en%20semillas%20y%20riego." target="_blank" class="btn-advisor-wsp">
+              💬 WhatsApp: 953377637
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================= -->
+  <!-- MODAL: CARRITO Y CHECKOUT DE COMPRA       -->
+  <!-- ========================================= -->
+  <div class="modal-overlay" id="modal-cart">
+    <div class="modal-box" style="width:640px;">
+      <div class="modal-header">
+        <h3>🛒 Carrito de Insumos Chiaway</h3>
+        <button class="modal-close-btn" onclick="closeCartModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="cart-items-container">
+          <!-- Items del carrito -->
+        </div>
+
+        <div class="cart-summary-box">
+          <div class="cart-summary-row">
+            <span>Subtotal de Productos:</span>
+            <span id="cart-summary-subtotal">S/. 0.00</span>
+          </div>
+          <div class="cart-summary-row">
+            <span>IGV (18% Incluido):</span>
+            <span id="cart-summary-igv">S/. 0.00</span>
+          </div>
+          <div class="cart-summary-row">
+            <span>Flete a Fundo (Cañete / Ica):</span>
+            <strong style="color:#059669;">GRATIS</strong>
+          </div>
+          <div class="cart-summary-total">
+            <span>TOTAL A LIQUIDAR:</span>
+            <span id="cart-summary-total">S/. 0.00</span>
+          </div>
+        </div>
+
+        <!-- Método de Pago -->
+        <div style="margin-top:18px;">
+          <label style="font-size:12.5px; font-weight:800; color:#0f172a; display:block; margin-bottom:6px;">
+            Selecciona la Forma de Pago:
+          </label>
+          <div class="payment-methods-grid">
+            <div class="payment-opt selected" onclick="selectPaymentMethod('yape', this)">
+              <span>📱</span>
+              <div>
+                <div>Yape / Plin</div>
+                <small style="color:#64748b; font-weight:normal;">Al 994233110 (Chiaway)</small>
+              </div>
+            </div>
+            <div class="payment-opt" onclick="selectPaymentMethod('card', this)">
+              <span>💳</span>
+              <div>
+                <div>Tarjeta Débito/Crédito</div>
+                <small style="color:#64748b; font-weight:normal;">Visa, Mastercard</small>
+              </div>
+            </div>
+            <div class="payment-opt" onclick="selectPaymentMethod('bank', this)">
+              <span>🏦</span>
+              <div>
+                <div>Transferencia BCP/BBVA</div>
+                <small style="color:#64748b; font-weight:normal;">Cta. Cte. Autoservicio</small>
+              </div>
+            </div>
+            <div class="payment-opt" onclick="selectPaymentMethod('delivery', this)">
+              <span>💵</span>
+              <div>
+                <div>Contra Entrega en Fundo</div>
+                <small style="color:#64748b; font-weight:normal;">Efectivo o POS al chofer</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" class="btn-checkout-hold" onclick="confirmOrder(false)">
+          ⏳ Guardar sin Pagar (Pago Pendiente)
+        </button>
+        <button type="button" class="btn-checkout-pay" onclick="confirmOrder(true)">
+          💳 Pagar y Confirmar Pedido Ahora
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- MODAL: PAGAR AHORA (PARA PEDIDOS PENDIENTES)-->
+  <!-- ========================================= -->
+  <div class="modal-overlay" id="modal-pay-now">
+    <div class="modal-box" style="width:500px;">
+      <div class="modal-header">
+        <h3>💳 Pagar Pedido Pendiente</h3>
+        <button class="modal-close-btn" onclick="closePayNowModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px; margin-bottom:16px;">
+          <p style="font-size:13px; color:#475569;">Pedido Seleccionado: <strong id="paynow-code" style="color:#0f172a;">#CP-XXXX</strong></p>
+          <p style="font-size:13px; color:#475569; margin-top:4px;">Total a Abonar: <strong id="paynow-amount" style="font-size:18px; color:#047857;">S/. 0.00</strong></p>
+        </div>
+
+        <p style="font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:10px;">
+          Selecciona medio para liberar el despacho de inmediato:
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label style="display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid #cbd5e1; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="paynow-method" value="yape" checked>
+            <span>📱 Yapear / Plin al <strong>994233110</strong> (Chiaway Agro)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid #cbd5e1; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="paynow-method" value="card">
+            <span>💳 Tarjeta de Crédito / Débito en línea</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid #cbd5e1; border-radius:8px; cursor:pointer;">
+            <input type="radio" name="paynow-method" value="bcp">
+            <span>🏦 Transferencia BCP N.° 380-1928374-0-12</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-table-action" onclick="closePayNowModal()">Cancelar</button>
+        <button type="button" class="btn-checkout-pay" onclick="executePaymentNow()">
+          ✓ Confirmar Pago y Despachar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- MODAL: EDITAR DATOS DEL FUNDO Y PERFIL   -->
+  <!-- ========================================= -->
+  <div class="modal-overlay" id="modal-edit-fundo">
+    <div class="modal-box" style="max-width: 620px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3 id="modal-fundo-heading">🌱 Personalizar Mi Fundo y Perfil</h3>
+        <button class="modal-close-btn" onclick="closeEditFundoModal()">&times;</button>
+      </div>
+
+      <!-- Pestañas del Modal -->
+      <div style="display:flex; border-bottom:1px solid #e2e8f0; margin-bottom:16px; gap:8px;">
+        <button type="button" id="tab-btn-fundo" onclick="switchFundoModalTab('fundo')" class="fundo-tab-btn" style="padding:10px 16px; border:none; background:transparent; font-weight:700; font-size:13px; color:#065f46; border-bottom:3px solid #10b981; cursor:pointer;">
+          🌾 Portada y Datos del Fundo
+        </button>
+        <button type="button" id="tab-btn-perfil" onclick="switchFundoModalTab('perfil')" class="fundo-tab-btn" style="padding:10px 16px; border:none; background:transparent; font-weight:700; font-size:13px; color:#64748b; border-bottom:3px solid transparent; cursor:pointer;">
+          👤 Foto de Perfil del Productor
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding-top:0;">
+        <!-- TAB 1: FUNDO Y PORTADA -->
+        <div id="tab-content-fundo" style="display:flex; flex-direction:column; gap:16px;">
+          <!-- Foto de Portada -->
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <label style="font-size:13px; font-weight:800; color:#0f172a; margin:0;">
+                📸 Foto de Portada del Fundo (Banner en Alta Resolución)
+              </label>
+              <button type="button" onclick="resetFundoBannerDefault()" style="background:transparent; border:none; color:#059669; font-size:11.5px; font-weight:700; cursor:pointer; text-decoration:underline;">
+                Restablecer por Defecto
+              </button>
+            </div>
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">
+              Selecciona una foto real de tu campo, viñedo o predio desde tu computadora o celular.
+            </p>
+
+            <!-- Preview del banner -->
+            <div style="width:100%; height:160px; border-radius:10px; overflow:hidden; border:2px dashed #cbd5e1; background:#044e3b; position:relative; margin-bottom:12px;">
+              <img id="edit-fundo-preview" src="assets/panel/fundo-campo.jpg" alt="Vista previa del fundo" style="width:100%; height:100%; object-fit:cover; display:block;">
+              <div style="position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px); color:#ffffff; font-size:11px; padding:4px 10px; border-radius:20px; font-weight:600;">
+                Vista Previa
+              </div>
+            </div>
+
+            <!-- Controles de subida -->
+            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+              <input type="file" id="edit-fundo-file" accept="image/*" style="display:none;" onchange="handleFundoFileSelect(event)">
+              <button type="button" class="btn-checkout-pay" onclick="document.getElementById('edit-fundo-file').click()" style="padding:9px 18px; font-size:12.5px; border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
+                📁 Subir Foto de mi Fundo
+              </button>
+              <span style="font-size:12px; color:#94a3b8;">o URL:</span>
+              <input type="url" id="edit-fundo-img-url" placeholder="https://ejemplo.com/mifundo.jpg" oninput="handleFundoUrlInput(this.value)" style="flex:1; min-width:180px; padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; font-family:inherit;">
+            </div>
+          </div>
+
+          <!-- Campos de texto del fundo -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">Nombre del Fundo</label>
+              <input type="text" id="edit-fundo-name" style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">Valle Agrícola / Sector</label>
+              <input type="text" id="edit-fundo-valley" style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">Extensión Total (Hectáreas)</label>
+              <input type="text" id="edit-fundo-area" style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">Cultivos Principales (Separados por coma)</label>
+              <input type="text" id="edit-fundo-crops" style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; font-family:inherit;">
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: PERFIL DEL PRODUCTOR -->
+        <div id="tab-content-perfil" style="display:none; flex-direction:column; gap:16px;">
+          <!-- Foto de Perfil -->
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; text-align:center;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <label style="font-size:13.5px; font-weight:800; color:#0f172a; margin:0;">
+                👤 Foto de Perfil del Productor
+              </label>
+              <button type="button" onclick="resetProfileAvatarDefault()" style="background:transparent; border:none; color:#059669; font-size:11.5px; font-weight:700; cursor:pointer; text-decoration:underline;">
+                Foto por Defecto
+              </button>
+            </div>
+
+            <!-- Avatar Preview Grande -->
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin:10px 0 16px 0;">
+              <div style="position:relative; width:100px; height:100px; border-radius:50%; border:3px solid #10b981; box-shadow:0 6px 16px rgba(0,0,0,0.12); overflow:hidden; background:#022c22;">
+                <img id="edit-profile-preview" src="assets/panel/perfil-productor.jpg" alt="Foto de perfil" style="width:100%; height:100%; object-fit:cover; display:block;">
+              </div>
+              <span style="font-size:11.5px; color:#64748b; margin-top:8px;">Foto nítida y en alta resolución para tu perfil</span>
+            </div>
+
+            <!-- Botones de subida -->
+            <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;">
+              <input type="file" id="edit-profile-file" accept="image/*" style="display:none;" onchange="handleProfileFileSelect(event)">
+              <button type="button" class="btn-checkout-pay" onclick="document.getElementById('edit-profile-file').click()" style="padding:9px 20px; font-size:12.5px; border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
+                📷 Subir Foto de Perfil
+              </button>
+              <input type="url" id="edit-profile-img-url" placeholder="O pegar enlace web de foto..." oninput="handleProfileUrlInput(this.value)" style="width:230px; padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; font-family:inherit;">
+            </div>
+          </div>
+
+          <!-- Nombre del Productor / Empresa -->
+          <div>
+            <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:6px;">Nombre o Razón Social del Productor</label>
+            <input type="text" id="edit-profile-name" placeholder="Ej: Ing. Ronaldo Guanilo / Fundo Santa Rosa" style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; font-family:inherit;">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="margin-top:16px;">
+        <button type="button" class="btn-table-action" onclick="closeEditFundoModal()">Cancelar</button>
+        <button type="button" class="btn-checkout-pay" onclick="saveFundoData()">💾 Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- MODAL: NOTIFICACIONES                    -->
+  <!-- ========================================= -->
+  <div class="modal-overlay" id="modal-notifications">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>🔔 Notificaciones Chiaway</h3>
+        <button class="modal-close-btn" onclick="closeNotifModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="background:#e0f2fe; border:1px solid #bae6fd; border-radius:10px; padding:12px 14px;">
+            <div style="font-weight:700; color:#0369a1; font-size:13px;">🚛 Despacho en Ruta #CP-2026-1045</div>
+            <div style="font-size:12px; color:#334155; margin-top:3px;">Tu pedido de fungicidas y aceites ha salido del almacén de Ica y llegará hoy antes de las 4:00 pm.</div>
+          </div>
+          <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:10px; padding:12px 14px;">
+            <div style="font-weight:700; color:#b45309; font-size:13px;">⚠️ Alerta de Rocío Nocturno en Valle Ica</div>
+            <div style="font-size:12px; color:#334155; margin-top:3px;">Las condiciones de humedad relativa favorecen la esporulación de Oídio en Vid. Se sugiere aplicación de Azufre micronizado.</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-table-action" onclick="closeNotifModal()">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- JAVASCRIPT: LÓGICA DE TIENDA, PEDIDOS,    -->
+  <!-- RASTREO Y PAGO PENDIENTE                  -->
+  <!-- ========================================= -->
+  <script src="agrovision-widget.js"></script>
+  <script>
+    // Catálogo Maestro de Productos Chiaway
+    const CHIAWAY_PRODUCTS = [
+      {
+        id: 1,
+        name: "Azufre micronizado 80% WP",
+        active: "Azufre elemental",
+        category: "fungicida",
+        catName: "Fungicida / Acaricida",
+        unitPrice: 45.00,
+        unitLabel: "bolsa 1 kg",
+        dose: "2-3 kg/ha en espolvoreo o aspersión",
+        desc: "Manejo preventivo y erradicante de oídio en vid, frutales y cucurbitáceas."
+      },
+      {
+        id: 2,
+        name: "Oxicloruro de cobre 50% WP",
+        active: "Oxicloruro de cobre",
+        category: "fungicida",
+        catName: "Fungicida Cúprico",
+        unitPrice: 55.00,
+        unitLabel: "bolsa 1 kg",
+        dose: "2.5 kg/ha pre-floración",
+        desc: "Protección fungosa y bacteriana de alta persistencia ante neblinas y rocío."
+      },
+      {
+        id: 3,
+        name: "Metalaxil + Mancozeb (Ridomil Gold)",
+        active: "Metalaxil 8% + Mancozeb 80%",
+        category: "fungicida",
+        catName: "Fungicida Sistémico",
+        unitPrice: 95.00,
+        unitLabel: "kg",
+        dose: "2.5 kg/ha",
+        desc: "Potente acción preventiva y curativa para mildiu, tizón tardío y gomosis."
+      },
+      {
+        id: 4,
+        name: "Difenoconazol 250 EC",
+        active: "Difenoconazol",
+        category: "fungicida",
+        catName: "Fungicida Triazol",
+        unitPrice: 110.00,
+        unitLabel: "frasco 500 ml",
+        dose: "300 ml/ha",
+        desc: "Control selectivo de mancha negra en palto, alternaria y cercospora."
+      },
+      {
+        id: 5,
+        name: "Penconazol 100 EC (Topas)",
+        active: "Penconazol",
+        category: "fungicida",
+        catName: "Fungicida Sistémico",
+        unitPrice: 88.00,
+        unitLabel: "frasco 250 ml",
+        dose: "250 ml/ha",
+        desc: "Curación rápida de micelios de oídio en hojas y racimos de vid de mesa."
+      },
+      {
+        id: 6,
+        name: "Trifloxistrobina 50 WG (Flint)",
+        active: "Trifloxistrobina",
+        category: "fungicida",
+        catName: "Estrobilurina",
+        unitPrice: 140.00,
+        unitLabel: "envase 200 g",
+        dose: "150 g/ha",
+        desc: "Gran fijación a la cutícula cerosa; protección prolongada contra oídio."
+      },
+      {
+        id: 7,
+        name: "Abamectina 018 EC (Vertimec)",
+        active: "Abamectina",
+        category: "acaricida",
+        catName: "Acaricida / Insecticida",
+        unitPrice: 75.00,
+        unitLabel: "frasco 250 ml",
+        dose: "400 ml/ha",
+        desc: "Acción translaminar contra arañita roja, ácaro del tostado y minadores."
+      },
+      {
+        id: 8,
+        name: "Aceite mineral agrícola parafinado",
+        active: "Aceite parafínico refinado",
+        category: "acaricida",
+        catName: "Coadyuvante / Acaricida",
+        unitPrice: 38.00,
+        unitLabel: "envase 1 Litro",
+        dose: "10-15 ml/L de agua",
+        desc: "Asfixia mecánica de huevos de ácaros y queresas; potencia la mezcla."
+      },
+      {
+        id: 9,
+        name: "Imidacloprid 350 SC (Confidor)",
+        active: "Imidacloprid",
+        category: "insecticida",
+        catName: "Insecticida Sistémico",
+        unitPrice: 85.00,
+        unitLabel: "frasco 250 ml",
+        dose: "200 ml/ha",
+        desc: "Excelente control de pulgones, trips, queresas y mosca blanca."
+      },
+      {
+        id: 10,
+        name: "Pirimicarb 50 WG (Pirimor)",
+        active: "Pirimicarb",
+        category: "insecticida",
+        catName: "Aficida Selectivo",
+        unitPrice: 110.00,
+        unitLabel: "envase 500 g",
+        dose: "500 g/ha",
+        desc: "Control veloz de áfidos protegiendo mariquitas y fauna polinizadora."
+      },
+      {
+        id: 11,
+        name: "Jabón potásico 2%",
+        active: "Sales potásicas de ácidos grasos",
+        category: "biologico",
+        catName: "Bioinsumo",
+        unitPrice: 32.00,
+        unitLabel: "envase 1 Litro",
+        dose: "20 ml/L de agua",
+        desc: "Disuelve la melaza de fumagina y debilita la cutícula de insectos blandos."
+      },
+      {
+        id: 12,
+        name: "Aceite de Neem prensado en frío",
+        active: "Azadiractina natural",
+        category: "biologico",
+        catName: "Bioinsecticida Orgánico",
+        unitPrice: 48.00,
+        unitLabel: "frasco 500 ml",
+        dose: "5 ml/L de agua",
+        desc: "Inhibidor de quitina y repelente natural para agricultura limpia."
+      },
+      {
+        id: 13,
+        name: "Bioestimulante Aminoácidos Libres",
+        active: "Aminoácidos + Péptidos",
+        category: "nutricion",
+        catName: "Bioestimulante",
+        unitPrice: 52.00,
+        unitLabel: "botella 1 Litro",
+        dose: "1-2 L/ha",
+        desc: "Recuperación de estrés abiótico (heladas/salinidad) y brotación vigorosa."
+      },
+      {
+        id: 14,
+        name: "Fertilizante Foliar Calcio + Boro",
+        active: "Ca 10% + B 2%",
+        category: "nutricion",
+        catName: "Nutrición Foliar",
+        unitPrice: 42.00,
+        unitLabel: "frasco 1 Litro",
+        dose: "2 L/ha",
+        desc: "Firmeza de bayas, engrose de cáscara en palto y prevención de partiduras."
+      }
+    ];
+
+    // Carrito en memoria y Cantidades locales
+    let cart = [];
+    let selectedCategory = 'all';
+    let selectedPayment = 'yape';
+    let currentPayNowOrderCode = null;
+
+    // Pedidos iniciales por defecto (si localStorage está vacío)
+    const DEFAULT_ORDERS = [
+      {
+        code: "#CP-2026-1045",
+        date: "22/10/2026",
+        isPaid: true,
+        statusText: "En despacho a fundo (Camión en Ruta)",
+        statusType: "dispatch",
+        dispatchTruck: "Camión Hino Chiaway (Placa B7C-892) &bull; Conductor: Jorge R.",
+        sede: "Sede Central Ica (Av. San Martín 1026)",
+        destination: "Fundo Santa Rosa &bull; Km 298 Panamericana Sur",
+        items: [
+          { name: "Difenoconazol 250 EC", unitLabel: "Frasco 500 ml", unitPrice: 110.00, qty: 4, subtotal: 440.00 },
+          { name: "Oxicloruro de cobre 50% WP", unitLabel: "Bolsa 1 kg", unitPrice: 55.00, qty: 6, subtotal: 330.00 },
+          { name: "Aceite mineral agrícola parafinado", unitLabel: "Envase 1 Litro", unitPrice: 38.00, qty: 4, subtotal: 152.00 }
+        ],
+        total: 922.00
+      },
+      {
+        code: "#CP-2026-1046",
+        date: "25/10/2026",
+        isPaid: true,
+        statusText: "Cotizado y Pagado &bull; Programado para despacho",
+        statusType: "paid",
+        dispatchTruck: "Camión Reparto Chiaway &bull; Programado mañana 8:00 am",
+        sede: "Sede Central Ica",
+        destination: "Fundo Santa Rosa &bull; Valle de Ica",
+        items: [
+          { name: "Azufre micronizado 80% WP", unitLabel: "Bolsa 1 kg", unitPrice: 45.00, qty: 10, subtotal: 450.00 },
+          { name: "Penconazol 100 EC (Topas)", unitLabel: "Frasco 250 ml", unitPrice: 88.00, qty: 2, subtotal: 176.00 },
+          { name: "Bioestimulante Aminoácidos Libres", unitLabel: "Botella 1 Litro", unitPrice: 52.00, qty: 2, subtotal: 104.00 }
+        ],
+        total: 730.00
+      },
+      {
+        code: "#CP-2026-1047",
+        date: "28/10/2026",
+        isPaid: false, // PAGO PENDIENTE DE ORIGEN
+        statusText: "Falta Pago &bull; En espera de confirmación",
+        statusType: "pending",
+        dispatchTruck: "En espera de pago para asignar unidad",
+        sede: "Sede Central Ica",
+        destination: "Fundo Santa Rosa &bull; Valle de Ica",
+        items: [
+          { name: "Metalaxil + Mancozeb (Ridomil Gold)", unitLabel: "Bolsa 1 kg", unitPrice: 95.00, qty: 2, subtotal: 190.00 },
+          { name: "Oxicloruro de cobre 50% WP", unitLabel: "Bolsa 1 kg", unitPrice: 55.00, qty: 4, subtotal: 220.00 }
+        ],
+        total: 410.00
+      }
+    ];
+
+    // Cargar o Inicializar Pedidos en LocalStorage
+    function getOrders() {
+      const stored = localStorage.getItem('chiaway_client_orders');
+      if (stored) {
+        try { return JSON.parse(stored); } catch (e) { }
+      }
+      localStorage.setItem('chiaway_client_orders', JSON.stringify(DEFAULT_ORDERS));
+      return DEFAULT_ORDERS;
+    }
+
+    function saveOrders(orders) {
+      localStorage.setItem('chiaway_client_orders', JSON.stringify(orders));
+      renderOrdersList();
+      renderDashboardOrders();
+      updateKpis();
+    }
+
+    // Inicialización al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProductsCatalog();
+      renderOrdersList();
+      renderDashboardOrders();
+      updateKpis();
+      loadFundoData();
+      loadUserAvatar();
+
+      // Hash navigation
+      const currentHash = window.location.hash.replace('#', '');
+      if (['inicio', 'tienda', 'pedidos', 'diagnosticos', 'fundo', 'soporte'].includes(currentHash)) {
+        switchView(currentHash);
+      }
+    });
+
+    // SISTEMA SPA: Alternar entre vistas
+    function switchView(viewName) {
+      const views = ['inicio', 'tienda', 'pedidos', 'diagnosticos', 'fundo', 'soporte'];
+      if (!views.includes(viewName)) return;
+
+      views.forEach(v => {
+        const viewEl = document.getElementById('view-' + v);
+        const navEl = document.getElementById('nav-' + v);
+        if (viewEl) viewEl.classList.remove('active');
+        if (navEl) navEl.classList.remove('active');
+      });
+
+      const targetView = document.getElementById('view-' + viewName);
+      const targetNav = document.getElementById('nav-' + viewName);
+      if (targetView) targetView.classList.add('active');
+      if (targetNav) targetNav.classList.add('active');
+
+      history.replaceState(null, null, '#' + viewName);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // RENDERIZADO DEL CATÁLOGO DE LA TIENDA
+    // ==========================================
+    function renderProductsCatalog() {
+      const grid = document.getElementById('products-catalog-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const searchVal = (document.getElementById('store-search')?.value || '').toLowerCase().trim();
+
+      const filtered = CHIAWAY_PRODUCTS.filter(p => {
+        const matchCategory = (selectedCategory === 'all') || (p.category === selectedCategory);
+        const matchSearch = !searchVal || 
+          p.name.toLowerCase().includes(searchVal) || 
+          p.active.toLowerCase().includes(searchVal) || 
+          p.desc.toLowerCase().includes(searchVal);
+        return matchCategory && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:#64748b; font-size:15px;">
+          No se encontraron insumos con esos criterios. Prueba buscando otro nombre o categoría.
+        </div>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="prod-category-badge cat-${p.category}">${p.catName}</span>
+              <span style="font-size:11px; color:#94a3b8; font-weight:700;">SENASA Cert.</span>
+            </div>
+            <h3 class="prod-name">${p.name}</h3>
+            <div class="prod-active-ing">🧪 ${p.active}</div>
+            <p class="prod-desc">${p.desc}</p>
+            <div class="prod-dose-box">
+              <strong>Dosis Sugerida:</strong> ${p.dose}
+            </div>
+          </div>
+
+          <div class="prod-footer-row">
+            <div class="prod-price-box">
+              <span class="prod-unit-label">Precio Unitario (${p.unitLabel}):</span>
+              <span class="prod-price-amount">S/. ${p.unitPrice.toFixed(2)}</span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="prod-qty-ctrl">
+                <button type="button" class="btn-qty" onclick="changeCatalogQty(${p.id}, -1)">-</button>
+                <span class="qty-display" id="cat-qty-${p.id}">1</span>
+                <button type="button" class="btn-qty" onclick="changeCatalogQty(${p.id}, 1)">+</button>
+              </div>
+
+              <button type="button" class="btn-add-cart" onclick="addToCart(${p.id})">
+                🛒 Agregar
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function changeCatalogQty(productId, delta) {
+      const el = document.getElementById(`cat-qty-${productId}`);
+      if (!el) return;
+      let curr = parseInt(el.innerText) || 1;
+      curr += delta;
+      if (curr < 1) curr = 1;
+      if (curr > 99) curr = 99;
+      el.innerText = curr;
+    }
+
+    function setProductCategory(cat, btn) {
+      selectedCategory = cat;
+      document.querySelectorAll('.store-toolbar .filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderProductsCatalog();
+    }
+
+    function filterProducts() {
+      renderProductsCatalog();
+    }
+
+    // ==========================================
+    // CARRITO Y PROCESO DE CHECKOUT / PAGO
+    // ==========================================
+    function addToCart(productId) {
+      const prod = CHIAWAY_PRODUCTS.find(p => p.id === productId);
+      if (!prod) return;
+
+      const qtyEl = document.getElementById(`cat-qty-${productId}`);
+      const qty = qtyEl ? (parseInt(qtyEl.innerText) || 1) : 1;
+
+      const existingIndex = cart.findIndex(item => item.id === productId);
+      if (existingIndex >= 0) {
+        cart[existingIndex].qty += qty;
+      } else {
+        cart.push({
+          id: prod.id,
+          name: prod.name,
+          unitLabel: prod.unitLabel,
+          unitPrice: prod.unitPrice,
+          qty: qty
+        });
+      }
+
+      if (qtyEl) qtyEl.innerText = '1';
+      updateCartUI();
+
+      // Feedback visual rápido
+      alert(`✅ Se agregó al carrito: ${qty}x ${prod.name}`);
+    }
+
+    function addCustomToCart(id, name, unitPrice, unitLabel) {
+      const existing = cart.find(c => c.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ id, name, unitLabel, unitPrice, qty: 1 });
+      }
+      updateCartUI();
+      openCartModal();
+    }
+
+    function updateCartUI() {
+      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + (item.qty * item.unitPrice), 0);
+
+      const headerCountEl = document.getElementById('header-cart-count');
+      const storeCountEl = document.getElementById('store-cart-counter');
+      const storeTotalEl = document.getElementById('store-cart-total-badge');
+
+      if (headerCountEl) headerCountEl.innerText = totalCount;
+      if (storeCountEl) storeCountEl.innerText = totalCount;
+      if (storeTotalEl) storeTotalEl.innerText = `S/. ${totalPrice.toFixed(2)}`;
+
+      renderCartItems();
+    }
+
+    function renderCartItems() {
+      const container = document.getElementById('cart-items-container');
+      if (!container) return;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px 10px; color:#64748b;">
+            <div style="font-size:36px; margin-bottom:8px;">🛒</div>
+            <p style="font-size:14px; font-weight:700;">Tu carrito de insumos está vacío.</p>
+            <p style="font-size:12px; margin-top:4px;">Explora el catálogo y agrega productos para cotizar o comprar.</p>
+          </div>
+        `;
+        document.getElementById('cart-summary-subtotal').innerText = 'S/. 0.00';
+        document.getElementById('cart-summary-igv').innerText = 'S/. 0.00';
+        document.getElementById('cart-summary-total').innerText = 'S/. 0.00';
+        return;
+      }
+
+      let subtotal = 0;
+      container.innerHTML = '';
+
+      cart.forEach((item, index) => {
+        const itemTotal = item.qty * item.unitPrice;
+        subtotal += itemTotal;
+
+        const row = document.createElement('div');
+        row.className = 'cart-item-row';
+        row.innerHTML = `
+          <div class="cart-item-info">
+            <h4>${item.name}</h4>
+            <p>Precio Unitario: <strong>S/. ${item.unitPrice.toFixed(2)}</strong> / ${item.unitLabel}</p>
+          </div>
+
+          <div class="cart-item-actions">
+            <div class="prod-qty-ctrl">
+              <button type="button" class="btn-qty" onclick="changeCartItemQty(${index}, -1)">-</button>
+              <span class="qty-display">${item.qty}</span>
+              <button type="button" class="btn-qty" onclick="changeCartItemQty(${index}, 1)">+</button>
+            </div>
+
+            <div style="min-width:80px; text-align:right; font-weight:800; color:#047857; font-size:14px;">
+              S/. ${itemTotal.toFixed(2)}
+            </div>
+
+            <button type="button" onclick="removeCartItem(${index})" style="background:none; border:none; cursor:pointer; font-size:16px; color:#ef4444;" title="Quitar">
+              🗑️
+            </button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      const igv = subtotal * 0.18;
+      const total = subtotal;
+
+      document.getElementById('cart-summary-subtotal').innerText = `S/. ${(subtotal - igv).toFixed(2)}`;
+      document.getElementById('cart-summary-igv').innerText = `S/. ${igv.toFixed(2)}`;
+      document.getElementById('cart-summary-total').innerText = `S/. ${total.toFixed(2)}`;
+    }
+
+    function changeCartItemQty(index, delta) {
+      if (cart[index]) {
+        cart[index].qty += delta;
+        if (cart[index].qty <= 0) {
+          cart.splice(index, 1);
+        }
+        updateCartUI();
+      }
+    }
+
+    function removeCartItem(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function openCartModal() {
+      renderCartItems();
+      document.getElementById('modal-cart').style.display = 'flex';
+    }
+
+    function closeCartModal() {
+      document.getElementById('modal-cart').style.display = 'none';
+    }
+
+    function selectPaymentMethod(method, el) {
+      selectedPayment = method;
+      document.querySelectorAll('.payment-opt').forEach(opt => opt.classList.remove('selected'));
+      if (el) el.classList.add('selected');
+    }
+
+    // ==========================================
+    // CONFIRMAR PEDIDO (CON PAGO O SIN PAGO)
+    // ==========================================
+    function confirmOrder(isPaid) {
+      if (cart.length === 0) {
+        alert('Tu carrito está vacío. Agrega al menos un insumo para generar el pedido.');
+        return;
+      }
+
+      const orders = getOrders();
+      const newOrderNum = 1048 + orders.length;
+      const orderCode = `#CP-2026-${newOrderNum}`;
+
+      const today = new Date();
+      const dateStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+
+      const farmName = localStorage.getItem('chiaway_farm_name') || 'Fundo Santa Rosa';
+      const farmValley = localStorage.getItem('chiaway_farm_valley') || 'Ica';
+
+      const itemsClone = cart.map(item => ({
+        name: item.name,
+        unitLabel: item.unitLabel,
+        unitPrice: item.unitPrice,
+        qty: item.qty,
+        subtotal: item.qty * item.unitPrice
+      }));
+
+      const totalAmount = itemsClone.reduce((sum, i) => sum + i.subtotal, 0);
+
+      const newOrder = {
+        code: orderCode,
+        date: dateStr,
+        isPaid: isPaid,
+        statusText: isPaid 
+          ? "Pagado - En Despacho a Fundo" 
+          : "Falta Pago &bull; En espera de confirmación",
+        statusType: isPaid ? "dispatch" : "pending",
+        dispatchTruck: isPaid 
+          ? "Camión Hino Chiaway asignado &bull; Despacho en camino" 
+          : "En espera de pago para asignar unidad y chofer",
+        sede: "Sede Central Ica (Av. San Martín 1026)",
+        destination: `${farmName} &bull; Valle de ${farmValley}`,
+        items: itemsClone,
+        total: totalAmount
+      };
+
+      // Agregar al inicio de la lista
+      orders.unshift(newOrder);
+      saveOrders(orders);
+
+      // Limpiar carrito
+      cart = [];
+      updateCartUI();
+      closeCartModal();
+
+      // Cambiar a la vista de Mis Pedidos
+      switchView('pedidos');
+
+      if (isPaid) {
+        alert(`🎉 ¡Pago realizado con éxito!\n\nPedido: ${orderCode}\nMonto Pagado: S/. ${totalAmount.toFixed(2)}\n\nTu pedido se encuentra PAGADO y en preparación en el almacén de Ica. El camión de reparto saldrá hacia tu fundo.`);
+      } else {
+        alert(`⚠️ Pedido Registrado con PAGO PENDIENTE\n\nPedido: ${orderCode}\nMonto Pendiente: S/. ${totalAmount.toFixed(2)}\n\nPuedes ver el pedido en 'Mis Pedidos'. El rastreo indica 'Falta Pago' y se liberará cuando realices el abono desde el botón 'Pagar Ahora'.`);
+      }
+    }
+
+    // ==========================================
+    // RENDERIZADO DETALLADO DE "MIS PEDIDOS"
+    // ==========================================
+    function renderOrdersList() {
+      const container = document.getElementById('orders-full-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const orders = getOrders();
+
+      orders.forEach(order => {
+        const card = document.createElement('div');
+        card.className = 'order-card-detailed';
+
+        // Renderizado de la barra de rastreo según si está pagado o no
+        let trackerHtml = '';
+        if (order.isPaid) {
+          trackerHtml = `
+            <div class="paid-order-banner">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span>✅</span>
+                <span><strong>Pago Confirmado:</strong> Insumos aprobados por almacén. Despacho en ruta a tu predio.</span>
+              </div>
+              <span style="font-weight:800; color:#065f46;">${order.dispatchTruck}</span>
+            </div>
+
+            <div class="delivery-tracker">
+              <div class="step-node completed">
+                <div class="step-circle">✓</div>
+                <span>Pago Confirmado</span>
+              </div>
+              <div class="step-node completed">
+                <div class="step-circle">✓</div>
+                <span>Almacén / Preparado</span>
+              </div>
+              <div class="step-node active-dispatch">
+                <div class="step-circle">🚛</div>
+                <span>En Camino a Fundo</span>
+              </div>
+              <div class="step-node">
+                <div class="step-circle">📍</div>
+                <span>Entregado en Fundo</span>
+              </div>
+            </div>
+          `;
+        } else {
+          trackerHtml = `
+            <div class="unpaid-order-warning">
+              <div class="unpaid-warning-text">
+                <span style="font-size:22px;">⚠️</span>
+                <div>
+                  <strong>FALTA PAGO &bull; Preparación Detenida:</strong>
+                  <div style="font-size:12px; color:#9f1239; margin-top:2px;">
+                    Este pedido no ha sido pagado. Realiza el abono para que el almacén de Chiaway libere los insumos y programe el camión.
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="btn-pay-now" onclick="openPayNowModal('${order.code}', ${order.total})">
+                💳 Pagar Ahora (S/. ${order.total.toFixed(2)})
+              </button>
+            </div>
+
+            <div class="delivery-tracker">
+              <div class="step-node unpaid-node">
+                <div class="step-circle">⏳</div>
+                <span>Falta Pago</span>
+              </div>
+              <div class="step-node">
+                <div class="step-circle">⏸️</div>
+                <span>Preparación Detenida</span>
+              </div>
+              <div class="step-node">
+                <div class="step-circle">🚛</div>
+                <span>Despacho en Espera</span>
+              </div>
+              <div class="step-node">
+                <div class="step-circle">📍</div>
+                <span>Entrega en Fundo</span>
+              </div>
+            </div>
+          `;
+        }
+
+        // Filas de productos con PRECIO POR UNIDAD, CANTIDAD Y SUBTOTAL
+        let itemsRows = '';
+        order.items.forEach(item => {
+          itemsRows += `
+            <tr>
+              <td>
+                <strong>${item.name}</strong>
+                <div style="font-size:11.5px; color:#64748b;">${item.unitLabel || 'Unidad'}</div>
+              </td>
+              <td class="unit-price-cell">S/. ${item.unitPrice.toFixed(2)}</td>
+              <td class="qty-cell">${item.qty} unid.</td>
+              <td class="subtotal-cell">S/. ${item.subtotal.toFixed(2)}</td>
+            </tr>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="order-card-header">
+            <div class="order-card-id-wrap">
+              <span class="order-card-id">${order.code}</span>
+              <span class="status-pill ${order.isPaid ? 'status-paid' : 'status-pending'}">
+                ${order.isPaid ? '✓ Pagado / Despacho Activo' : '⚠️ Pago Pendiente'}
+              </span>
+            </div>
+            <div class="order-card-date">Fecha de Registro: <strong>${order.date}</strong></div>
+          </div>
+
+          ${trackerHtml}
+
+          <!-- Tabla de Insumos con Precios Unitarios y Cantidades -->
+          <table class="order-items-table">
+            <thead>
+              <tr>
+                <th>Insumo Agrícola Solicitado</th>
+                <th>Precio Unitario</th>
+                <th>Cantidad Pedida</th>
+                <th style="text-align:right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsRows}
+            </tbody>
+          </table>
+
+          <!-- Barra de Totales y Metadatos -->
+          <div class="order-card-bottom-bar">
+            <div class="order-meta-info">
+              <span>📍 <strong>Entrega:</strong> ${order.destination}</span>
+              <span>🏢 <strong>Sede:</strong> ${order.sede}</span>
+            </div>
+
+            <div class="order-total-group">
+              <div style="text-align:right;">
+                <div style="font-size:12px; color:#64748b;">Monto Total del Pedido:</div>
+                <div class="order-total-sum">S/. ${order.total.toFixed(2)}</div>
+              </div>
+
+              ${order.isPaid ? `
+                <a href="https://wa.me/51994233110?text=Hola%20asesor,%20solicito%20el%20estado%20del%20despacho%20${encodeURIComponent(order.code)}" target="_blank" class="btn-wsp-direct" style="padding:8px 16px; font-size:12px;">
+                  💬 Rastrear con Chofer
+                </a>
+              ` : `
+                <button type="button" class="btn-pay-now" style="padding:8px 18px; font-size:12px;" onclick="openPayNowModal('${order.code}', ${order.total})">
+                  💳 Pagar Ahora
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    // MODAL DE PAGO DIRECTO "PAGAR AHORA"
+    // ==========================================
+    function openPayNowModal(orderCode, amount) {
+      currentPayNowOrderCode = orderCode;
+      document.getElementById('paynow-code').innerText = orderCode;
+      document.getElementById('paynow-amount').innerText = `S/. ${amount.toFixed(2)}`;
+      document.getElementById('modal-pay-now').style.display = 'flex';
+    }
+
+    function closePayNowModal() {
+      document.getElementById('modal-pay-now').style.display = 'none';
+      currentPayNowOrderCode = null;
+    }
+
+    function executePaymentNow() {
+      if (!currentPayNowOrderCode) return;
+
+      const orders = getOrders();
+      const target = orders.find(o => o.code === currentPayNowOrderCode);
+
+      if (target) {
+        target.isPaid = true;
+        target.statusText = "Pagado - En Despacho a Fundo";
+        target.statusType = "dispatch";
+        target.dispatchTruck = "Camión Hino Chiaway asignado &bull; Despacho en camino";
+
+        saveOrders(orders);
+        closePayNowModal();
+
+        alert(`✅ ¡Pago recibido con éxito!\n\nEl pedido ${currentPayNowOrderCode} ha sido actualizado a PAGADO.\nLa orden de despacho hacia tu fundo ha sido activada en el almacén.`);
+      }
+    }
+
+    // ==========================================
+    // ACTUALIZACIÓN DEL DASHBOARD DE INICIO
+    // ==========================================
+    function renderDashboardOrders() {
+      const tbody = document.getElementById('dash-orders-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const orders = getOrders().slice(0, 3); // Primeros 3 pedidos
+
+      orders.forEach(order => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="order-code">${order.code}</td>
+          <td>${order.date}</td>
+          <td>
+            <span class="status-pill ${order.isPaid ? 'status-paid' : 'status-pending'}">
+              ${order.isPaid ? '✓ Pagado' : '⏳ Falta Pago'}
+            </span>
+          </td>
+          <td style="text-align:right;">
+            <button class="btn-table-action" onclick="switchView('pedidos')">
+              👁️ Ver pedido
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Actualizar banner de despacho en inicio
+      const activeDispatch = getOrders().find(o => o.isPaid);
+      const bannerText = document.getElementById('dash-dispatch-text');
+      if (bannerText && activeDispatch) {
+        bannerText.innerHTML = `Tu pedido <strong>${activeDispatch.code}</strong> está en camino a tu fundo.`;
+      }
+    }
+
+    function updateKpis() {
+      const orders = getOrders();
+      const totalOrders = orders.length;
+      const dispatchOrders = orders.filter(o => o.isPaid).length;
+      const unpaidOrders = orders.filter(o => !o.isPaid).length;
+      const totalSpent = orders.filter(o => o.isPaid).reduce((sum, o) => sum + o.total, 0);
+
+      const elTotal = document.getElementById('kpi-total-orders');
+      const elDispatch = document.getElementById('kpi-dispatch-orders');
+      const elUnpaid = document.getElementById('kpi-unpaid-orders');
+      const elSpent = document.getElementById('kpi-total-spent');
+      const badge = document.getElementById('sidebar-orders-badge');
+
+      if (elTotal) elTotal.innerText = totalOrders;
+      if (elDispatch) elDispatch.innerText = dispatchOrders;
+      if (elUnpaid) elUnpaid.innerText = unpaidOrders;
+      if (elSpent) elSpent.innerText = `S/. ${totalSpent.toFixed(2)}`;
+      if (badge) badge.innerText = totalOrders;
+    }
+
+    // ==========================================
+    // MODALES Y UTILIDADES
+    // ==========================================
+    function openNotifModal() { document.getElementById('modal-notifications').style.display = 'flex'; }
+    function closeNotifModal() { document.getElementById('modal-notifications').style.display = 'none'; }
+
+    // Variables temporales para previews de imágenes
+    let tempFundoImage = null;
+    let tempProfileImage = null;
+
+    function switchFundoModalTab(tab) {
+      const tabFundo = document.getElementById('tab-content-fundo');
+      const tabPerfil = document.getElementById('tab-content-perfil');
+      const btnFundo = document.getElementById('tab-btn-fundo');
+      const btnPerfil = document.getElementById('tab-btn-perfil');
+
+      if (tab === 'perfil') {
+        if (tabFundo) tabFundo.style.display = 'none';
+        if (tabPerfil) tabPerfil.style.display = 'flex';
+        if (btnFundo) {
+          btnFundo.style.color = '#64748b';
+          btnFundo.style.borderBottom = '3px solid transparent';
+        }
+        if (btnPerfil) {
+          btnPerfil.style.color = '#065f46';
+          btnPerfil.style.borderBottom = '3px solid #10b981';
+        }
+      } else {
+        if (tabFundo) tabFundo.style.display = 'flex';
+        if (tabPerfil) tabPerfil.style.display = 'none';
+        if (btnFundo) {
+          btnFundo.style.color = '#065f46';
+          btnFundo.style.borderBottom = '3px solid #10b981';
+        }
+        if (btnPerfil) {
+          btnPerfil.style.color = '#64748b';
+          btnPerfil.style.borderBottom = '3px solid transparent';
+        }
+      }
+    }
+
+    function loadUserAvatar() {
+      const storedAvatar = localStorage.getItem('chiaway_user_avatar') || 'assets/panel/perfil-productor.jpg';
+      const avatarImg = document.getElementById('user-avatar-img');
+      const avatarInitial = document.getElementById('user-avatar-initial');
+
+      if (avatarImg) {
+        avatarImg.src = storedAvatar;
+        avatarImg.style.display = 'block';
+        avatarImg.onerror = function() {
+          this.style.display = 'none';
+          if (avatarInitial) avatarInitial.style.display = 'block';
+        };
+      }
+
+      // Actualizar saludo del usuario y verificar roles administrativos
+      try {
+        const storedUser = localStorage.getItem('chiaway_user');
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          const titleGreeting = document.getElementById('client-greeting-title');
+          const firstName = user.name ? user.name.split(' ')[0] : 'Productor';
+          if (titleGreeting) titleGreeting.innerText = '¡Hola, ' + firstName + '!';
+          if (avatarInitial && firstName) avatarInitial.innerText = firstName.charAt(0).toUpperCase();
+
+          // Si el usuario autenticado es ADMIN o WORKER visitando la vista previa del cliente, mostrar botón de retorno
+          if (user.role === 'ADMIN' || user.role === 'WORKER') {
+            const footerLinks = document.querySelector('.sidebar-footer-links');
+            if (footerLinks && !document.getElementById('link-goto-admin')) {
+              const adminLink = document.createElement('a');
+              adminLink.href = 'panel-administrador.html';
+              adminLink.id = 'link-goto-admin';
+              adminLink.className = 'btn-sidebar-link';
+              adminLink.style.cssText = 'color:#34d399; font-weight:700;';
+              adminLink.innerHTML = '<span style="font-size:14px;">🛡️</span><span>Panel Administrador</span>';
+              footerLinks.insertBefore(adminLink, footerLinks.firstChild);
+            }
+          }
+        }
+      } catch (e) { }
+    }
+
+    function loadFundoData() {
+      const name = localStorage.getItem('chiaway_farm_name') || 'Fundo Santa Rosa';
+      const valley = localStorage.getItem('chiaway_farm_valley') || 'Ica';
+      const area = localStorage.getItem('chiaway_farm_area') || '10.00 ha';
+      const crops = localStorage.getItem('chiaway_farm_crops') || 'Vid, Palto, Espárrago';
+      const banner = localStorage.getItem('chiaway_farm_banner') || 'assets/panel/fundo-campo.jpg';
+
+      const elName = document.getElementById('fundo-val-name');
+      const elValley = document.getElementById('fundo-val-valley');
+      const elArea = document.getElementById('fundo-val-area');
+      const elTitleHero = document.getElementById('fundo-title-hero');
+      const elAreaBadge = document.getElementById('fundo-area-badge');
+
+      if (elName) elName.innerText = name;
+      if (elValley) elValley.innerText = valley;
+      if (elArea) elArea.innerText = area;
+      if (elTitleHero) elTitleHero.innerText = name;
+      if (elAreaBadge) elAreaBadge.innerText = area + ' Totales';
+
+      // Actualizar imágenes de banner y miniatura
+      const heroBanner = document.getElementById('fundo-hero-banner-img');
+      if (heroBanner) {
+        heroBanner.src = banner;
+        heroBanner.onerror = function() { this.src = 'assets/panel/fundo-campo.jpg'; };
+      }
+      const dashThumb = document.getElementById('fundo-dash-thumb');
+      if (dashThumb) {
+        dashThumb.src = banner;
+        dashThumb.onerror = function() { this.src = 'assets/panel/fundo-campo.jpg'; };
+      }
+
+      renderCropTags(crops);
+    }
+
+    function renderCropTags(cropsStr) {
+      const container = document.getElementById('crop-pills-container');
+      if (!container) return;
+      container.innerHTML = '';
+      const list = cropsStr.split(',').map(s => s.trim()).filter(Boolean);
+      list.forEach(c => {
+        const span = document.createElement('span');
+        span.className = 'crop-pill';
+        span.innerText = c;
+        container.appendChild(span);
+      });
+    }
+
+    function openEditFundoModal(initialTab = 'fundo') {
+      tempFundoImage = null;
+      tempProfileImage = null;
+
+      document.getElementById('edit-fundo-name').value = localStorage.getItem('chiaway_farm_name') || 'Fundo Santa Rosa';
+      document.getElementById('edit-fundo-valley').value = localStorage.getItem('chiaway_farm_valley') || 'Ica';
+      document.getElementById('edit-fundo-area').value = localStorage.getItem('chiaway_farm_area') || '10.00 ha';
+      document.getElementById('edit-fundo-crops').value = localStorage.getItem('chiaway_farm_crops') || 'Vid, Palto, Espárrago';
+
+      const currentBanner = localStorage.getItem('chiaway_farm_banner') || 'assets/panel/fundo-campo.jpg';
+      const previewFundo = document.getElementById('edit-fundo-preview');
+      if (previewFundo) previewFundo.src = currentBanner;
+      const urlFundoInput = document.getElementById('edit-fundo-img-url');
+      if (urlFundoInput) urlFundoInput.value = '';
+
+      const currentAvatar = localStorage.getItem('chiaway_user_avatar') || 'assets/panel/perfil-productor.jpg';
+      const previewProfile = document.getElementById('edit-profile-preview');
+      if (previewProfile) previewProfile.src = currentAvatar;
+      const urlProfileInput = document.getElementById('edit-profile-img-url');
+      if (urlProfileInput) urlProfileInput.value = '';
+
+      try {
+        const stored = localStorage.getItem('chiaway_user');
+        if (stored) {
+          const u = JSON.parse(stored);
+          const pNameInput = document.getElementById('edit-profile-name');
+          if (pNameInput) pNameInput.value = u.name || '';
+        }
+      } catch (e) { }
+
+      switchFundoModalTab(initialTab);
+      document.getElementById('modal-edit-fundo').style.display = 'flex';
+    }
+
+    function closeEditFundoModal() {
+      document.getElementById('modal-edit-fundo').style.display = 'none';
+      tempFundoImage = null;
+      tempProfileImage = null;
+    }
+
+    function handleFundoFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido (JPG, PNG, WebP).');
+        return;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        alert('La imagen es demasiado pesada (máximo 8MB).');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        tempFundoImage = evt.target.result;
+        const preview = document.getElementById('edit-fundo-preview');
+        if (preview) preview.src = tempFundoImage;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleFundoUrlInput(url) {
+      if (url && url.trim().length > 6) {
+        tempFundoImage = url.trim();
+        const preview = document.getElementById('edit-fundo-preview');
+        if (preview) preview.src = tempFundoImage;
+      }
+    }
+
+    function resetFundoBannerDefault() {
+      tempFundoImage = 'assets/panel/fundo-campo.jpg';
+      const preview = document.getElementById('edit-fundo-preview');
+      if (preview) preview.src = tempFundoImage;
+      const inputUrl = document.getElementById('edit-fundo-img-url');
+      if (inputUrl) inputUrl.value = '';
+    }
+
+    function handleProfileFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido (JPG, PNG, WebP).');
+        return;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        alert('La imagen es demasiado pesada (máximo 8MB).');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        tempProfileImage = evt.target.result;
+        const preview = document.getElementById('edit-profile-preview');
+        if (preview) preview.src = tempProfileImage;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleProfileUrlInput(url) {
+      if (url && url.trim().length > 6) {
+        tempProfileImage = url.trim();
+        const preview = document.getElementById('edit-profile-preview');
+        if (preview) preview.src = tempProfileImage;
+      }
+    }
+
+    function resetProfileAvatarDefault() {
+      tempProfileImage = 'assets/panel/perfil-productor.jpg';
+      const preview = document.getElementById('edit-profile-preview');
+      if (preview) preview.src = tempProfileImage;
+      const inputUrl = document.getElementById('edit-profile-img-url');
+      if (inputUrl) inputUrl.value = '';
+    }
+
+    function saveFundoData() {
+      const name = document.getElementById('edit-fundo-name').value.trim() || 'Fundo Santa Rosa';
+      const valley = document.getElementById('edit-fundo-valley').value.trim() || 'Ica';
+      const area = document.getElementById('edit-fundo-area').value.trim() || '10.00 ha';
+      const crops = document.getElementById('edit-fundo-crops').value.trim() || 'Vid, Palto, Espárrago';
+
+      localStorage.setItem('chiaway_farm_name', name);
+      localStorage.setItem('chiaway_farm_valley', valley);
+      localStorage.setItem('chiaway_farm_area', area);
+      localStorage.setItem('chiaway_farm_crops', crops);
+
+      if (tempFundoImage) {
+        localStorage.setItem('chiaway_farm_banner', tempFundoImage);
+      }
+
+      if (tempProfileImage) {
+        localStorage.setItem('chiaway_user_avatar', tempProfileImage);
+      }
+
+      const newProfileName = document.getElementById('edit-profile-name').value.trim();
+      if (newProfileName) {
+        try {
+          const stored = localStorage.getItem('chiaway_user');
+          let u = stored ? JSON.parse(stored) : {};
+          u.name = newProfileName;
+          localStorage.setItem('chiaway_user', JSON.stringify(u));
+        } catch(e){}
+      }
+
+      loadFundoData();
+      loadUserAvatar();
+      closeEditFundoModal();
+      alert('✅ Datos y fotografías actualizados correctamente.');
+    }
+
+    function filterDiagnostics(filterType, btnEl) {
+      document.querySelectorAll('.filter-pills-bar .filter-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+
+      const cards = document.querySelectorAll('#view-diagnosticos .product-card');
+      cards.forEach(card => {
+        const urgency = card.getAttribute('data-urgency');
+        const crop = card.getAttribute('data-crop');
+        if (filterType === 'all') {
+          card.style.display = 'flex';
+        } else if (['high', 'medium', 'low'].includes(filterType)) {
+          card.style.display = (urgency === filterType) ? 'flex' : 'none';
+        } else if (['vid', 'palto', 'esparrago', 'mandarina'].includes(filterType)) {
+          card.style.display = (crop === filterType) ? 'flex' : 'none';
+        }
+      });
+    }
+
+    function openWidgetDiag() {
+      if (window.AgrovisionWidget) {
+        window.AgrovisionWidget.openModal();
+      } else {
+        alert('Cargando asesor IA fitosanitario...');
+      }
+    }
+
+    function logoutCliente() {
+      if (confirm('¿Desea cerrar la sesión de su panel?')) {
+        localStorage.removeItem('chiaway_user');
+        window.location.href = 'login.html';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,2477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chiaway Perú S.A.C. - Insumos Agrícolas, Semillas y Asesoría Fitosanitaria</title>
+  <link rel="stylesheet" href="agrovision-widget.css">
+  <style>
+    :root {
+      --primary: #064e3b;
+      --primary-light: #059669;
+      --primary-dark: #022c22;
+      --accent: #10b981;
+      --accent-gold: #f59e0b;
+      --accent-gold-dark: #d97706;
+      --bg-slate: #f8fafc;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --card-bg: #ffffff;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 14px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-slate);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* Top Announcements Bar */
+    .topbar {
+      background: linear-gradient(90deg, #022c22 0%, #064e3b 50%, #065f46 100%);
+      color: #a7f3d0;
+      padding: 8px 32px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .topbar-info {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .topbar-badge {
+      background: rgba(16, 185, 129, 0.25);
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    .topbar a {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    /* Main Sticky Navigation */
+    .navbar {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--primary);
+    }
+    .brand-logo-img {
+      height: 48px;
+      max-width: 190px;
+      object-fit: contain;
+      display: block;
+    }
+    .logo-sub {
+      font-size: 11px;
+      color: #047857;
+      font-weight: 700;
+      display: block;
+      margin-top: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #334155;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--primary-light);
+      background-color: #f1f5f9;
+    }
+    .nav-links a.active {
+      color: var(--primary-light);
+    }
+
+    /* AI Consultation CTA Button in Nav */
+    .nav-ai-btn {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      padding: 9px 18px !important;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
+      border: 1px solid #059669;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-ai-btn:hover {
+      background: linear-gradient(135deg, #047857 0%, #064e3b 100%) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(5, 150, 105, 0.35);
+    }
+
+    /* Auth Button / Pill */
+    .nav-login-btn {
+      background-color: #f8fafc;
+      color: var(--primary) !important;
+      border: 1.5px solid #10b981;
+      padding: 8px 16px !important;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700 !important;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .nav-login-btn:hover {
+      background-color: #ecfdf5;
+      border-color: #059669;
+    }
+    .user-pill {
+      background-color: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      color: #065f46;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .user-pill a {
+      color: inherit;
+      text-decoration: none;
+      padding: 0;
+    }
+    .user-pill a:hover {
+      text-decoration: underline;
+      background: transparent;
+    }
+    .user-logout-btn {
+      color: #ef4444;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: none;
+      background: #fee2e2;
+      transition: background 0.2s;
+    }
+    .user-logout-btn:hover {
+      background: #fecaca;
+    }
+
+    /* SECTION 1: HOME & FRONTIS DEL LOCAL */
+    .hero-section {
+      background: linear-gradient(135deg, #042f24 0%, #064e3b 50%, #065f46 100%);
+      color: #ffffff;
+      padding: 56px 32px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero-text {
+      z-index: 2;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #6ee7b7;
+      margin-bottom: 20px;
+    }
+    .hero-text h1 {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+    .hero-text h1 span {
+      color: #fcd34d;
+    }
+    .hero-text p {
+      font-size: 17px;
+      color: #d1fae5;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #0f172a;
+      padding: 15px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.4);
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-hero-primary:hover {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(245, 158, 11, 0.5);
+    }
+    .btn-hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 14px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: #ffffff;
+    }
+
+    /* Hero Trust Metrics */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .stat-item h4 {
+      font-size: 26px;
+      font-weight: 900;
+      color: #fcd34d;
+      margin-bottom: 2px;
+    }
+    .stat-item p {
+      font-size: 13px;
+      color: #a7f3d0;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    /* FRONTIS DEL LOCAL DISPLAY CARD */
+    .frontis-card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      color: #1e293b;
+      position: relative;
+    }
+    .frontis-header {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      color: #ffffff;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .frontis-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .frontis-status::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ffffff;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    .frontis-image-wrapper {
+      position: relative;
+      background: #022c22;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .frontis-svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .frontis-overlay-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .frontis-overlay-badge strong {
+      color: #34d399;
+      display: block;
+      font-size: 13px;
+    }
+
+    .frontis-body {
+      padding: 20px;
+      background: #ffffff;
+    }
+    .frontis-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .frontis-feat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #334155;
+      font-weight: 600;
+    }
+    .frontis-feat span {
+      font-size: 16px;
+    }
+    .frontis-footer {
+      border-top: 1px solid #f1f5f9;
+      padding-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .frontis-btn {
+      background: #047857;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+    .frontis-btn:hover {
+      background: #065f46;
+    }
+
+    /* COMMON CONTAINER */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-title-wrap {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 48px;
+    }
+    .section-tag {
+      display: inline-block;
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    /* SECTION 2: NOSOTROS */
+    .nosotros-section {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .nosotros-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .nosotros-text h3 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #064e3b;
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+    .nosotros-text p {
+      font-size: 15px;
+      color: #475569;
+      margin-bottom: 18px;
+      line-height: 1.7;
+    }
+    /* Official Valores Bar (Image 4) */
+    .official-valores-bar {
+      background: linear-gradient(90deg, #65a30d 0%, #4d7c0f 100%);
+      border-radius: 14px;
+      padding: 24px 20px;
+      margin: 36px 0;
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(101, 163, 13, 0.25);
+    }
+    .valores-title-wrap {
+      text-align: center;
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .valores-title-wrap::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.4);
+      z-index: 1;
+    }
+    .valores-title-pill {
+      position: relative;
+      z-index: 2;
+      background: #4d7c0f;
+      padding: 4px 20px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+    .valores-items {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: center;
+    }
+    .valor-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .valor-icon-circle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      border: 2px solid rgba(255, 255, 255, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+    .valor-label {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .valor-sub {
+      font-size: 12px;
+      color: #ecfccb;
+      max-width: 200px;
+      line-height: 1.35;
+    }
+
+    /* Official Misión & Visión Grid (Image 4) */
+    .official-mv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .mv-card {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(217, 119, 6, 0.25);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .mv-header {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      position: relative;
+      display: inline-block;
+    }
+    .mv-header::before, .mv-header::after {
+      content: '—';
+      margin: 0 10px;
+      opacity: 0.6;
+    }
+    .mv-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #ffffff;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .mv-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.7);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* Strategic Partners Strip */
+    .partners-wrapper {
+      margin-top: 40px;
+      padding: 24px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+    .partners-wrapper h4 {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #065f46;
+      margin-bottom: 16px;
+    }
+    .partners-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+    .partner-pill {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      color: #1e293b;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .partner-pill:hover {
+      border-color: #059669;
+      color: #059669;
+      transform: translateY(-2px);
+    }
+
+    /* Ubícanos Section Map Presentation */
+    .map-presentation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 40px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .map-img-box {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+      background: #fafaf9;
+      text-align: center;
+    }
+    .map-img-box img {
+      width: 100%;
+      height: auto;
+      max-height: 440px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .nosotros-visual {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      border-radius: 16px;
+      padding: 32px;
+      color: #ffffff;
+      position: relative;
+      box-shadow: var(--shadow-md);
+    }
+    .nosotros-visual h4 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: #fcd34d;
+    }
+    .nosotros-list {
+      list-style: none;
+    }
+    .nosotros-list li {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .nosotros-list li span.check {
+      background: #10b981;
+      color: #ffffff;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* SECTION 3: PRODUCTOS */
+    .productos-section {
+      background-color: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .category-filter {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+    .filter-btn {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      color: #475569;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: #047857;
+      color: #ffffff;
+      border-color: #047857;
+      box-shadow: 0 2px 8px rgba(4, 120, 87, 0.25);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .product-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+      border-color: #10b981;
+    }
+    .product-badge-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .p-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+    .badge-fungicida { background: #dbeafe; color: #1e40af; }
+    .badge-insecticida { background: #fee2e2; color: #991b1b; }
+    .badge-acaricida { background: #fef3c7; color: #92400e; }
+    .badge-bioinsumo { background: #dcfce7; color: #166534; }
+    .badge-bioestimulante { background: #f3e8ff; color: #6b21a8; }
+
+    .senasa-tag {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 700;
+      background: #f1f5f9;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    .product-card h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    .product-active {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    .product-crops {
+      font-size: 12px;
+      color: #334155;
+      background: #f8fafc;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border-left: 3px solid #10b981;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .product-crops strong {
+      color: #065f46;
+    }
+    .product-dose {
+      font-size: 12px;
+      color: #475569;
+      margin-bottom: 16px;
+    }
+    .product-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .product-price {
+      font-size: 20px;
+      font-weight: 900;
+      color: #047857;
+    }
+    .product-price small {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .product-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-ai-card {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1.5px solid #10b981;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .btn-ai-card:hover {
+      background: #047857;
+      color: #ffffff;
+    }
+
+    /* SECTION 4: UBICACIÓN Y TODAS LAS SEDES */
+    .sedes-section {
+      background-color: #ffffff;
+    }
+    .sedes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+    }
+    .sede-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.25s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .sede-card:hover {
+      border-color: #10b981;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+    }
+    .sede-card.central {
+      border: 2px solid #10b981;
+      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 40%);
+    }
+    .sede-card.central::after {
+      content: 'SEDE CENTRAL';
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: #047857;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+      z-index: 2;
+    }
+    .sede-thumb-wrap {
+      width: 100%;
+      height: 180px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: #f1f5f9;
+      position: relative;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+    }
+    .sede-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      display: block;
+    }
+    .sede-card:hover .sede-thumb-img {
+      transform: scale(1.05);
+    }
+    .sede-thumb-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .sede-title-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .sede-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #ecfdf5;
+      color: #047857;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .sede-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .sede-card .sede-region {
+      font-size: 11px;
+      color: #059669;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .sede-details {
+      list-style: none;
+      font-size: 13px;
+      color: #334155;
+      margin-bottom: 14px;
+    }
+    .sede-details li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+      line-height: 1.45;
+    }
+    .sede-details li span.icon {
+      font-size: 15px;
+      color: #059669;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+    .sede-crops-tag {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #475569;
+      margin-bottom: 16px;
+    }
+    .sede-crops-tag strong {
+      color: #0f172a;
+    }
+    .sede-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .sede-actions-row {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-sede-map {
+      background: linear-gradient(135deg, #047857 0%, #059669 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+      flex: 1;
+      box-shadow: 0 2px 6px rgba(4, 120, 87, 0.2);
+    }
+    .btn-sede-map:hover {
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3);
+    }
+    .btn-sede-phone {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      color: #1e293b;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+      flex: 1;
+    }
+    .btn-sede-phone:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .btn-sede-modal-view {
+      background: transparent;
+      border: 1px dashed #94a3b8;
+      color: #475569;
+      padding: 7px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-sede-modal-view:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+      border-color: #047857;
+    }
+
+    /* AI BANNER CALLOUT */
+    .ai-callout-banner {
+      background: linear-gradient(135deg, #022c22 0%, #064e3b 100%);
+      border-radius: 18px;
+      padding: 40px;
+      color: #ffffff;
+      margin: 60px 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-lg);
+    }
+    .ai-callout-text h3 {
+      font-size: 26px;
+      font-weight: 900;
+      color: #fcd34d;
+      margin-bottom: 8px;
+    }
+    .ai-callout-text p {
+      font-size: 15px;
+      color: #d1fae5;
+      max-width: 650px;
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: #022c22;
+      color: #94a3b8;
+      padding: 56px 32px 32px;
+      border-top: 4px solid #10b981;
+    }
+    .footer-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-col h4 {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .footer-col p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #94a3b8;
+    }
+    .footer-links {
+      list-style: none;
+    }
+    .footer-links li {
+      margin-bottom: 10px;
+    }
+    .footer-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover {
+      color: #34d399;
+    }
+    .footer-bottom {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero-container { grid-template-columns: 1fr; }
+      .nosotros-grid { grid-template-columns: 1fr; }
+      .footer-container { grid-template-columns: 1fr 1fr; }
+      .navbar { padding: 12px 16px; }
+      .nav-links { gap: 10px; }
+      .hero-stats { grid-template-columns: 1fr; gap: 12px; }
+      .ai-callout-banner { flex-direction: column; text-align: center; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcements Bar -->
+  <div class="topbar">
+    <div class="topbar-info">
+      <span class="topbar-badge">Registro SENASA Oficial</span>
+      <span>🌱 Despacho a todo el Perú: Ica, Chincha, Cañete, Virú/Chao, Piura y Arequipa.</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <span>Central Telefónica: <strong>+51 (01) 700-CHIA</strong></span>
+      <span style="color:rgba(255,255,255,0.3)">|</span>
+      <a href="login.html" id="topbar-auth-link" style="font-weight:700;">
+        🔐 Ingreso Trabajador / Cliente ➔
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Navigation Sticky -->
+  <header class="navbar">
+    <a href="#home" class="logo-container">
+      <img src="assets/logo-chiaway.png" alt="Chiaway Agro" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('logo-text-fallback').style.display='flex';">
+      <div id="logo-text-fallback" style="display:none; align-items:center; gap:8px;">
+        <span style="background:#047857; color:#fff; font-weight:900; padding:4px 8px; border-radius:6px; font-size:18px;">CW</span>
+        <span style="font-size:22px; font-weight:900; color:#047857;">chiaway agro</span>
+      </div>
+      <div>
+        <span class="logo-sub">Autoservicio San Isidro S.A.</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#home" class="active">Inicio</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#productos">Productos</a></li>
+      <li><a href="#ubicacion">Sedes y Ubicación</a></li>
+      <li>
+        <button type="button" class="nav-ai-btn" onclick="consultarIA('General')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 4 4-4 4"></path><path d="M8 12h8"></path></svg>
+          🔬 Consultar a la IA
+        </button>
+      </li>
+      <li id="nav-auth-slot">
+        <a href="login.html" class="nav-login-btn">
+          👤 Iniciar Sesión / Registro
+        </a>
+      </li>
+    </ul>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- SECCIÓN 1: HOME CON FRONTIS DEL LOCAL CHIAWAY -->
+  <!-- ========================================== -->
+  <section class="hero-section" id="home">
+    <div class="hero-container">
+      
+      <!-- Texto Principal Hero -->
+      <div class="hero-text">
+        <div class="hero-pill">
+          <span>🌿</span> Soluciones Fitosanitarias de Vanguardia en Perú
+        </div>
+        <h1>
+          Protege tus Cultivos con la Red Líder y el <span>Asesor Inteligente</span> de Chiaway
+        </h1>
+        <p>
+          Distribución de agroquímicos autorizados por SENASA, nutrición vegetal y bioinsumos. Si detectas plagas o manchas en tus hojas, <strong>nuestra Inteligencia Artificial AgroVisión diagnostica tu planta al instante</strong> y te recomienda el tratamiento exacto en tienda.
+        </p>
+
+        <div class="hero-actions">
+          <button type="button" class="btn-hero-primary" onclick="consultarIA('Diagnostico Principal')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+            Escanear mi Cultivo con IA
+          </button>
+          <a href="#productos" class="btn-hero-secondary">
+            📦 Ver Catálogo de Productos
+          </a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <h4>+15 Años</h4>
+            <p>Liderando la provisión de insumos en el agro peruano.</p>
+          </div>
+          <div class="stat-item">
+            <h4>6 Sedes</h4>
+            <p>Centros de atención y despacho a nivel nacional.</p>
+          </div>
+          <div class="stat-item">
+            <h4>+50,000 Ha</h4>
+            <p>Hectáreas asesoradas con trazabilidad garantizada.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISUAL DEL FRONTIS DEL LOCAL CHIAWAY -->
+      <div class="frontis-card" id="frontis-view">
+        <div class="frontis-header">
+          <span>🏢 Fachada Comercial y Centro de Distribución</span>
+          <span class="frontis-status">Abierto para Atención</span>
+        </div>
+
+        <div class="frontis-image-wrapper">
+          <!-- Ilustración Arquitectónica Vectorial de Alta Fidelidad del Frontis Chiaway -->
+          <svg class="frontis-svg" viewBox="0 0 600 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Cielo y Fondo Agrícola -->
+            <defs>
+              <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#38bdf8"/>
+                <stop offset="60%" stop-color="#bae6fd"/>
+                <stop offset="100%" stop-color="#e0f2fe"/>
+              </linearGradient>
+              <linearGradient id="buildingGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="100%" stop-color="#f1f5f9"/>
+              </linearGradient>
+              <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.8"/>
+                <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0.9"/>
+              </linearGradient>
+              <linearGradient id="greenSign" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#064e3b"/>
+                <stop offset="50%" stop-color="#047857"/>
+                <stop offset="100%" stop-color="#059669"/>
+              </linearGradient>
+              <linearGradient id="asphaltGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#475569"/>
+                <stop offset="100%" stop-color="#1e293b"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Cielo -->
+            <rect width="600" height="340" fill="url(#skyGrad)"/>
+
+            <!-- Montañas y vegetación de fondo -->
+            <path d="M0 190 Q120 150 240 180 T480 160 T600 175 L600 230 L0 230 Z" fill="#86efac" opacity="0.6"/>
+            <path d="M0 205 Q160 175 320 200 T600 190 L600 240 L0 240 Z" fill="#22c55e" opacity="0.4"/>
+
+            <!-- Asfalto y zona de estacionamiento -->
+            <rect y="230" width="600" height="110" fill="url(#asphaltGrad)"/>
+            <!-- Líneas de estacionamiento -->
+            <line x1="80" y1="270" x2="130" y2="330" stroke="#fcd34d" stroke-width="3" stroke-dasharray="10 6"/>
+            <line x1="200" y1="270" x2="250" y2="330" stroke="#fcd34d" stroke-width="3" stroke-dasharray="10 6"/>
+            <line x1="480" y1="270" x2="430" y2="330" stroke="#fcd34d" stroke-width="3" stroke-dasharray="10 6"/>
+
+            <!-- Edificio Principal de Chiaway -->
+            <!-- Estructura del edificio -->
+            <rect x="70" y="80" width="460" height="155" rx="6" fill="url(#buildingGrad)" stroke="#cbd5e1" stroke-width="3"/>
+            <!-- Cornisa superior / Fascia corporativa -->
+            <rect x="60" y="70" width="480" height="42" rx="4" fill="url(#greenSign)"/>
+            
+            <!-- Letrero Principal CHIAWAY -->
+            <rect x="180" y="74" width="240" height="34" rx="6" fill="#022c22"/>
+            <text x="300" y="98" fill="#ffffff" font-size="20" font-weight="900" text-anchor="middle" font-family="sans-serif" letter-spacing="1.5">CHIAWAY PERÚ</text>
+            <text x="300" y="108" fill="#6ee7b7" font-size="8" font-weight="700" text-anchor="middle" font-family="sans-serif" letter-spacing="2">INSUMOS & ASESORÍA AGRÍCOLA</text>
+
+            <!-- Puerta Principal y Ventanales Showroom de Vidrio -->
+            <!-- Ventana Izquierda -->
+            <rect x="95" y="125" width="100" height="85" rx="4" fill="url(#glassGrad)" stroke="#334155" stroke-width="2"/>
+            <!-- Reflejo en vidrio -->
+            <path d="M100 130 L160 130 L120 205 L100 205 Z" fill="#ffffff" opacity="0.15"/>
+            <!-- Estantes con productos visibles en ventana -->
+            <line x1="105" y1="160" x2="185" y2="160" stroke="#cbd5e1" stroke-width="2"/>
+            <line x1="105" y1="185" x2="185" y2="185" stroke="#cbd5e1" stroke-width="2"/>
+            <!-- Frascos de insumos -->
+            <rect x="115" y="148" width="10" height="12" fill="#10b981" rx="1"/>
+            <rect x="130" y="146" width="12" height="14" fill="#f59e0b" rx="1"/>
+            <rect x="150" y="148" width="10" height="12" fill="#ef4444" rx="1"/>
+            <rect x="165" y="147" width="12" height="13" fill="#3b82f6" rx="1"/>
+
+            <!-- Entrada Central con Puertas Automáticas -->
+            <rect x="235" y="125" width="130" height="100" rx="4" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+            <rect x="245" y="135" width="50" height="90" fill="url(#glassGrad)"/>
+            <rect x="305" y="135" width="50" height="90" fill="url(#glassGrad)"/>
+            <!-- Manijas de puerta -->
+            <line x1="290" y1="175" x2="290" y2="195" stroke="#ffffff" stroke-width="3"/>
+            <line x1="310" y1="175" x2="310" y2="195" stroke="#ffffff" stroke-width="3"/>
+            <!-- Letrero sobre puerta -->
+            <rect x="250" y="118" width="100" height="14" rx="2" fill="#10b981"/>
+            <text x="300" y="128" fill="#ffffff" font-size="8" font-weight="800" text-anchor="middle" font-family="sans-serif">ATENCIÓN AL AGRICULTOR</text>
+
+            <!-- Ventana Derecha Showroom -->
+            <rect x="405" y="125" width="105" height="85" rx="4" fill="url(#glassGrad)" stroke="#334155" stroke-width="2"/>
+            <path d="M410 130 L470 130 L430 205 L410 205 Z" fill="#ffffff" opacity="0.15"/>
+            <line x1="415" y1="160" x2="500" y2="160" stroke="#cbd5e1" stroke-width="2"/>
+            <line x1="415" y1="185" x2="500" y2="185" stroke="#cbd5e1" stroke-width="2"/>
+            <rect x="425" y="148" width="10" height="12" fill="#f59e0b" rx="1"/>
+            <rect x="445" y="146" width="12" height="14" fill="#10b981" rx="1"/>
+            <rect x="470" y="148" width="10" height="12" fill="#6366f1" rx="1"/>
+
+            <!-- Toldo protector / Alero verde -->
+            <polygon points="65,112 535,112 525,122 75,122" fill="#047857"/>
+
+            <!-- Camión de Despacho de Chiaway estacionado al frente -->
+            <g transform="translate(30, 215) scale(0.65)">
+              <!-- Cabina del camión -->
+              <rect x="30" y="40" width="70" height="60" rx="8" fill="#ffffff" stroke="#334155" stroke-width="3"/>
+              <!-- Ventana cabina -->
+              <path d="M40 48 L80 48 L90 70 L40 70 Z" fill="#38bdf8"/>
+              <!-- Carrocería / Furgón Verde Chiaway -->
+              <rect x="100" y="20" width="150" height="80" rx="6" fill="#047857" stroke="#064e3b" stroke-width="3"/>
+              <text x="175" y="65" fill="#ffffff" font-size="16" font-weight="900" text-anchor="middle" font-family="sans-serif">CHIAWAY</text>
+              <text x="175" y="80" fill="#a7f3d0" font-size="10" font-weight="700" text-anchor="middle" font-family="sans-serif">DESPACHO A CAMPO</text>
+              <!-- Ruedas -->
+              <circle cx="65" cy="100" r="16" fill="#1e293b" stroke="#cbd5e1" stroke-width="4"/>
+              <circle cx="140" cy="100" r="16" fill="#1e293b" stroke="#cbd5e1" stroke-width="4"/>
+              <circle cx="210" cy="100" r="16" fill="#1e293b" stroke="#cbd5e1" stroke-width="4"/>
+            </g>
+
+            <!-- Palmeras / Árboles peruanos a los lados -->
+            <path d="M30 230 Q28 170 32 140" stroke="#78350f" stroke-width="6"/>
+            <!-- Hojas palmera -->
+            <path d="M32 140 Q10 110 0 130" stroke="#15803d" stroke-width="4" fill="none"/>
+            <path d="M32 140 Q50 110 65 125" stroke="#15803d" stroke-width="4" fill="none"/>
+            <path d="M32 140 Q30 90 32 110" stroke="#16a34a" stroke-width="4" fill="none"/>
+
+            <path d="M570 230 Q572 170 568 140" stroke="#78350f" stroke-width="6"/>
+            <path d="M568 140 Q590 110 600 130" stroke="#15803d" stroke-width="4" fill="none"/>
+            <path d="M568 140 Q550 110 535 125" stroke="#15803d" stroke-width="4" fill="none"/>
+          </svg>
+
+          <div class="frontis-overlay-badge">
+            <strong>Sede Central & Almacén Principal</strong>
+            <span>Panamericana Sur Km 300, Subtanjalla, Ica</span>
+          </div>
+        </div>
+
+        <div class="frontis-body">
+          <div class="frontis-features">
+            <div class="frontis-feat">
+              <span>🌾</span> Mostrador y Venta Directa
+            </div>
+            <div class="frontis-feat">
+              <span>🔬</span> Módulo AgroVisión AI
+            </div>
+            <div class="frontis-feat">
+              <span>🚛</span> Despacho a Fundo en 24h
+            </div>
+            <div class="frontis-feat">
+              <span>👨‍🌾</span> Ingenieros Agrónomos In-Situ
+            </div>
+          </div>
+
+          <div class="frontis-footer">
+            <div>
+              <span style="color:#64748b; font-size:12px;">Horario de Atención:</span><br>
+              <strong>Lun a Sáb: 7:30 am - 6:00 pm</strong>
+            </div>
+            <a href="#ubicacion" class="frontis-btn">Ver las 6 Sedes &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECCIÓN 2: SOBRE NOSOTROS (CHIAWAY AGRO)   -->
+  <!-- ========================================== -->
+  <section class="container nosotros-section" id="nosotros">
+    <div class="section-title-wrap">
+      <span class="section-tag">Nuestra Trayectoria</span>
+      <h2 class="section-title">Sobre Nosotros</h2>
+      <p class="section-desc">
+        Autoservicio San Isidro S.A. (CHIAWAY) &bull; Más de 5 décadas impulsando la productividad del agricultor en el Perú.
+      </p>
+    </div>
+
+    <div class="nosotros-grid">
+      <div class="nosotros-text">
+        <h3>De Pioneros en Servicios a Líderes en Insumos Agrícolas</h3>
+        <p>
+          <strong>Chiaway</strong> inició sus operaciones en los años 70 orientada al servicio integral automotriz y venta de repuestos, llantas Good Year, baterías ETNA y lubricantes Shell.
+        </p>
+        <p>
+          Por los años 1976, al perfilarse Ica como un valle netamente agrícola, diversificamos nuestra cartera e iniciamos la atención de maquinaria agrícola: tractores, bombas y motores estacionarios indispensables para la extracción de agua y el mantenimiento de los cultivos.
+        </p>
+        <p>
+          Gracias a este constante acercamiento con los productores del campo y conociendo de cerca sus necesidades fitosanitarias, reorganizamos la empresa para dedicarnos de lleno a la <strong>comercialización de Insumos Agrícolas y productos afines</strong>.
+        </p>
+        <p>
+          Hoy en día, <strong>Autoservicio San Isidro S.A. o CHIAWAY</strong> se ha consolidado como una de las principales redes de distribución de insumos agrícolas en la zona sur del país, registrando <strong>8 puntos de venta</strong> que nos permiten atender con máxima eficiencia a la agroindustria, mediana y pequeña agricultura.
+        </p>
+      </div>
+
+      <div class="nosotros-visual">
+        <h4>Alianza con la Tecnología AgroVisión AI</h4>
+        <ul class="nosotros-list">
+          <li>
+            <span class="check">✓</span>
+            <div>
+              <strong>Asesoría Técnica Presencial:</strong> Acompañamos al agricultor en cada etapa fenológica para calibrar dosis y monitorear plagas.
+            </div>
+          </li>
+          <li>
+            <span class="check">✓</span>
+            <div>
+              <strong>Diagnóstico Fitosanitario con IA:</strong> Integramos visión computacional para identificar afecciones en hojas y frutos desde el teléfono.
+            </div>
+          </li>
+          <li>
+            <span class="check">✓</span>
+            <div>
+              <strong>Red de Distribución Macro Sur:</strong> 8 puntos de venta y almacenes autorizados con entrega rápida a parcelas y fundos.
+            </div>
+          </li>
+          <li>
+            <span class="check">✓</span>
+            <div>
+              <strong>Garantía de Calidad:</strong> Productos 100% originales con registro SENASA y respaldo directo de casas formuladoras.
+            </div>
+          </li>
+        </ul>
+
+        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); text-align: center;">
+          <button type="button" class="btn-hero-primary" onclick="consultarIA('Asesoria')" style="font-size: 14px; padding: 10px 20px; width: 100%; justify-content: center;">
+            👨‍🌾 Diagnosticar Cultivo con Asesor IA
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BARRA OFICIAL DE VALORES (Imagen 4) -->
+    <div class="official-valores-bar">
+      <div class="valores-title-wrap">
+        <span class="valores-title-pill">Valores</span>
+      </div>
+      <div class="valores-items">
+        <div class="valor-item">
+          <div class="valor-icon-circle">✋📖</div>
+          <div class="valor-label">Honradez</div>
+          <div class="valor-sub">Transparencia, ética y rectitud en cada recomendación técnica y trato comercial.</div>
+        </div>
+        <div class="valor-item">
+          <div class="valor-icon-circle">🤝</div>
+          <div class="valor-label">Seriedad</div>
+          <div class="valor-sub">Rigor técnico, cumplimiento formal de acuerdos y productos garantizados.</div>
+        </div>
+        <div class="valor-item">
+          <div class="valor-icon-circle">👥</div>
+          <div class="valor-label">Compromiso</div>
+          <div class="valor-sub">Acompañamiento incondicional al agricultor para lograr cosechas sanas y rentables.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TARJETAS OFICIALES DE MISIÓN Y VISIÓN (Imagen 4) -->
+    <div class="official-mv-grid">
+      <div class="mv-card">
+        <div class="mv-header">Misión</div>
+        <p class="mv-text">
+          "Atender a nuestros clientes con productos y servicios que le permitan obtener una buena cosecha"
+        </p>
+        <div class="mv-icon">🎯</div>
+      </div>
+
+      <div class="mv-card">
+        <div class="mv-header">Visión</div>
+        <p class="mv-text">
+          "Ser la cadena de tiendas con mayor cobertura a nivel nacional con una infraestructura que nos permita atender todas las necesidades del agricultor peruano."
+        </p>
+        <div class="mv-icon">👁️📈</div>
+      </div>
+    </div>
+
+    <!-- SOCIOS ESTRATÉGICOS (Imagen 3) -->
+    <div class="partners-wrapper">
+      <h4>Nuestros Socios Estratégicos &bull; Formuladores e Importadores Líderes</h4>
+      <div class="partners-badges">
+        <span class="partner-pill">BASF</span>
+        <span class="partner-pill">BAYER</span>
+        <span class="partner-pill">SUMITOMO</span>
+        <span class="partner-pill">SYNGENTA</span>
+        <span class="partner-pill">FARMEX</span>
+        <span class="partner-pill">INTEROC</span>
+        <span class="partner-pill">ADAMA</span>
+        <span class="partner-pill">STOLLER</span>
+        <span class="partner-pill">SILVESTRE</span>
+        <span class="partner-pill">FARMAGRO</span>
+        <span class="partner-pill">TQC</span>
+        <span class="partner-pill">DUWEST</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECCIÓN 3: PRODUCTOS AGRÍCOLAS DESTACADOS  -->
+  <!-- ========================================== -->
+  <section class="container productos-section" id="productos">
+    <div class="section-title-wrap">
+      <span class="section-tag">Portafolio Especializado</span>
+      <h2 class="section-title">Nuestros Productos Fitosanitarios</h2>
+      <p class="section-desc">
+        Catálogo completo de fungicidas, insecticidas, acaricidas y bioinsumos autorizados con disponibilidad inmediata en nuestras sedes.
+      </p>
+    </div>
+
+    <!-- Filtros de Categorías -->
+    <div class="category-filter">
+      <button class="filter-btn active" onclick="filterProducts('all')">Todos los Productos</button>
+      <button class="filter-btn" onclick="filterProducts('fungicida')">Fungicidas</button>
+      <button class="filter-btn" onclick="filterProducts('insecticida')">Insecticidas</button>
+      <button class="filter-btn" onclick="filterProducts('acaricida')">Acaricidas</button>
+      <button class="filter-btn" onclick="filterProducts('bioinsumo')">Bioinsumos y Biológicos</button>
+      <button class="filter-btn" onclick="filterProducts('bioestimulante')">Bioestimulantes y Foliares</button>
+    </div>
+
+    <!-- Grid de Productos -->
+    <div class="products-grid" id="products-catalog-grid">
+      
+      <!-- Producto 1 -->
+      <div class="product-card" data-cat="fungicida">
+        <div>
+          <div class="product-badge-wrap">
+            <span class="p-badge badge-fungicida">Fungicida Sistémico</span>
+            <span class="senasa-tag">SENASA 542-SENASA</span>
+          </div>
+          <h3>Flint 50 WG</h3>
+          <div class="product-active">Trifloxistrobina 500 g/kg (Mesostémico)</div>
+          <div class="product-crops">
+            <strong>Cultivos clave:</strong> Vid, Palto, Mango, Arándano.<br>
+            <strong>Control:</strong> Oidium (Uncinula necator), Antracnosis.
+          </div>
+          <div class="product-dose">Dosis: 0.15 - 0.20 kg/ha | P.C.: 14 días</div>
+        </div>
+        <div class="product-bottom">
+          <div class="product-price">S/ 180.00 <small>/ kg</small></div>
+          <div class="product-actions">
+            <button class="btn-ai-card" onclick="consultarIA('Flint 50 WG')" title="Analizar si este producto aplica a mi cultivo">
+              🔬 Consultar IA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Producto 2 -->
+      <div class="product-card" data-cat="fungicida">
+        <div>
+          <div class="product-badge-wrap">
+            <span class="p-badge badge-fungicida">Fungicida Preventivo</span>
+            <span class="senasa-tag">SENASA 120-SENASA</span>
+          </div>
+          <h3>Kumulus DF</h3>
+          <div class="product-active">Azufre micronizado 800 g/kg</div>
+          <div class="product-crops">
+            <strong>Cultivos clave:</strong> Vid, Hortalizas, Cítricos, Cucurbitáceas.<br>
+            <strong>Control:</strong> Oidium, Acaro de la yema, Roña.
+          </div>
+          <div class="product-dose">Dosis: 2.0 - 4.0 kg/ha | Acción de contacto</div>
+        </div>
+        <div class="product-bottom">
+          <div class="product-price">S/ 45.00 <small>/ bolsa 25kg</small></div>
+          <div class="product-actions">
+            <button class="btn-ai-card" onclick="consultarIA('Kumulus DF')">
+              🔬 Consultar IA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Producto 3 -->
+      <div class="product-card" data-cat="insecticida">
+        <div>
+          <div class="product-badge-wrap">
+            <span class="p-badge badge-insecticida">Insecticida Sistémico</span>
+            <span class="senasa-tag">SENASA 899-SENASA</span>
+          </div>
+          <h3>Movento 150 OD</h3>
+          <div class="product-active">Spirotetramat 150 g/L (Sistemia bidireccional)</div>
+          <div class="product-crops">
+            <strong>Cultivos clave:</strong> Cítricos, Palto, Vid, Arándano, Espárrago.<br>
+            <strong>Control:</strong> Queresas, Mosca blanca, Trips, Cochinilla.
+          </div>
+          <div class="product-dose">Dosis: 0.50 - 0.75 L/ha | Movilidad xilema/floema</div>
+        </div>
+        <div class="product-bottom">
+          <div class="product-price">S/ 260.00 <small>/ Litro</small></div>
+          <div class="product-actions">
+            <button class="btn-ai-card" onclick="consultarIA('Movento 150 OD')">
+              🔬 Consultar IA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Producto 4 -->
+      <div class="product-card" data-cat="fungicida">
+        <div>
+          <div class="product-badge-wrap">
+            <span class="p-badge badge-fungicida">Fungicida Curativo</span>
+            <span class="senasa-tag">SENASA 732-SENASA</span>
+          </div>
+          <h3>Amistar Top</h3>
+          <div class="product-active">Azoxistrobina 200 g/L + Difenoconazol 125 g/L</div>
+          <div class="product-crops">
+            <strong>Cultivos clave:</strong> Arándano, Cebolla, Espárrago, Tomate, Papa.<br>
+            <strong>Control:</strong> Stemphylium, Roya, Alternaria, Mancha púrpura.
+          </div>
+          <div class="product-dose">Dosis: 0.35 - 0.50 L/ha | Doble modo de acción</div>
+        </div>
+        <div class="product-bottom">
+          <div class="product-price">S/ 210.00 <small>/ Litro</small></div>
+          <div class="product-actions">
+            <button class="btn-ai-card" onclick="consultarIA('Amistar Top')">
+              🔬 Consultar IA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Producto 5 -->
+      <div class="product-card" data-cat="insecticida">
+        <div>
+          <div class="product-badge-wrap">
+            <span class="p-badge badge-insecticida">Insecticida Larvicida</span>
+            <span class="senasa-tag">SENASA 664-SENASA</span>
+          </div>
+          <h3>Belt 480 SC</h3>
+          <div class="product-active">Flubendiamida 480 g/L</div>
+          <div class="product-crops">
+            <strong>Cultivos clave:</strong> Maíz, Espárrago, Pimiento, Tomate, Palto.<br>
+            <strong>Control:</strong> Spodoptera frugiperda, Heliothis, Gusano barrenador.
+          </div>
+          <div class="product-dose">Dosis: 0.10 - 0.15 L/ha | Respetuoso con fauna benéfica</div>
+        </div>
+        <div class="product-bottom">
+          <div class="product-price">S/ 295.00 <small>/ Litro</small></div>
+          <div class="product-actions">
+            <button class="btn-ai-card" onclick="consultarIA('Belt 480 SC')">
+              🔬 Consultar IA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Producto 6 -->
+      <div class="product-card" data-cat="acaricida">
+        <div>
+          <div class="product-badge-wrap">
+            <span class="p-badge badge-acaricida">Acaricida Translaminar</span>
+            <span class="senasa-tag">SENASA 312-SENASA</span>
+          </div>
+          <h3>Oberon 240 SC</h3>
+          <div class="product-active">Spiromesifen 240 g/L</div>
+          <div class="product-crops">
+            <strong>Cultivos clave:</strong> Palto, Vid, Fresa, Algodón, Pimiento.<br>
+            <strong>Control:</strong> Arañita roja (Tetranychus urticae), Mosca blanca.
+          </div>
+          <div class="product-dose">Dosis: 0.40 - 0.60 L/ha | Actúa en huevos y ninfas</div>
+        </div>
+        <div class="product-bottom">
+          <div class="product-price">S/ 190.00 <small>/ Litro</small></div>
+          <div class="product-actions">
+            <button class="btn-ai-card" onclick="consultarIA('Oberon 240 SC')">
+              🔬 Consultar IA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Producto 7 -->
+      <div class="product-card" data-cat="bioinsumo">
+        <div>
+          <div class="product-badge-wrap">
+            <span class="p-badge badge-bioinsumo">Biológico Orgánico</span>
+            <span class="senasa-tag">Orgánico Certificado</span>
+          </div>
+          <h3>Trichoderma harzianum CW</h3>
+          <div class="product-active">Cepa nativa peruana (1x10⁹ UFC/g)</div>
+          <div class="product-crops">
+            <strong>Cultivos clave:</strong> Vid, Palto, Arándano, Hortalizas.<br>
+            <strong>Control:</strong> Fusarium, Phytophthora, Rhizoctonia solani.
+          </div>
+          <div class="product-dose">Dosis: 1.0 - 2.0 kg/ha vía drench / fertirriego</div>
+        </div>
+        <div class="product-bottom">
+          <div class="product-price">S/ 95.00 <small>/ kg</small></div>
+          <div class="product-actions">
+            <button class="btn-ai-card" onclick="consultarIA('Trichoderma harzianum')">
+              🔬 Consultar IA
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Producto 8 -->
+      <div class="product-card" data-cat="bioestimulante">
+        <div>
+          <div class="product-badge-wrap">
+            <span class="p-badge badge-bioestimulante">Bioestimulante Foliar</span>
+            <span class="senasa-tag">Nutrición Premium</span>
+          </div>
+          <h3>Basfoliar Kelp SL</h3>
+          <div class="product-active">Extracto puro de alga marina Ecklonia maxima</div>
+          <div class="product-crops">
+            <strong>Cultivos clave:</strong> Frutales de exportación, Vid, Palto, Cebolla.<br>
+            <strong>Acción:</strong> Enraizamiento masivo, floración y tolerancia a estrés hídrico.
+          </div>
+          <div class="product-dose">Dosis: 2.0 - 3.0 L/ha en brotación y cuajado</div>
+        </div>
+        <div class="product-bottom">
+          <div class="product-price">S/ 85.00 <small>/ Litro</small></div>
+          <div class="product-actions">
+            <button class="btn-ai-card" onclick="consultarIA('Basfoliar Kelp')">
+              🔬 Consultar IA
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Banner Interactivo de IA dentro de Productos -->
+    <div class="ai-callout-banner">
+      <div class="ai-callout-text">
+        <h3>¿Dudas sobre qué producto aplicar a tu cultivo?</h3>
+        <p>
+          Toma una fotografía con tu teléfono de la hoja, fruto o tallo afectado. Nuestro modelo de Inteligencia Artificial analizará el patógeno en segundos y te sugerirá la formulación y dosis exacta.
+        </p>
+      </div>
+      <div>
+        <button type="button" class="btn-hero-primary" onclick="consultarIA('Duda Productos')" style="white-space:nowrap;">
+          🔬 Consultar al Asesor IA Ahora
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SECCIÓN 4: UBÍCANOS (PUNTOS DE VENTA)       -->
+  <!-- ========================================== -->
+  <section class="container sedes-section" id="ubicacion">
+    <div class="section-title-wrap">
+      <span class="section-tag">Red de Distribución y Atención</span>
+      <h2 class="section-title">Ubícanos</h2>
+      <p class="section-desc">
+        Contamos con 8 puntos de venta estratégicos en la zona sur del país para atender eficientemente a Agroindustrias, Mediana y Pequeña Agricultura.
+      </p>
+    </div>
+
+    <!-- PRESENTACIÓN CON MAPA OFICIAL (Imagen 1) -->
+    <div class="map-presentation-grid">
+      <div class="map-img-box">
+        <img src="assets/mapa-sedes.png" alt="Mapa de Puntos de Venta Chiaway - Mala, Imperial, San Vicente, Chincha, Pisco, Ica, Nazca" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'><rect fill=\'%23ecfdf5\' width=\'100%\' height=\'100%\'/><text x=\'50%\' y=\'50%\' text-anchor=\'middle\' fill=\'%23047857\' font-weight=\'bold\'>Mapa de Sedes Chiaway</text></svg>';">
+      </div>
+      <div>
+        <span class="section-tag" style="margin-bottom:8px;">Cobertura Macro Sur</span>
+        <h3 style="font-size:22px; font-weight:800; color:#064e3b; margin-bottom:12px;">Presencia Directa en los Valles Productivos</h3>
+        <p style="font-size:14px; color:#475569; line-height:1.6; margin-bottom:16px;">
+          Nuestra red de tiendas y almacenes autorizados por SENASA nos permite brindar asesoramiento técnico in-situ y entrega inmediata en Lima Provincias y la Región Ica:
+        </p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px; font-weight:700; color:#1e293b; margin-bottom:20px;">
+          <div style="display:flex; align-items:center; gap:6px;"><span style="color:#ef4444;">📍</span> Mala</div>
+          <div style="display:flex; align-items:center; gap:6px;"><span style="color:#ef4444;">📍</span> Imperial (Cañete)</div>
+          <div style="display:flex; align-items:center; gap:6px;"><span style="color:#ef4444;">📍</span> San Vicente (Cañete)</div>
+          <div style="display:flex; align-items:center; gap:6px;"><span style="color:#ef4444;">📍</span> Chincha</div>
+          <div style="display:flex; align-items:center; gap:6px;"><span style="color:#ef4444;">📍</span> Pisco</div>
+          <div style="display:flex; align-items:center; gap:6px;"><span style="color:#ef4444;">📍</span> Ica (Sede Central)</div>
+          <div style="display:flex; align-items:center; gap:6px;"><span style="color:#ef4444;">📍</span> Nazca</div>
+          <div style="display:flex; align-items:center; gap:6px;"><span style="color:#059669;">🚛</span> Despacho a Campo</div>
+        </div>
+        <a href="tel:+51956112233" class="btn-hero-primary" style="display:inline-flex; font-size:14px; padding:10px 20px;">
+          📞 Contactar a la Central de Ventas
+        </a>
+      </div>
+    </div>
+
+    <!-- TARJETAS DETALLADAS DE PUNTOS DE VENTA -->
+    <div class="sedes-grid">
+
+      <!-- Sede 1: Central Ica -->
+      <div class="sede-card central">
+        <div>
+          <div class="sede-thumb-wrap" onclick="openSedeModal('ICA', 'assets/sedes/modal-ica.png', 'Av. San Martín #1026 / Av. Grau #382, Ica', '994233110', 'https://www.google.com/maps/search/?api=1&query=Autoservicio+San+Isidro+SA+-+Chiaway+Agro,+Av+San+Martin+1026,+Ica+11001')">
+            <img src="assets/sedes/sede-ica.jpg" alt="Local Chiaway Agro Ica" class="sede-thumb-img">
+            <div class="sede-thumb-badge">📸 Local Oficial Ica</div>
+          </div>
+          <div class="sede-title-area">
+            <div class="sede-icon">🏢</div>
+            <div>
+              <div class="sede-region">Región Ica &bull; Sede Central</div>
+              <h3>Ica</h3>
+            </div>
+          </div>
+          <ul class="sede-details">
+            <li>
+              <span class="icon">📍</span>
+              <div><strong>Dirección:</strong> Av. San Martín #1026 / Av. Grau #382, Ica 11001.</div>
+            </li>
+            <li>
+              <span class="icon">📞</span>
+              <div><strong>Teléfono:</strong> 994233110 | (056) 23-4567</div>
+            </li>
+            <li>
+              <span class="icon">✉️</span>
+              <div><strong>Email:</strong> chiaway@chiaway.com</div>
+            </li>
+            <li>
+              <span class="icon">⏰</span>
+              <div><strong>Horario:</strong> Lunes a Sábado: 7:30 am - 6:00 pm</div>
+            </li>
+          </ul>
+          <div class="sede-crops-tag">
+            <strong>Especialistas en:</strong> Vid de mesa, Palto Hass, Espárrago, Cebolla y Cítricos.
+          </div>
+        </div>
+        <div class="sede-actions">
+          <div class="sede-actions-row">
+            <a href="https://www.google.com/maps/search/?api=1&query=Autoservicio+San+Isidro+SA+-+Chiaway+Agro,+Av+San+Martin+1026,+Ica+11001" target="_blank" class="btn-sede-map">
+              🗺️ Abrir en Google Maps
+            </a>
+            <a href="tel:994233110" class="btn-sede-phone">📞 994233110</a>
+          </div>
+          <button type="button" class="btn-sede-modal-view" onclick="openSedeModal('ICA', 'assets/sedes/modal-ica.png', 'Av. San Martín #1026 / Av. Grau #382, Ica', '994233110', 'https://www.google.com/maps/search/?api=1&query=Autoservicio+San+Isidro+SA+-+Chiaway+Agro,+Av+San+Martin+1026,+Ica+11001')">
+            🔍 Ver Mapa y Frontis Detallado
+          </button>
+        </div>
+      </div>
+
+      <!-- Sede 2: Chincha -->
+      <div class="sede-card">
+        <div>
+          <div class="sede-thumb-wrap" onclick="openSedeModal('CHINCHA', 'assets/sedes/modal-chincha.png', 'Av. Mariscal Castilla 450, Chincha 11702', '998373236', 'https://www.google.com/maps/search/?api=1&query=Av.+Mariscal+Castilla+450,+Chincha+11702')">
+            <img src="assets/sedes/sede-chincha.jpg" alt="Local Chiaway Agro Chincha" class="sede-thumb-img">
+            <div class="sede-thumb-badge">📸 Local Oficial Chincha</div>
+          </div>
+          <div class="sede-title-area">
+            <div class="sede-icon">🍊</div>
+            <div>
+              <div class="sede-region">Región Ica - Norte</div>
+              <h3>Chincha</h3>
+            </div>
+          </div>
+          <ul class="sede-details">
+            <li>
+              <span class="icon">📍</span>
+              <div><strong>Dirección:</strong> Av. Mariscal Castilla 450, Chincha 11702.</div>
+            </li>
+            <li>
+              <span class="icon">📞</span>
+              <div><strong>Teléfono:</strong> 998373236</div>
+            </li>
+            <li>
+              <span class="icon">✉️</span>
+              <div><strong>Email:</strong> chiaway@chiaway.com</div>
+            </li>
+            <li>
+              <span class="icon">⏰</span>
+              <div><strong>Horario:</strong> Lunes a Sábado: 8:00 am - 6:00 pm</div>
+            </li>
+          </ul>
+          <div class="sede-crops-tag">
+            <strong>Especialistas en:</strong> Mandarina W. Murcott, Palto, Vid y Maíz.
+          </div>
+        </div>
+        <div class="sede-actions">
+          <div class="sede-actions-row">
+            <a href="https://www.google.com/maps/search/?api=1&query=Av.+Mariscal+Castilla+450,+Chincha+11702" target="_blank" class="btn-sede-map">
+              🗺️ Abrir en Google Maps
+            </a>
+            <a href="tel:998373236" class="btn-sede-phone">📞 998373236</a>
+          </div>
+          <button type="button" class="btn-sede-modal-view" onclick="openSedeModal('CHINCHA', 'assets/sedes/modal-chincha.png', 'Av. Mariscal Castilla 450, Chincha 11702', '998373236', 'https://www.google.com/maps/search/?api=1&query=Av.+Mariscal+Castilla+450,+Chincha+11702')">
+            🔍 Ver Mapa y Frontis Detallado
+          </button>
+        </div>
+      </div>
+
+      <!-- Sede 3: Pisco -->
+      <div class="sede-card">
+        <div>
+          <div class="sede-thumb-wrap" onclick="openSedeModal('PISCO', 'assets/sedes/modal-pisco.png', 'Av. Libertadores 817-819, Pisco 11631', '998373237', 'https://www.google.com/maps/search/?api=1&query=Av.+Libertadores+817,+Pisco+11631')">
+            <img src="assets/sedes/sede-pisco.jpg" alt="Local Chiaway Agro Pisco" class="sede-thumb-img">
+            <div class="sede-thumb-badge">📸 Local Oficial Pisco</div>
+          </div>
+          <div class="sede-title-area">
+            <div class="sede-icon">🌾</div>
+            <div>
+              <div class="sede-region">Región Ica</div>
+              <h3>Pisco</h3>
+            </div>
+          </div>
+          <ul class="sede-details">
+            <li>
+              <span class="icon">📍</span>
+              <div><strong>Dirección:</strong> Av. Libertadores 817-819, Pisco 11631.</div>
+            </li>
+            <li>
+              <span class="icon">📞</span>
+              <div><strong>Teléfono:</strong> 998373237</div>
+            </li>
+            <li>
+              <span class="icon">✉️</span>
+              <div><strong>Email:</strong> chiaway@chiaway.com</div>
+            </li>
+            <li>
+              <span class="icon">⏰</span>
+              <div><strong>Horario:</strong> Lunes a Sábado: 8:00 am - 6:00 pm</div>
+            </li>
+          </ul>
+          <div class="sede-crops-tag">
+            <strong>Especialistas en:</strong> Algodón, Maíz, Páprika, Cítricos y Hortalizas.
+          </div>
+        </div>
+        <div class="sede-actions">
+          <div class="sede-actions-row">
+            <a href="https://www.google.com/maps/search/?api=1&query=Av.+Libertadores+817,+Pisco+11631" target="_blank" class="btn-sede-map">
+              🗺️ Abrir en Google Maps
+            </a>
+            <a href="tel:998373237" class="btn-sede-phone">📞 998373237</a>
+          </div>
+          <button type="button" class="btn-sede-modal-view" onclick="openSedeModal('PISCO', 'assets/sedes/modal-pisco.png', 'Av. Libertadores 817-819, Pisco 11631', '998373237', 'https://www.google.com/maps/search/?api=1&query=Av.+Libertadores+817,+Pisco+11631')">
+            🔍 Ver Mapa y Frontis Detallado
+          </button>
+        </div>
+      </div>
+
+      <!-- Sede 4: Nazca -->
+      <div class="sede-card">
+        <div>
+          <div class="sede-thumb-wrap" onclick="openSedeModal('NAZCA', 'assets/sedes/modal-nazca.png', 'Calle Callao N° 115, Frente al Óvalo ingreso Nasca 11401', '955309025', 'https://www.google.com/maps/search/?api=1&query=Callao+115,+Nazca+11401')">
+            <img src="assets/sedes/sede-nazca.jpg" alt="Local Chiaway Agro Nazca" class="sede-thumb-img">
+            <div class="sede-thumb-badge">📸 Local Oficial Nazca</div>
+          </div>
+          <div class="sede-title-area">
+            <div class="sede-icon">🌱</div>
+            <div>
+              <div class="sede-region">Región Ica - Sur</div>
+              <h3>Nazca</h3>
+            </div>
+          </div>
+          <ul class="sede-details">
+            <li>
+              <span class="icon">📍</span>
+              <div><strong>Dirección:</strong> Calle Callao N° 115, Referencia: Frente al Óvalo ingreso Nasca, 11401.</div>
+            </li>
+            <li>
+              <span class="icon">📞</span>
+              <div><strong>Teléfono:</strong> 955309025</div>
+            </li>
+            <li>
+              <span class="icon">✉️</span>
+              <div><strong>Email:</strong> chiaway@chiaway.com</div>
+            </li>
+            <li>
+              <span class="icon">⏰</span>
+              <div><strong>Horario:</strong> Lunes a Sábado: 8:00 am - 5:30 pm</div>
+            </li>
+          </ul>
+          <div class="sede-crops-tag">
+            <strong>Especialistas en:</strong> Olivo, Palto, Uva quebranta y Alfalfa.
+          </div>
+        </div>
+        <div class="sede-actions">
+          <div class="sede-actions-row">
+            <a href="https://www.google.com/maps/search/?api=1&query=Callao+115,+Nazca+11401" target="_blank" class="btn-sede-map">
+              🗺️ Abrir en Google Maps
+            </a>
+            <a href="tel:955309025" class="btn-sede-phone">📞 955309025</a>
+          </div>
+          <button type="button" class="btn-sede-modal-view" onclick="openSedeModal('NAZCA', 'assets/sedes/modal-nazca.png', 'Calle Callao N° 115, Frente al Óvalo ingreso Nasca 11401', '955309025', 'https://www.google.com/maps/search/?api=1&query=Callao+115,+Nazca+11401')">
+            🔍 Ver Mapa y Frontis Detallado
+          </button>
+        </div>
+      </div>
+
+      <!-- Sede 5: San Vicente de Cañete -->
+      <div class="sede-card">
+        <div>
+          <div class="sede-thumb-wrap" onclick="openSedeModal('SAN VICENTE (CAÑETE)', 'assets/sedes/modal-san-vicente.png', '2 de mayo 482-488, San Vicente de Cañete 15701', '953377637', 'https://www.google.com/maps/search/?api=1&query=Autoservicio+San+Isidro+S.A.+2+de+mayo+482,+San+Vicente+de+Cañete')">
+            <img src="assets/sedes/sede-san-vicente.jpg" alt="Local Chiaway Agro San Vicente de Cañete" class="sede-thumb-img">
+            <div class="sede-thumb-badge">📸 Local Oficial San Vicente</div>
+          </div>
+          <div class="sede-title-area">
+            <div class="sede-icon">🥔</div>
+            <div>
+              <div class="sede-region">Lima Provincias</div>
+              <h3>San Vicente (Cañete)</h3>
+            </div>
+          </div>
+          <ul class="sede-details">
+            <li>
+              <span class="icon">📍</span>
+              <div><strong>Dirección:</strong> 2 de mayo 482-488, San Vicente de Cañete 15701.</div>
+            </li>
+            <li>
+              <span class="icon">📞</span>
+              <div><strong>Teléfono:</strong> 953377637</div>
+            </li>
+            <li>
+              <span class="icon">✉️</span>
+              <div><strong>Email:</strong> chiaway@chiaway.com</div>
+            </li>
+            <li>
+              <span class="icon">⏰</span>
+              <div><strong>Horario:</strong> Lunes a Sábado: 8:00 am - 5:30 pm</div>
+            </li>
+          </ul>
+          <div class="sede-crops-tag">
+            <strong>Especialistas en:</strong> Papa Canchán, Maíz amarillo, Manzana y Camote.
+          </div>
+        </div>
+        <div class="sede-actions">
+          <div class="sede-actions-row">
+            <a href="https://www.google.com/maps/search/?api=1&query=Autoservicio+San+Isidro+S.A.+2+de+mayo+482,+San+Vicente+de+Cañete" target="_blank" class="btn-sede-map">
+              🗺️ Abrir en Google Maps
+            </a>
+            <a href="tel:953377637" class="btn-sede-phone">📞 953377637</a>
+          </div>
+          <button type="button" class="btn-sede-modal-view" onclick="openSedeModal('SAN VICENTE (CAÑETE)', 'assets/sedes/modal-san-vicente.png', '2 de mayo 482-488, San Vicente de Cañete 15701', '953377637', 'https://www.google.com/maps/search/?api=1&query=Autoservicio+San+Isidro+S.A.+2+de+mayo+482,+San+Vicente+de+Cañete')">
+            🔍 Ver Mapa y Frontis Detallado
+          </button>
+        </div>
+      </div>
+
+      <!-- Sede 6: Imperial (Cañete) -->
+      <div class="sede-card">
+        <div>
+          <div class="sede-thumb-wrap" onclick="openSedeModal('IMPERIAL (CAÑETE)', 'assets/sedes/modal-imperial.png', 'Av. Ramos 508, Imperial 15701', '998373241', 'https://www.google.com/maps/search/?api=1&query=Av+Ramos+508,+Imperial+15701')">
+            <img src="assets/sedes/sede-imperial.jpg" alt="Local Chiaway Agro Imperial Cañete" class="sede-thumb-img">
+            <div class="sede-thumb-badge">📸 Local Oficial Imperial</div>
+          </div>
+          <div class="sede-title-area">
+            <div class="sede-icon">🌽</div>
+            <div>
+              <div class="sede-region">Lima Provincias</div>
+              <h3>Imperial (Cañete)</h3>
+            </div>
+          </div>
+          <ul class="sede-details">
+            <li>
+              <span class="icon">📍</span>
+              <div><strong>Dirección:</strong> Av. Ramos 508, Imperial, Cañete 15701.</div>
+            </li>
+            <li>
+              <span class="icon">📞</span>
+              <div><strong>Teléfono:</strong> 998373241</div>
+            </li>
+            <li>
+              <span class="icon">✉️</span>
+              <div><strong>Email:</strong> chiaway@chiaway.com</div>
+            </li>
+            <li>
+              <span class="icon">⏰</span>
+              <div><strong>Horario:</strong> Lunes a Sábado: 8:00 am - 5:30 pm</div>
+            </li>
+          </ul>
+          <div class="sede-crops-tag">
+            <strong>Especialistas en:</strong> Hortalizas, Maíz choclo, Papa y Frutales.
+          </div>
+        </div>
+        <div class="sede-actions">
+          <div class="sede-actions-row">
+            <a href="https://www.google.com/maps/search/?api=1&query=Av+Ramos+508,+Imperial+15701" target="_blank" class="btn-sede-map">
+              🗺️ Abrir en Google Maps
+            </a>
+            <a href="tel:998373241" class="btn-sede-phone">📞 998373241</a>
+          </div>
+          <button type="button" class="btn-sede-modal-view" onclick="openSedeModal('IMPERIAL (CAÑETE)', 'assets/sedes/modal-imperial.png', 'Av. Ramos 508, Imperial 15701', '998373241', 'https://www.google.com/maps/search/?api=1&query=Av+Ramos+508,+Imperial+15701')">
+            🔍 Ver Mapa y Frontis Detallado
+          </button>
+        </div>
+      </div>
+
+      <!-- Sede 7: Mala -->
+      <div class="sede-card">
+        <div>
+          <div class="sede-thumb-wrap" onclick="openSedeModal('MALA', 'assets/sedes/modal-mala.png', 'Calle Francia #655 – Mala 15608', '998373240', 'https://www.google.com/maps/search/?api=1&query=Calle+Francia+650,+Mala+15608')">
+            <img src="assets/sedes/sede-mala.jpg" alt="Local Chiaway Agro Mala" class="sede-thumb-img">
+            <div class="sede-thumb-badge">📸 Local Oficial Mala</div>
+          </div>
+          <div class="sede-title-area">
+            <div class="sede-icon">🍎</div>
+            <div>
+              <div class="sede-region">Lima Provincias</div>
+              <h3>Mala</h3>
+            </div>
+          </div>
+          <ul class="sede-details">
+            <li>
+              <span class="icon">📍</span>
+              <div><strong>Dirección:</strong> Calle Francia #655 – Mala (Postal 15608).</div>
+            </li>
+            <li>
+              <span class="icon">📞</span>
+              <div><strong>Teléfono:</strong> 998373240</div>
+            </li>
+            <li>
+              <span class="icon">✉️</span>
+              <div><strong>Email:</strong> chiaway@chiaway.com</div>
+            </li>
+            <li>
+              <span class="icon">⏰</span>
+              <div><strong>Horario:</strong> Lunes a Sábado: 8:00 am - 5:30 pm</div>
+            </li>
+          </ul>
+          <div class="sede-crops-tag">
+            <strong>Especialistas en:</strong> Manzana Delicia, Plátano maleño, Fresa y Vid.
+          </div>
+        </div>
+        <div class="sede-actions">
+          <div class="sede-actions-row">
+            <a href="https://www.google.com/maps/search/?api=1&query=Calle+Francia+650,+Mala+15608" target="_blank" class="btn-sede-map">
+              🗺️ Abrir en Google Maps
+            </a>
+            <a href="tel:998373240" class="btn-sede-phone">📞 998373240</a>
+          </div>
+          <button type="button" class="btn-sede-modal-view" onclick="openSedeModal('MALA', 'assets/sedes/modal-mala.png', 'Calle Francia #655 – Mala 15608', '998373240', 'https://www.google.com/maps/search/?api=1&query=Calle+Francia+650,+Mala+15608')">
+            🔍 Ver Mapa y Frontis Detallado
+          </button>
+        </div>
+      </div>
+
+      <!-- Sede 8: Centro de Despacho Logístico -->
+      <div class="sede-card">
+        <div>
+          <div class="sede-thumb-wrap" style="cursor:default;">
+            <img src="assets/panel/fundo-campo.jpg" alt="Despacho a Campo Chiaway" class="sede-thumb-img">
+            <div class="sede-thumb-badge">🚛 Flota de Despacho Directo</div>
+          </div>
+          <div class="sede-title-area">
+            <div class="sede-icon">🚛</div>
+            <div>
+              <div class="sede-region">Logística y Distribución</div>
+              <h3>Despacho a Campo y Agroindustria</h3>
+            </div>
+          </div>
+          <ul class="sede-details">
+            <li>
+              <span class="icon">📍</span>
+              <div><strong>Cobertura:</strong> Valles de Mala, Cañete, Chincha, Pisco, Ica y Nazca.</div>
+            </li>
+            <li>
+              <span class="icon">📞</span>
+              <div><strong>Línea Directa:</strong> +51 (01) 700-CHIA | <strong>WhatsApp:</strong> 956-112-233</div>
+            </li>
+            <li>
+              <span class="icon">✉️</span>
+              <div><strong>Email:</strong> chiaway@chiaway.com</div>
+            </li>
+            <li>
+              <span class="icon">⏰</span>
+              <div><strong>Horario:</strong> Despachos programados 24/7 para fundos y empresas.</div>
+            </li>
+          </ul>
+          <div class="sede-crops-tag">
+            <strong>Servicio:</strong> Entregas paletizadas, cadena de frío para biológicos y crédito de campaña.
+          </div>
+        </div>
+        <div class="sede-actions">
+          <div class="sede-actions-row">
+            <a href="https://wa.me/51956112233?text=Hola%20Chiaway,%20deseo%20coordinar%20un%20despacho%20de%20insumos%20agr%C3%ADcolas%20a%20mi%20fundo." target="_blank" class="btn-sede-map" style="background:#25d366;">
+              💬 Pedir por WhatsApp
+            </a>
+            <a href="tel:+51956112233" class="btn-sede-phone">📞 Llamar</a>
+          </div>
+          <a href="javascript:void(0)" onclick="consultarIA('Despacho de insumos')" class="btn-sede-modal-view">
+            🔬 Consultar Asesor Fitosanitario IA
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- FOOTER CORPORATIVO CHIAWAY                 -->
+  <!-- ========================================== -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+          <img src="assets/logo-chiaway.png" alt="Chiaway Agro" style="height:38px; object-fit:contain; background:#ffffff; padding:4px 8px; border-radius:6px;">
+        </div>
+        <p>
+          <strong>Autoservicio San Isidro S.A. (CHIAWAY)</strong> es la empresa líder en provisión integral de insumos agrícolas, agroquímicos y biológicos en el sur del país.
+        </p>
+        <p style="margin-top:10px; font-size:12px; color:#6ee7b7;">
+          ✓ Registros oficiales SENASA Perú | ✓ 8 puntos de venta estratégicos.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="#home">Inicio (Home)</a></li>
+          <li><a href="#nosotros">Sobre Nosotros</a></li>
+          <li><a href="#productos">Catálogo de Insumos</a></li>
+          <li><a href="#ubicacion">Ubícanos (8 Puntos)</a></li>
+          <li><a href="javascript:void(0)" onclick="consultarIA('Footer')">Consultar a la IA</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Puntos de Venta</h4>
+        <ul class="footer-links">
+          <li><a href="#ubicacion">Sede Central Ica</a></li>
+          <li><a href="#ubicacion">Sede Pisco</a></li>
+          <li><a href="#ubicacion">Sede Chincha</a></li>
+          <li><a href="#ubicacion">Sede Nazca</a></li>
+          <li><a href="#ubicacion">Sede San Vicente de Cañete</a></li>
+          <li><a href="#ubicacion">Sedes Imperial y Mala</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Acceso de Usuarios</h4>
+        <p style="margin-bottom:12px;">Ingresa para realizar diagnósticos con Inteligencia Artificial, revisar cotizaciones y acceder a precios exclusivos.</p>
+        <a href="login.html" class="nav-login-btn" style="display:inline-block; text-align:center; width:100%; padding:10px !important;">
+          🔐 Ingreso Clientes y Asesores
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>&copy; 2026 Autoservicio San Isidro S.A. - CHIAWAY. Todos los derechos reservados.</div>
+      <div>Potenciado por <strong>AgroVisión AI</strong> &bull; Spring Boot 3.3 (Java 17) &bull; MySQL</div>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- MODAL DE VISTA DETALLADA DE SEDE UBÍCANOS  -->
+  <!-- ========================================== -->
+  <div id="sede-detail-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.85); z-index:99999; backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#ffffff; border-radius:20px; max-width:860px; width:100%; overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.35); position:relative; border:1px solid rgba(255,255,255,0.2);">
+      <button onclick="closeSedeModal()" style="position:absolute; top:14px; right:14px; background:#ffffff; border:1px solid #cbd5e1; border-radius:50%; width:38px; height:38px; font-size:22px; font-weight:800; cursor:pointer; color:#334155; z-index:10; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.15);">&times;</button>
+      <div style="max-height:88vh; overflow-y:auto;">
+        <img id="sede-modal-img" src="" alt="Sede Chiaway Oficial" style="width:100%; height:auto; display:block;">
+        <div style="padding:22px 26px; background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="font-size:11px; font-weight:800; color:#059669; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">Punto de Venta Autorizado &bull; Red Chiaway</div>
+            <h4 id="sede-modal-title" style="font-size:20px; font-weight:900; color:#064e3b; margin-bottom:4px;"></h4>
+            <p id="sede-modal-address" style="font-size:14px; color:#334155; margin-bottom:4px; font-weight:600;"></p>
+            <p id="sede-modal-phone" style="font-size:13px; color:#64748b; margin:0;"></p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a id="sede-modal-maps-link" href="#" target="_blank" class="btn-hero-primary" style="padding:12px 22px; font-size:14px; display:inline-flex; align-items:center; gap:8px;">
+              <span>🗺️</span> Abrir en Google Maps &rarr;
+            </a>
+            <button type="button" onclick="closeSedeModal()" style="background:#e2e8f0; border:none; padding:12px 18px; border-radius:8px; font-weight:700; font-size:13px; color:#334155; cursor:pointer;">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- SCRIPTS Y CONTROL DE ACCESO A LA IA        -->
+  <!-- ========================================== -->
+  <script src="agrovision-widget.js"></script>
+  <script>
+    // Control del Modal de Sedes
+    function openSedeModal(title, imgSrc, address, phone, mapsUrl) {
+      document.getElementById('sede-modal-title').innerText = 'SEDE CHIAWAY: ' + title;
+      document.getElementById('sede-modal-img').src = imgSrc;
+      document.getElementById('sede-modal-address').innerText = '📍 ' + address;
+      document.getElementById('sede-modal-phone').innerText = '📞 Contacto: ' + phone + ' | ✉️ chiaway@chiaway.com';
+      document.getElementById('sede-modal-maps-link').href = mapsUrl;
+      const modal = document.getElementById('sede-detail-modal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSedeModal() {
+      const modal = document.getElementById('sede-detail-modal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar modal al presionar Escape o click fuera
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeSedeModal();
+    });
+    document.getElementById('sede-detail-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeSedeModal();
+    });
+    // Inicializar el widget de AgroVisión conectado al backend Spring Boot
+    AgrovisionWidget.init({
+      apiUrl: window.location.origin, // o http://localhost:8080
+      buttonText: 'Diagnóstico de Cultivo AI'
+    });
+
+    /**
+     * FUNCIÓN CENTRAL DE ACCESO A LA IA:
+     * Si el usuario no ha iniciado sesión, se le bloquea y redirige obligatoriamente al login.
+     * Solo con cuenta abierta se le permite utilizar el widget.
+     */
+    function consultarIA(contexto) {
+      const userStr = localStorage.getItem('chiaway_user');
+      
+      if (!userStr) {
+        alert('🔒 ACCESO RESTRINGIDO\n\nPara consultar a la Inteligencia Artificial de AgroVisión y recibir diagnósticos fitosanitarios personalizados, debe iniciar sesión o crear una cuenta de cliente.\n\nSerá redirigido al formulario de ingreso.');
+        window.location.href = 'login.html?redirect=diagnostico';
+        return;
+      }
+
+      // Usuario autenticado: abrir el widget
+      if (window.AgrovisionWidget) {
+        if (contexto && contexto !== 'General' && contexto !== 'Diagnostico Principal') {
+          window.AgrovisionWidget.state.plantHint = contexto;
+        }
+        window.AgrovisionWidget.openModal();
+      }
+    }
+
+    // Filtrado de productos en catálogo
+    function filterProducts(category) {
+      const cards = document.querySelectorAll('.product-card');
+      const buttons = document.querySelectorAll('.filter-btn');
+
+      buttons.forEach(btn => btn.classList.remove('active'));
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
+
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-cat') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Verificar si el usuario ha iniciado sesión y actualizar la barra de navegación
+    (function checkUserSession() {
+      const savedUserStr = localStorage.getItem('chiaway_user');
+      if (savedUserStr) {
+        try {
+          const user = JSON.parse(savedUserStr);
+          const authSlot = document.getElementById('nav-auth-slot');
+          const topbarAuth = document.getElementById('topbar-auth-link');
+          const isStaff = user.role === 'ADMIN' || user.role === 'WORKER';
+          const roleLabel = isStaff ? (user.role === 'ADMIN' ? 'Admin' : 'Asesor') : 'Cliente';
+          const shortName = user.name ? user.name.split(' ')[0] : 'Usuario';
+          const targetPanel = isStaff ? 'login.html' : 'panel-cliente.html';
+
+          if (authSlot) {
+            authSlot.innerHTML = `
+              <div class="user-pill">
+                <a href="${targetPanel}" title="Ir a mi panel">
+                  👤 <strong>${shortName}</strong> (${roleLabel})
+                </a>
+                <button type="button" class="user-logout-btn" onclick="logoutChiawayUser()" title="Cerrar Sesión">Salir</button>
+              </div>
+            `;
+          }
+
+          if (topbarAuth) {
+            topbarAuth.innerHTML = `👤 Conectado: <a href="${targetPanel}" style="color:inherit; font-weight:800;">${user.name}</a> (${roleLabel}) | <span style="text-decoration:underline; cursor:pointer;" onclick="logoutChiawayUser()">Cerrar sesión</span>`;
+          }
+        } catch (e) {
+          console.error('Error parseando sesión de usuario:', e);
+        }
+      }
+    })();
+
+    function logoutChiawayUser() {
+      if (confirm('¿Desea cerrar su sesión actual?')) {
+        localStorage.removeItem('chiaway_user');
+        window.location.reload();
+      }
+    }
+
+    // Si viene redirigido desde el login con ?openWidget=true y tiene sesión, abrir automáticamente el widget
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('openWidget') === 'true') {
+        const userStr = localStorage.getItem('chiaway_user');
+        if (userStr && window.AgrovisionWidget) {
+          setTimeout(function() {
+            window.AgrovisionWidget.openModal();
+          }, 400);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

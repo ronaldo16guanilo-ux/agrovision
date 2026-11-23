@@ -1,0 +1,3535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración Central &bull; Chiaway Agro</title>
+  <link rel="icon" type="image/png" href="assets/panel/logo-panel.png">
+
+  <!-- Control de Acceso y Roles: Seguridad y Protección del Panel Administrador -->
+  <script>
+    (function() {
+      try {
+        const stored = localStorage.getItem('chiaway_user');
+        if (!stored) {
+          alert('⛔ Inicie sesión con una cuenta de Administrador o Personal Autorizado para acceder al Panel Central.');
+          window.location.replace('login.html');
+          return;
+        }
+        const u = JSON.parse(stored);
+        if (u.role === 'CLIENT') {
+          alert('⛔ Acceso denegado: Tu cuenta tiene perfil de CLIENTE / AGRICULTOR.\nNo cuentas con permisos administrativos para ingresar a este panel.');
+          window.location.replace('panel-cliente.html');
+          return;
+        }
+        if (u.role !== 'ADMIN' && u.role !== 'WORKER') {
+          alert('⛔ Acceso no autorizado: Rol de usuario no reconocido.');
+          window.location.replace('login.html');
+          return;
+        }
+      } catch (e) {
+        window.location.replace('login.html');
+      }
+    })();
+  </script>
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chart.js para visualización de métricas avanzadas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* ======================================================== */
+    /* VARIABLES Y ESTILOS BASE CHIAWAY AGRO                    */
+    /* ======================================================== */
+    :root {
+      --primary-dark: #002e26;
+      --primary-forest: #022c22;
+      --primary-green: #044e3b;
+      --emerald-600: #059669;
+      --emerald-500: #10b981;
+      --emerald-light: #ecfdf5;
+      --accent-gold: #f59e0b;
+      --accent-blue: #0284c7;
+      --accent-purple: #6366f1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --border-focus: #10b981;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-full: 9999px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 14px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+      --shadow-hover: 0 14px 30px rgba(4, 78, 59, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ======================================================== */
+    /* SIDEBAR CORPORATIVO ADMINISTRADOR                        */
+    /* ======================================================== */
+    .admin-sidebar {
+      width: 270px;
+      background: linear-gradient(180deg, #00241e 0%, #022c22 45%, #011f18 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      padding: 24px 16px;
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+
+    .brand-badge-admin {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+
+    .nav-menu-group {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .menu-section-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      padding: 10px 14px 4px;
+    }
+
+    .nav-item-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 16px;
+      border-radius: var(--radius-md);
+      color: #cbd5e1;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    .nav-item-btn.active {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #ffffff;
+      font-weight: 800;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+    }
+
+    .nav-counter-pill {
+      margin-left: auto;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .nav-item-btn.active .nav-counter-pill {
+      background: #ffffff;
+      color: #065f46;
+    }
+
+    .sidebar-footer {
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-return-web {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-return-web:hover {
+      background: rgba(16, 185, 129, 0.3);
+      color: #ffffff;
+      border-color: #10b981;
+      transform: translateY(-1px);
+    }
+
+    .btn-topbar-web {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      color: #065f46;
+      padding: 7px 15px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      white-space: nowrap;
+    }
+
+    .btn-topbar-web:hover {
+      background: #047857;
+      border-color: #047857;
+      color: #ffffff;
+      box-shadow: 0 3px 8px rgba(4, 120, 87, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .btn-quick-client {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #a7f3d0;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-quick-client:hover {
+      background: rgba(16, 185, 129, 0.2);
+      color: #ffffff;
+    }
+
+    .btn-sidebar-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      border: none;
+      color: #f87171;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sidebar-logout:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+    }
+
+    /* ======================================================== */
+    /* CONTENEDOR PRINCIPAL Y TOPBAR                            */
+    /* ======================================================== */
+    .admin-main-wrapper {
+      margin-left: 270px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding-bottom: 50px;
+    }
+
+    .admin-topbar {
+      height: 76px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--primary-forest);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .topbar-right-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Filtro de Sede en Topbar */
+    .sede-filter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid #cbd5e1;
+    }
+
+    .sede-filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sede-filter-select {
+      background: transparent;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-forest);
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* Rango Temporal Segmentado */
+    .date-range-segmented {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: var(--radius-md);
+      padding: 3px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .date-range-btn {
+      padding: 6px 13px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .date-range-btn.active {
+      background: #ffffff;
+      color: var(--emerald-600);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      font-weight: 800;
+    }
+
+    /* Admin Profile Pill */
+    .admin-profile-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 12px 5px 6px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .admin-profile-pill:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .admin-avatar-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--emerald-500);
+      background: #022c22;
+    }
+
+    .admin-avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .admin-name-role {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .admin-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .admin-role {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--emerald-600);
+    }
+
+    /* ======================================================== */
+    /* VISTAS MODULARES (SPA)                                   */
+    /* ======================================================== */
+    .admin-content-view {
+      display: none;
+      padding: 28px 32px;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    .admin-content-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ======================================================== */
+    /* VISTA 1: DASHBOARD ANALÍTICO                             */
+    /* ======================================================== */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: #cbd5e1;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+    }
+
+    .kpi-card.border-green::before { background: #10b981; }
+    .kpi-card.border-blue::before { background: #0284c7; }
+    .kpi-card.border-amber::before { background: #f59e0b; }
+    .kpi-card.border-purple::before { background: #8b5cf6; }
+
+    .kpi-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .kpi-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-icon-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .kpi-icon-green { background: #ecfdf5; color: #059669; }
+    .kpi-icon-blue { background: #f0f9ff; color: #0284c7; }
+    .kpi-icon-amber { background: #fffbeb; color: #d97706; }
+    .kpi-icon-purple { background: #f5f3ff; color: #7c3aed; }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .kpi-main-number {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .kpi-delta-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .delta-up { background: #dcfce7; color: #15803d; }
+    .delta-down { background: #fee2e2; color: #b91c1c; }
+
+    .kpi-subtext {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Grilla de Gráficos */
+    .dashboard-charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .chart-panel-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chart-panel-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .panel-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .panel-card-title-group h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary-forest);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-card-title-group p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .chart-canvas-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+
+    .chart-canvas-container-lg {
+      position: relative;
+      height: 330px;
+      width: 100%;
+    }
+
+    /* Fila de Comparativa Sedes y Derivaciones */
+    .sedes-deriv-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .sedes-stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+    }
+
+    .sedes-stats-table th {
+      text-align: left;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      background: #f8fafc;
+    }
+
+    .sedes-stats-table td {
+      padding: 12px;
+      font-size: 13px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .sedes-stats-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.5s ease;
+    }
+
+    /* ======================================================== */
+    /* VISTA 2: GESTIÓN DE COLABORADORES                        */
+    /* ======================================================== */
+    .view-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 18px 24px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      max-width: 600px;
+    }
+
+    .search-input-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 9px 14px;
+      flex: 1;
+    }
+
+    .search-input-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .btn-primary-action {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 10px 20px;
+      font-size: 13.5px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary-action:hover {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.45);
+    }
+
+    .collaborators-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .collab-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s ease;
+    }
+
+    .collab-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: #cbd5e1;
+    }
+
+    .collab-card-banner {
+      height: 80px;
+      background: linear-gradient(135deg, #022c22 0%, #064e3b 100%);
+      position: relative;
+    }
+
+    .collab-status-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+    }
+
+    .collab-card-body {
+      padding: 0 20px 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .collab-avatar-overlap {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      border: 3.5px solid #ffffff;
+      box-shadow: var(--shadow-md);
+      margin-top: -38px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      background: #022c22;
+      align-self: flex-start;
+    }
+
+    .collab-avatar-overlap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .collab-name-heading {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .collab-specialty-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--emerald-600);
+      margin-bottom: 8px;
+    }
+
+    .collab-cip-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 14px;
+      align-self: flex-start;
+    }
+
+    .collab-details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 12.5px;
+      color: #475569;
+      margin-bottom: 18px;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 12px;
+    }
+
+    .collab-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .collab-actions-row {
+      margin-top: auto;
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 14px;
+    }
+
+    .btn-wsp-action {
+      background: #25d366;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 12.5px;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      flex: 1;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-wsp-action:hover {
+      background: #1da851;
+      color: #ffffff;
+    }
+
+    .btn-icon-action {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-icon-action:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-icon-danger:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #dc2626;
+    }
+
+    /* ======================================================== */
+    /* VISTA 3: GESTIÓN DE TIENDA Y PRODUCTOS                   */
+    /* ======================================================== */
+    .store-kpis-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .store-kpi-chip {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .store-kpi-chip .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: #f1f5f9;
+    }
+
+    .products-table-container {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .products-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .products-data-table th {
+      background: #f8fafc;
+      padding: 14px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .products-data-table td {
+      padding: 14px 16px;
+      font-size: 13.5px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .products-data-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .prod-thumb-box {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .prod-thumb-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .prod-name-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prod-table-name {
+      font-weight: 800;
+      color: var(--text-main);
+      font-size: 14px;
+    }
+
+    .prod-table-active {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .badge-category {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .cat-fungicida { background: #dcfce7; color: #166534; }
+    .cat-insecticida { background: #fee2e2; color: #991b1b; }
+    .cat-acaricida { background: #ffedd5; color: #9a3412; }
+    .cat-biologico { background: #e0e7ff; color: #3730a3; }
+    .cat-nutricion { background: #fef3c7; color: #92400e; }
+
+    .price-discount-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-final {
+      font-weight: 800;
+      color: var(--emerald-600);
+      font-size: 14px;
+    }
+
+    .price-original-striked {
+      font-size: 11.5px;
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+
+    .discount-pill {
+      font-size: 10.5px;
+      font-weight: 800;
+      background: #ef4444;
+      color: #ffffff;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      display: inline-block;
+      margin-left: 4px;
+    }
+
+    .stock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+    }
+
+    .stock-high { background: #dcfce7; color: #15803d; }
+    .stock-medium { background: #fef3c7; color: #b45309; }
+    .stock-low { background: #fee2e2; color: #b91c1c; }
+
+    /* ======================================================== */
+    /* VISTA 4: REGISTRO DE CONSULTAS Y DIAGNÓSTICOS CON IA    */
+    /* ======================================================== */
+    .consultas-table-container {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ======================================================== */
+    /* VISTA 6: CONFIGURACIONES PROFESIONALES                   */
+    /* ======================================================== */
+    .config-tabs-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+
+    .config-tab-btn {
+      padding: 12px 20px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .config-tab-btn.active {
+      color: var(--emerald-600);
+      border-bottom-color: var(--emerald-600);
+      font-weight: 800;
+    }
+
+    .config-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      max-width: 900px;
+    }
+
+    .config-grid-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .form-control {
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--emerald-500);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+
+    /* ======================================================== */
+    /* MODALES GENERALES                                        */
+    /* ======================================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-card-box {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-card-header h3 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--primary-forest);
+    }
+
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .modal-card-footer {
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .kpi-cards-grid { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-charts-grid { grid-template-columns: 1fr; }
+      .sedes-deriv-grid { grid-template-columns: 1fr; }
+      .collaborators-grid { grid-template-columns: repeat(2, 1fr); }
+      .store-kpis-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .admin-sidebar { width: 70px; padding: 16px 8px; }
+      .admin-sidebar .brand-text, .admin-sidebar .brand-badge-admin, .menu-section-label, .nav-item-btn span, .nav-counter-pill, .btn-return-web span, .btn-quick-client span, .btn-sidebar-logout span, .btn-topbar-web span { display: none; }
+      .nav-item-btn { justify-content: center; padding: 12px; }
+      .admin-main-wrapper { margin-left: 70px; }
+      .admin-topbar { padding: 0 16px; }
+      .kpi-cards-grid { grid-template-columns: 1fr; }
+      .collaborators-grid { grid-template-columns: 1fr; }
+      .store-kpis-bar { grid-template-columns: 1fr; }
+      .config-grid-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================== -->
+  <!-- SIDEBAR LATERAL                                          -->
+  <!-- ======================================================== -->
+  <aside class="admin-sidebar">
+    <div>
+      <div class="sidebar-header">
+        <a href="panel-administrador.html" class="brand-box">
+          <img src="assets/panel/logo-panel.png" alt="Chiaway Agro" class="brand-logo-img">
+        </a>
+        <div class="brand-badge-admin">
+          <span>🛡️</span> PANEL ADMINISTRADOR
+        </div>
+      </div>
+
+      <nav class="nav-menu-group">
+        <div class="menu-section-label">ANALÍTICA & GESTIÓN</div>
+
+        <button type="button" class="nav-item-btn active" onclick="switchAdminView('dashboard')" id="nav-btn-dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard General</span>
+        </button>
+
+        <button type="button" class="nav-item-btn" onclick="switchAdminView('colaboradores')" id="nav-btn-colaboradores">
+          <span class="nav-icon">👨‍🌾</span>
+          <span>Colaboradores & Asesores</span>
+          <span class="nav-counter-pill" id="side-collab-count">6</span>
+        </button>
+
+        <button type="button" class="nav-item-btn" onclick="switchAdminView('tienda')" id="nav-btn-tienda">
+          <span class="nav-icon">📦</span>
+          <span>Gestión de Tienda</span>
+          <span class="nav-counter-pill" id="side-prod-count">14</span>
+        </button>
+
+        <div class="menu-section-label" style="margin-top:12px;">OPERACIONES</div>
+
+        <button type="button" class="nav-item-btn" onclick="switchAdminView('consultas')" id="nav-btn-consultas">
+          <span class="nav-icon">🔬</span>
+          <span>Consultas Fitosanitarias</span>
+        </button>
+
+        <button type="button" class="nav-item-btn" onclick="switchAdminView('clientes')" id="nav-btn-clientes">
+          <span class="nav-icon">🌾</span>
+          <span>Clientes & Fundos</span>
+        </button>
+
+        <button type="button" class="nav-item-btn" onclick="switchAdminView('configuracion')" id="nav-btn-configuracion">
+          <span class="nav-icon">⚙️</span>
+          <span>Configuraciones</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="demo-chiaway.html" class="btn-return-web" title="Volver a la Página Web Principal">
+        <span>🌐</span> <span>Página Web Principal</span>
+      </a>
+      <a href="panel-cliente.html" target="_blank" class="btn-quick-client" title="Abrir portal del agricultor">
+        <span>👁️</span> <span>Vista Panel Cliente</span>
+      </a>
+      <button type="button" class="btn-sidebar-logout" onclick="logoutAdmin()">
+        <span>🚪</span> <span>Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ======================================================== -->
+  <!-- CONTENEDOR PRINCIPAL                                     -->
+  <!-- ======================================================== -->
+  <main class="admin-main-wrapper">
+
+    <!-- TOPBAR CON FILTROS GLOBALES -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <h1 class="topbar-title" id="topbar-view-title">
+          <span>📊</span> Dashboard General
+        </h1>
+        <p class="topbar-subtitle" id="topbar-view-subtitle">Métricas en tiempo real, consultas fitosanitarias e inventario de insumos</p>
+      </div>
+
+      <div class="topbar-right-controls">
+        <!-- Filtro Global de Sede -->
+        <div class="sede-filter-wrap">
+          <span class="sede-filter-label">📍 Sede:</span>
+          <select id="global-sede-select" class="sede-filter-select" onchange="applyGlobalFilters()">
+            <option value="all">Todas las Sedes (Red Nacional)</option>
+            <option value="ica">Sede Central Ica</option>
+            <option value="chincha">Sede Chincha</option>
+            <option value="pisco">Sede Pisco</option>
+            <option value="imperial">Sede Imperial (Cañete)</option>
+            <option value="san_vicente">Sede San Vicente (Cañete)</option>
+            <option value="mala">Sede Mala</option>
+            <option value="nazca">Sede Nazca</option>
+          </select>
+        </div>
+
+        <!-- Filtro Global de Rango Temporal -->
+        <div class="date-range-segmented">
+          <button type="button" class="date-range-btn" onclick="setDateRange('diario', this)">Diario</button>
+          <button type="button" class="date-range-btn" onclick="setDateRange('semanal', this)">Semanal</button>
+          <button type="button" class="date-range-btn active" onclick="setDateRange('mensual', this)">Mensual</button>
+          <button type="button" class="date-range-btn" onclick="setDateRange('anual', this)">Anual</button>
+        </div>
+
+        <!-- Botón Volver a la Web Principal -->
+        <a href="demo-chiaway.html" class="btn-topbar-web" title="Regresar a la Página Web Principal de Chiaway">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <span>Web Principal</span>
+        </a>
+
+        <!-- Perfil Administrador -->
+        <div class="admin-profile-pill" onclick="switchAdminView('configuracion')" title="Ajustes de Administrador">
+          <div class="admin-avatar-box">
+            <img src="assets/panel/perfil-productor.jpg" alt="Admin" id="top-admin-avatar">
+          </div>
+          <div class="admin-name-role">
+            <span class="admin-name" id="top-admin-name">Ronaldo Guanilo</span>
+            <span class="admin-role">Superadministrador</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 1: DASHBOARD ANALÍTICO                             -->
+    <!-- ======================================================== -->
+    <section id="view-dashboard" class="admin-content-view active">
+
+      <!-- TARJETAS KPIS -->
+      <div class="kpi-cards-grid">
+        <!-- KPI 1: Clientes Registrados -->
+        <div class="kpi-card border-green">
+          <div class="kpi-header">
+            <span class="kpi-title">Clientes Registrados</span>
+            <div class="kpi-icon-badge kpi-icon-green">👥</div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-main-number" id="kpi-val-clients">1,428</span>
+            <span class="kpi-delta-tag delta-up" id="kpi-delta-clients">↑ +14.2%</span>
+          </div>
+          <div class="kpi-subtext" id="kpi-sub-clients">vs. periodo anterior (1,250 productores)</div>
+        </div>
+
+        <!-- KPI 2: Total Consultas IA -->
+        <div class="kpi-card border-blue">
+          <div class="kpi-header">
+            <span class="kpi-title">Consultas Fitosanitarias IA</span>
+            <div class="kpi-icon-badge kpi-icon-blue">🔬</div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-main-number" id="kpi-val-consultas">4,892</span>
+            <span class="kpi-delta-tag delta-up" id="kpi-delta-consultas">↑ +28.6%</span>
+          </div>
+          <div class="kpi-subtext" id="kpi-sub-consultas">Hojas y racimos analizados por visión IA</div>
+        </div>
+
+        <!-- KPI 3: Derivación a Ingenieros / Asistencias -->
+        <div class="kpi-card border-amber">
+          <div class="kpi-header">
+            <span class="kpi-title">Asistencias con Ingeniero</span>
+            <div class="kpi-icon-badge kpi-icon-amber">👨‍🌾</div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-main-number" id="kpi-val-engineer">1,180</span>
+            <span class="kpi-delta-tag delta-up" id="kpi-rate-engineer">24.1% tasa</span>
+          </div>
+          <div class="kpi-subtext" id="kpi-sub-engineer">Productores que solicitaron visita o WhatsApp técnico</div>
+        </div>
+
+        <!-- KPI 4: Ventas Tienda Insumos -->
+        <div class="kpi-card border-purple">
+          <div class="kpi-header">
+            <span class="kpi-title">Ventas Insumos Chiaway</span>
+            <div class="kpi-icon-badge kpi-icon-purple">💰</div>
+          </div>
+          <div class="kpi-value-row">
+            <span class="kpi-main-number" id="kpi-val-revenue">S/. 184,520</span>
+            <span class="kpi-delta-tag delta-up" id="kpi-delta-revenue">↑ +19.5%</span>
+          </div>
+          <div class="kpi-subtext" id="kpi-sub-revenue">386 despachos realizados a fundos</div>
+        </div>
+      </div>
+
+      <!-- FILA DE GRÁFICOS PRINCIPALES -->
+      <div class="dashboard-charts-grid">
+        <!-- Gráfico 1: Líneas (Crecimiento Clientela vs Consultas) -->
+        <div class="chart-panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title-group">
+              <h3>📈 Crecimiento de Clientela y Volumen de Consultas</h3>
+              <p id="chart-line-subtitle">Evolución mensual comparada de registros nuevos y actividad fitosanitaria</p>
+            </div>
+            <span style="font-size:12px; font-weight:700; color:#059669; background:#ecfdf5; padding:4px 10px; border-radius:20px;">
+              ● Tiempo Real
+            </span>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartGrowthLine"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico 2: Barras Comparativas (Periodo Actual vs Periodo Anterior) -->
+        <div class="chart-panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title-group">
+              <h3>📊 Comparativo de Rendimiento (<span id="compare-period-label">Mes Actual vs Mes Anterior</span>)</h3>
+              <p>Contraste directo entre el periodo seleccionado y el periodo inmediatamente anterior</p>
+            </div>
+            <div style="display:flex; gap:8px; font-size:11.5px; font-weight:700;">
+              <span style="color:#059669;">■ Periodo Actual</span>
+              <span style="color:#94a3b8;">■ Periodo Anterior</span>
+            </div>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="chartComparativeBar"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILA DE COMPARATIVA POR SEDE Y DERIVACIONES -->
+      <div class="sedes-deriv-grid">
+        <!-- Card: Actividad por Sede -->
+        <div class="chart-panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title-group">
+              <h3>🏛️ Actividad y Clientes por Sede Chiaway</h3>
+              <p>Distribución de productores adheridos y consultas resueltas por localidad</p>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:18px; align-items:center;">
+            <div style="height:220px; position:relative;">
+              <canvas id="chartSedesDoughnut"></canvas>
+            </div>
+            <div>
+              <table class="sedes-stats-table">
+                <thead>
+                  <tr>
+                    <th>Sede</th>
+                    <th>Clientes</th>
+                    <th>% Total</th>
+                  </tr>
+                </thead>
+                <tbody id="sedes-summary-tbody">
+                  <!-- Rellenado por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Derivación a Ingenieros Agrónomos -->
+        <div class="chart-panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title-group">
+              <h3>👨‍🌾 Asistencia Técnica Requerida por Cultivo</h3>
+              <p>Consultas que requirieron intervención directa de un ingeniero agrónomo</p>
+            </div>
+            <span style="font-size:12px; font-weight:800; color:#f59e0b; background:#fffbeb; padding:4px 10px; border-radius:20px;">
+              24.1% Derivadas
+            </span>
+          </div>
+          <div style="height:220px; position:relative;">
+            <canvas id="chartDerivationsBar"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 2: GESTIÓN DE COLABORADORES (INGENIEROS Y TÉCNICOS) -->
+    <!-- ======================================================== -->
+    <section id="view-colaboradores" class="admin-content-view">
+      <div class="view-toolbar">
+        <div class="search-filter-row">
+          <div class="search-input-box">
+            <span>🔍</span>
+            <input type="text" id="collab-search" placeholder="Buscar por nombre, CIP, especialidad o sede..." onkeyup="filterCollaborators()">
+          </div>
+          <select id="collab-sede-filter" class="form-control" style="width:180px;" onchange="filterCollaborators()">
+            <option value="all">Todas las Sedes</option>
+            <option value="Ica">Sede Ica</option>
+            <option value="Chincha">Sede Chincha</option>
+            <option value="Pisco">Sede Pisco</option>
+            <option value="Imperial">Sede Imperial (Cañete)</option>
+            <option value="San Vicente">Sede San Vicente</option>
+            <option value="Mala">Sede Mala</option>
+            <option value="Nazca">Sede Nazca</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn-primary-action" onclick="openCollaboratorModal()">
+          <span>➕</span> Registrar Nuevo Colaborador
+        </button>
+      </div>
+
+      <!-- Cuadrícula de Colaboradores -->
+      <div class="collaborators-grid" id="collaborators-cards-container">
+        <!-- Renderizado dinámicamente con JS -->
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 3: GESTIÓN DE TIENDA Y CATÁLOGO DE PRODUCTOS       -->
+    <!-- ======================================================== -->
+    <section id="view-tienda" class="admin-content-view">
+      <!-- Métricas de Tienda -->
+      <div class="store-kpis-bar">
+        <div class="store-kpi-chip">
+          <div class="icon-box">📦</div>
+          <div>
+            <div style="font-size:11.5px; color:#64748b; font-weight:700;">TOTAL PRODUCTOS</div>
+            <div style="font-size:22px; font-weight:800; color:#0f172a;" id="store-kpi-total">14</div>
+          </div>
+        </div>
+        <div class="store-kpi-chip">
+          <div class="icon-box" style="background:#ecfdf5; color:#059669;">🏷️</div>
+          <div>
+            <div style="font-size:11.5px; color:#64748b; font-weight:700;">EN OFERTA / DESCUENTO</div>
+            <div style="font-size:22px; font-weight:800; color:#059669;" id="store-kpi-discount">5</div>
+          </div>
+        </div>
+        <div class="store-kpi-chip">
+          <div class="icon-box" style="background:#f0fdf4; color:#16a34a;">📊</div>
+          <div>
+            <div style="font-size:11.5px; color:#64748b; font-weight:700;">STOCK TOTAL ALMACÉN</div>
+            <div style="font-size:22px; font-weight:800; color:#0f172a;" id="store-kpi-stock">1,280 unid.</div>
+          </div>
+        </div>
+        <div class="store-kpi-chip">
+          <div class="icon-box" style="background:#fee2e2; color:#dc2626;">⚠️</div>
+          <div>
+            <div style="font-size:11.5px; color:#64748b; font-weight:700;">STOCK CRÍTICO (&lt;10)</div>
+            <div style="font-size:22px; font-weight:800; color:#dc2626;" id="store-kpi-critical">2 productos</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de herramientas de productos -->
+      <div class="view-toolbar">
+        <div class="search-filter-row">
+          <div class="search-input-box">
+            <span>🔍</span>
+            <input type="text" id="prod-search" placeholder="Buscar por producto, activo, patógeno o categoría..." onkeyup="filterProductsTable()">
+          </div>
+          <select id="prod-cat-filter" class="form-control" style="width:180px;" onchange="filterProductsTable()">
+            <option value="all">Todas las Categorías</option>
+            <option value="fungicida">Fungicidas</option>
+            <option value="insecticida">Insecticidas</option>
+            <option value="acaricida">Acaricidas</option>
+            <option value="biologico">Biológicos</option>
+            <option value="nutricion">Nutrición & Bioestimulantes</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn-primary-action" onclick="openProductModal()">
+          <span>➕</span> Agregar Nuevo Producto
+        </button>
+      </div>
+
+      <!-- Tabla de Productos -->
+      <div class="products-table-container">
+        <table class="products-data-table">
+          <thead>
+            <tr>
+              <th style="width:70px;">Foto</th>
+              <th>Producto & Activo</th>
+              <th>Categoría</th>
+              <th>Presentación</th>
+              <th>Precio & Descuento</th>
+              <th>Stock en Almacén</th>
+              <th style="text-align:right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="products-table-tbody">
+            <!-- Rellenado por JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 4: REGISTRO DE CONSULTAS Y DIAGNÓSTICOS CON IA    -->
+    <!-- ======================================================== -->
+    <section id="view-consultas" class="admin-content-view">
+      <div class="view-toolbar">
+        <div class="search-filter-row">
+          <div class="search-input-box">
+            <span>🔍</span>
+            <input type="text" id="consulta-search" placeholder="Buscar por fundo, patógeno, cultivo o código..." onkeyup="filterConsultasTable()">
+          </div>
+          <select id="consulta-urgency-filter" class="form-control" style="width:160px;" onchange="filterConsultasTable()">
+            <option value="all">Todas las Urgencias</option>
+            <option value="high">Alta Urgencia</option>
+            <option value="medium">Urgencia Media</option>
+            <option value="low">Baja Urgencia</option>
+          </select>
+        </div>
+        <div style="font-size:13px; font-weight:700; color:#64748b;">
+          Total Registros: <strong id="total-consultas-badge" style="color:#059669;">6</strong>
+        </div>
+      </div>
+
+      <div class="consultas-table-container">
+        <table class="products-data-table">
+          <thead>
+            <tr>
+              <th>Código & Fecha</th>
+              <th>Fundo & Valle</th>
+              <th>Cultivo</th>
+              <th>Diagnóstico IA</th>
+              <th>Severidad / Urgencia</th>
+              <th>Asistencia Técnica</th>
+              <th>Insumo Recetado</th>
+            </tr>
+          </thead>
+          <tbody id="consultas-table-tbody">
+            <!-- Rellenado por JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 5: CLIENTES Y FUNDOS REGISTRADOS                   -->
+    <!-- ======================================================== -->
+    <section id="view-clientes" class="admin-content-view">
+      <div class="view-toolbar">
+        <div class="search-filter-row">
+          <div class="search-input-box">
+            <span>🔍</span>
+            <input type="text" id="cliente-search" placeholder="Buscar productor, fundo, valle agrícola..." onkeyup="filterClientesTable()">
+          </div>
+          <select id="cliente-valle-filter" class="form-control" style="width:160px;" onchange="filterClientesTable()">
+            <option value="all">Todos los Valles</option>
+            <option value="Ica">Valle de Ica</option>
+            <option value="Chincha">Valle de Chincha</option>
+            <option value="Cañete">Valle de Cañete</option>
+            <option value="Pisco">Valle de Pisco</option>
+          </select>
+        </div>
+        <div style="font-size:13px; font-weight:700; color:#64748b;">
+          Total Productores: <strong style="color:#059669;">1,428 registrados</strong>
+        </div>
+      </div>
+
+      <div class="consultas-table-container">
+        <table class="products-data-table">
+          <thead>
+            <tr>
+              <th>Productor</th>
+              <th>Fundo Agrícola</th>
+              <th>Valle / Sector</th>
+              <th>Área Total</th>
+              <th>Cultivos Principales</th>
+              <th>Diagnósticos Realizados</th>
+              <th>Contacto</th>
+            </tr>
+          </thead>
+          <tbody id="clientes-table-tbody">
+            <!-- Rellenado por JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 6: CONFIGURACIONES PROFESIONALES                   -->
+    <!-- ======================================================== -->
+    <section id="view-configuracion" class="admin-content-view">
+      <div class="config-tabs-nav">
+        <button type="button" class="config-tab-btn active" onclick="switchConfigTab('empresa')" id="cfg-tab-empresa">
+          🏢 Datos Corporativos Chiaway
+        </button>
+        <button type="button" class="config-tab-btn" onclick="switchConfigTab('ia')" id="cfg-tab-ia">
+          🤖 Parámetros del Asesor IA
+        </button>
+        <button type="button" class="config-tab-btn" onclick="switchConfigTab('sedes')" id="cfg-tab-sedes">
+          🏛️ Sedes & Logística de Despacho
+        </button>
+        <button type="button" class="config-tab-btn" onclick="switchConfigTab('perfil')" id="cfg-tab-perfil">
+          👤 Mi Perfil de Administrador
+        </button>
+      </div>
+
+      <!-- PESTAÑA 1: EMPRESA -->
+      <div id="cfg-content-empresa" class="config-card">
+        <h3 style="font-size:16px; font-weight:800; color:#064e3b; margin-bottom:16px;">🏢 Información Institucional y Fiscal</h3>
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Razón Social</label>
+            <input type="text" id="cfg-razon" class="form-control" value="CHIAWAY AGRO S.A.C.">
+          </div>
+          <div class="form-group">
+            <label>RUC</label>
+            <input type="text" id="cfg-ruc" class="form-control" value="20534892104">
+          </div>
+        </div>
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Dirección Sede Central</label>
+            <input type="text" id="cfg-dir" class="form-control" value="Av. Panamericana Sur Km 300 &bull; Ica, Perú">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Central de Atención</label>
+            <input type="text" id="cfg-wsp" class="form-control" value="+51 994 233 110">
+          </div>
+        </div>
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Correo Electrónico Corporativo</label>
+            <input type="email" id="cfg-email" class="form-control" value="contacto@chiaway.com">
+          </div>
+          <div class="form-group">
+            <label>Horario de Despacho a Campo</label>
+            <input type="text" id="cfg-horario" class="form-control" value="Lunes a Sábado: 07:00 am - 06:00 pm">
+          </div>
+        </div>
+        <div style="text-align:right; margin-top:14px;">
+          <button type="button" class="btn-primary-action" onclick="saveCompanyConfig()">💾 Guardar Información Corporativa</button>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 2: IA -->
+      <div id="cfg-content-ia" class="config-card" style="display:none;">
+        <h3 style="font-size:16px; font-weight:800; color:#064e3b; margin-bottom:16px;">🤖 Configuración de Modelos Botánicos y Visión IA</h3>
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Umbral Mínimo de Confianza IA (%)</label>
+            <input type="number" id="cfg-ai-conf" class="form-control" value="85" min="50" max="99">
+            <small style="color:#64748b;">Diagnósticos con menor certeza requerirán foto complementaria.</small>
+          </div>
+          <div class="form-group">
+            <label>Umbral de Severidad para Derivación Inmediata a Ingeniero (%)</label>
+            <input type="number" id="cfg-ai-severidad" class="form-control" value="30" min="10" max="60">
+            <small style="color:#64748b;">Si la severidad supera este valor, se asigna técnico de turno por WhatsApp.</small>
+          </div>
+        </div>
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Versión del Motor Fitopatológico</label>
+            <input type="text" class="form-control" value="AgroVision AI v2.8 (Modelos Ica - Vid, Palto, Espárrago)" readonly style="background:#f1f5f9;">
+          </div>
+          <div class="form-group">
+            <label>Notificación Automática a Agrónomo de Zona</label>
+            <select class="form-control">
+              <option value="always">Activada (Inmediata vía WhatsApp y Sistema)</option>
+              <option value="high_only">Solo en Alta Urgencia</option>
+              <option value="manual">Manual</option>
+            </select>
+          </div>
+        </div>
+        <div style="text-align:right; margin-top:14px;">
+          <button type="button" class="btn-primary-action" onclick="alert('✅ Parámetros de IA actualizados correctamente.')">💾 Guardar Parámetros de IA</button>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 3: SEDES -->
+      <div id="cfg-content-sedes" class="config-card" style="display:none;">
+        <h3 style="font-size:16px; font-weight:800; color:#064e3b; margin-bottom:16px;">🏛️ Red de 7 Sedes Operativas Chiaway Agro</h3>
+        <p style="font-size:13px; color:#64748b; margin-bottom:16px;">Administración de puntos de venta y despacho técnico en la costa central y sur.</p>
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:14px;">
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+            <strong>📍 Sede Central Ica</strong>
+            <p style="font-size:12px; color:#64748b;">Av. Cutervo #450 &bull; Tel: 998 373 240</p>
+          </div>
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+            <strong>📍 Sede Imperial (Cañete)</strong>
+            <p style="font-size:12px; color:#64748b;">Av. Ramos #508 &bull; Tel: 998 373 241</p>
+          </div>
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+            <strong>📍 Sede San Vicente (Cañete)</strong>
+            <p style="font-size:12px; color:#64748b;">Jr. 2 de Mayo #482 &bull; Tel: 953 377 637</p>
+          </div>
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+            <strong>📍 Sede Mala</strong>
+            <p style="font-size:12px; color:#64748b;">Calle Francia #655 &bull; Tel: 998 373 240</p>
+          </div>
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+            <strong>📍 Sede Chincha</strong>
+            <p style="font-size:12px; color:#64748b;">Av. Óscar R. Benavides #720 &bull; Tel: 998 373 242</p>
+          </div>
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0;">
+            <strong>📍 Sede Pisco</strong>
+            <p style="font-size:12px; color:#64748b;">Av. Fermín Tangüis #310 &bull; Tel: 998 373 243</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 4: PERFIL -->
+      <div id="cfg-content-perfil" class="config-card" style="display:none;">
+        <h3 style="font-size:16px; font-weight:800; color:#064e3b; margin-bottom:16px;">👤 Perfil del Superadministrador</h3>
+        <div style="display:flex; gap:20px; align-items:center; margin-bottom:20px;">
+          <div style="width:80px; height:80px; border-radius:50%; overflow:hidden; border:3px solid #10b981; background:#022c22;">
+            <img src="assets/panel/perfil-productor.jpg" alt="Admin" id="cfg-admin-avatar-preview" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div>
+            <input type="file" id="cfg-admin-avatar-file" accept="image/*" style="display:none;" onchange="handleAdminAvatarUpload(event)">
+            <button type="button" class="btn-primary-action" onclick="document.getElementById('cfg-admin-avatar-file').click()" style="padding:8px 16px; font-size:12.5px;">
+              📷 Cambiar Foto de Administrador
+            </button>
+            <p style="font-size:11.5px; color:#64748b; margin-top:4px;">JPG o PNG en alta resolución</p>
+          </div>
+        </div>
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" id="cfg-admin-name" class="form-control" value="Ronaldo Guanilo">
+          </div>
+          <div class="form-group">
+            <label>Correo Electrónico de Acceso</label>
+            <input type="email" id="cfg-admin-email" class="form-control" value="admin@chiaway.com">
+          </div>
+        </div>
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Rol en el Sistema</label>
+            <input type="text" class="form-control" value="Superadministrador Central" readonly style="background:#f1f5f9;">
+          </div>
+          <div class="form-group">
+            <label>Contraseña Actual / Nueva</label>
+            <input type="password" id="cfg-admin-pass" class="form-control" value="admin123" placeholder="Nueva contraseña">
+          </div>
+        </div>
+        <div style="text-align:right; margin-top:14px;">
+          <button type="button" class="btn-primary-action" onclick="saveAdminProfile()">💾 Actualizar Perfil</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: REGISTRAR / EDITAR COLABORADOR                     -->
+  <!-- ======================================================== -->
+  <div class="modal-overlay" id="modal-collaborator">
+    <div class="modal-card-box">
+      <div class="modal-card-header">
+        <h3 id="collab-modal-title">👨‍🌾 Registrar Nuevo Colaborador</h3>
+        <button class="btn-close-modal" onclick="closeCollaboratorModal()">&times;</button>
+      </div>
+      <div class="modal-card-body">
+        <input type="hidden" id="collab-form-id">
+
+        <!-- Foto de Perfil -->
+        <div style="display:flex; gap:16px; align-items:center; background:#f8fafc; padding:14px; border-radius:var(--radius-md); border:1px solid #e2e8f0;">
+          <div style="width:70px; height:70px; border-radius:50%; overflow:hidden; border:2.5px solid #10b981; background:#022c22; flex-shrink:0;">
+            <img id="collab-photo-preview" src="assets/panel/asesor-carlos.jpg" alt="Foto preview" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Fotografía Profesional</label>
+            <input type="file" id="collab-file-input" accept="image/*" style="display:none;" onchange="handleCollabPhotoSelect(event)">
+            <button type="button" class="btn-secondary" onclick="document.getElementById('collab-file-input').click()" style="padding:6px 14px; font-size:12px;">
+              📁 Subir Foto (Archivo)
+            </button>
+            <input type="url" id="collab-url-input" placeholder="O pegar enlace URL..." oninput="handleCollabPhotoUrl(this.value)" style="margin-top:6px; width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px;">
+          </div>
+        </div>
+
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Nombres y Apellidos *</label>
+            <input type="text" id="collab-name" class="form-control" placeholder="Ej: Ing. Carlos Mendoza Alva" required>
+          </div>
+          <div class="form-group">
+            <label>Cargo / Rol *</label>
+            <select id="collab-role" class="form-control">
+              <option value="Ingeniero Agrónomo">Ingeniero Agrónomo</option>
+              <option value="Técnico Agrícola de Campo">Técnico Agrícola de Campo</option>
+              <option value="Especialista Fitosanitario">Especialista Fitosanitario</option>
+              <option value="Asesor Nutricional">Asesor Nutricional</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Especialidad Técnica *</label>
+            <input type="text" id="collab-specialty" class="form-control" placeholder="Ej: Fitopatología en Vid y Palto" required>
+          </div>
+          <div class="form-group">
+            <label>N.° Colegiatura (CIP)</label>
+            <input type="text" id="collab-cip" class="form-control" placeholder="Ej: CIP 184520">
+          </div>
+        </div>
+
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Sede Asignada *</label>
+            <select id="collab-sede" class="form-control">
+              <option value="Ica">Sede Central Ica</option>
+              <option value="Chincha">Sede Chincha</option>
+              <option value="Pisco">Sede Pisco</option>
+              <option value="Imperial">Sede Imperial (Cañete)</option>
+              <option value="San Vicente">Sede San Vicente</option>
+              <option value="Mala">Sede Mala</option>
+              <option value="Nazca">Sede Nazca</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estado de Disponibilidad</label>
+            <select id="collab-status" class="form-control">
+              <option value="Activo">🟢 Activo (Atención Inmediata)</option>
+              <option value="En Campo">🚜 En Campo (Visitas a Fundos)</option>
+              <option value="Guardia">⏰ De Guardia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>WhatsApp Directo (+51) *</label>
+            <input type="tel" id="collab-wsp" class="form-control" placeholder="994233110" required>
+          </div>
+          <div class="form-group">
+            <label>Teléfono Celular</label>
+            <input type="tel" id="collab-phone" class="form-control" placeholder="998373240">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Correo Electrónico Institucional *</label>
+          <input type="email" id="collab-email" class="form-control" placeholder="cmendoza@chiaway.com">
+        </div>
+      </div>
+      <div class="modal-card-footer">
+        <button type="button" class="btn-secondary" onclick="closeCollaboratorModal()">Cancelar</button>
+        <button type="button" class="btn-primary-action" onclick="saveCollaborator()">💾 Guardar Colaborador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: AGREGAR / EDITAR PRODUCTO EN TIENDA               -->
+  <!-- ======================================================== -->
+  <div class="modal-overlay" id="modal-product">
+    <div class="modal-card-box">
+      <div class="modal-card-header">
+        <h3 id="product-modal-title">📦 Agregar Nuevo Insumo Fitosanitario</h3>
+        <button class="btn-close-modal" onclick="closeProductModal()">&times;</button>
+      </div>
+      <div class="modal-card-body">
+        <input type="hidden" id="prod-form-id">
+
+        <!-- Foto del Producto -->
+        <div style="display:flex; gap:16px; align-items:center; background:#f8fafc; padding:14px; border-radius:var(--radius-md); border:1px solid #e2e8f0;">
+          <div style="width:70px; height:70px; border-radius:var(--radius-sm); overflow:hidden; border:1px solid #cbd5e1; background:#ffffff; flex-shrink:0;">
+            <img id="prod-photo-preview" src="assets/panel/cultivo-vid-hoja.jpg?v=20261123" alt="Foto preview" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px; font-weight:700; color:#334155; margin-bottom:4px; display:block;">Foto del Insumo</label>
+            <input type="file" id="prod-file-input" accept="image/*" style="display:none;" onchange="handleProdPhotoSelect(event)">
+            <button type="button" class="btn-secondary" onclick="document.getElementById('prod-file-input').click()" style="padding:6px 14px; font-size:12px;">
+              📁 Subir Imagen (Archivo)
+            </button>
+            <input type="url" id="prod-url-input" placeholder="O pegar enlace URL de foto..." oninput="handleProdPhotoUrl(this.value)" style="margin-top:6px; width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:11.5px;">
+          </div>
+        </div>
+
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Nombre Comercial *</label>
+            <input type="text" id="prod-name" class="form-control" placeholder="Ej: Ridomil Gold 68 WG" required>
+          </div>
+          <div class="form-group">
+            <label>Ingrediente Activo *</label>
+            <input type="text" id="prod-active" class="form-control" placeholder="Ej: Mefenoxam 4% + Mancozeb 64%" required>
+          </div>
+        </div>
+
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Categoría Fitosanitaria *</label>
+            <select id="prod-category" class="form-control">
+              <option value="fungicida">Fungicida</option>
+              <option value="insecticida">Insecticida</option>
+              <option value="acaricida">Acaricida</option>
+              <option value="biologico">Biológico</option>
+              <option value="nutricion">Nutrición & Bioestimulante</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Presentación / Envase *</label>
+            <input type="text" id="prod-unit" class="form-control" placeholder="Ej: Bolsa 1 kg, Frasco 500 ml" required>
+          </div>
+        </div>
+
+        <div class="config-grid-row">
+          <div class="form-group">
+            <label>Precio Regular (S/.) *</label>
+            <input type="number" step="0.50" id="prod-price" class="form-control" placeholder="95.00" oninput="calculateDiscountedPrice()" required>
+          </div>
+          <div class="form-group">
+            <label>Descuento Promocional (%)</label>
+            <input type="number" id="prod-discount" class="form-control" placeholder="0" min="0" max="90" oninput="calculateDiscountedPrice()">
+          </div>
+        </div>
+
+        <div style="background:#ecfdf5; padding:10px 14px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:12.5px; font-weight:700; color:#065f46;">Precio Final al Agricultor:</span>
+          <span style="font-size:17px; font-weight:800; color:#059669;" id="prod-calc-preview">S/. 95.00</span>
+        </div>
+
+        <div class="config-grid-row" style="margin-top:12px;">
+          <div class="form-group">
+            <label>Stock en Almacén (Unidades) *</label>
+            <input type="number" id="prod-stock" class="form-control" placeholder="100" min="0" required>
+          </div>
+          <div class="form-group">
+            <label>Dosis Recomendada</label>
+            <input type="text" id="prod-dose" class="form-control" placeholder="Ej: 2.5 kg/ha pre-floración">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Descripción Técnica y Patógenos Objetivo</label>
+          <textarea id="prod-desc" class="form-control" rows="3" placeholder="Acción preventiva y curativa para mildiu, tizón tardío y alternaria en vid y hortalizas..."></textarea>
+        </div>
+      </div>
+      <div class="modal-card-footer">
+        <button type="button" class="btn-secondary" onclick="closeProductModal()">Cancelar</button>
+        <button type="button" class="btn-primary-action" onclick="saveProduct()">💾 Guardar Producto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT: LÓGICA DE ANALÍTICA, CHART.JS, CRUD Y SPA    -->
+  <!-- ======================================================== -->
+  <script>
+    // ==========================================
+    // ESTADO GLOBAL DE DATOS
+    // ==========================================
+    let currentPeriod = 'mensual';
+    let currentSede = 'all';
+
+    // Gráficos Chart.js
+    let chartLineGrowth = null;
+    let chartBarComparative = null;
+    let chartDoughnutSedes = null;
+    let chartBarDerivations = null;
+
+    // Colaboradores Iniciales
+    const DEFAULT_COLLABORATORS = [
+      {
+        id: 1,
+        name: "Ing. Carlos Mendoza Alva",
+        role: "Ingeniero Agrónomo",
+        specialty: "Fitopatología en Vid y Palto",
+        cip: "CIP 184520",
+        sede: "Ica",
+        wsp: "994233110",
+        phone: "998373240",
+        email: "cmendoza@chiaway.com",
+        status: "Activo",
+        photo: "assets/panel/asesor-carlos.jpg"
+      },
+      {
+        id: 2,
+        name: "Inga. Andrea Quispe Ramos",
+        role: "Especialista Fitosanitaria",
+        specialty: "Nutrición Vegetal y Riego Tecnificado",
+        cip: "CIP 204118",
+        sede: "Chincha",
+        wsp: "994233110",
+        phone: "998373241",
+        email: "aquispe@chiaway.com",
+        status: "Activo",
+        photo: "assets/panel/asesor-andrea.jpg"
+      },
+      {
+        id: 3,
+        name: "Ing. Roberto Valdivia Soto",
+        role: "Ingeniero Agrónomo",
+        specialty: "Manejo Integrado de Plagas en Palto",
+        cip: "CIP 162940",
+        sede: "Imperial",
+        wsp: "994233110",
+        phone: "998373242",
+        email: "rvaldivia@chiaway.com",
+        status: "En Campo",
+        photo: "assets/panel/asesor-roberto.jpg"
+      },
+      {
+        id: 4,
+        name: "Ing. Manuel Carranza Peña",
+        role: "Técnico Agrícola de Campo",
+        specialty: "Fisiología y Cosecha en Espárrago",
+        cip: "CIP 198302",
+        sede: "Pisco",
+        wsp: "994233110",
+        phone: "998373243",
+        email: "mcarranza@chiaway.com",
+        status: "Activo",
+        photo: "assets/panel/asesor-manuel.jpg"
+      },
+      {
+        id: 5,
+        name: "Inga. Lucía Barrientos Castro",
+        role: "Especialista Fitosanitaria",
+        specialty: "Control Biológico y Bioestimulantes",
+        cip: "CIP 215430",
+        sede: "Mala",
+        wsp: "994233110",
+        phone: "998373244",
+        email: "lbarrientos@chiaway.com",
+        status: "Activo",
+        photo: "assets/panel/asesor-andrea.jpg"
+      },
+      {
+        id: 6,
+        name: "Ing. Javier Morales Torres",
+        role: "Ingeniero Agrónomo",
+        specialty: "Fertirriego y Sanidad en Vid",
+        cip: "CIP 179211",
+        sede: "Nazca",
+        wsp: "994233110",
+        phone: "998373245",
+        email: "jmorales@chiaway.com",
+        status: "Guardia",
+        photo: "assets/panel/asesor-roberto.jpg"
+      }
+    ];
+
+    // Catálogo Maestro de Productos Chiaway
+    const DEFAULT_STORE_PRODUCTS = [
+      {
+        id: 1,
+        name: "Azufre micronizado 80% WP",
+        active: "Azufre elemental",
+        category: "fungicida",
+        unit: "bolsa 1 kg",
+        price: 45.00,
+        discount: 10,
+        stock: 140,
+        dose: "2-3 kg/ha",
+        desc: "Manejo preventivo y erradicante de oídio en vid y frutales.",
+        photo: "assets/panel/cultivo-uva-racimo.jpg?v=20261123"
+      },
+      {
+        id: 2,
+        name: "Oxicloruro de cobre 50% WP",
+        active: "Oxicloruro de cobre",
+        category: "fungicida",
+        unit: "bolsa 1 kg",
+        price: 55.00,
+        discount: 0,
+        stock: 95,
+        dose: "2.5 kg/ha pre-floración",
+        desc: "Protección fungosa y bacteriana de alta persistencia ante neblinas.",
+        photo: "assets/panel/cultivo-vid-hoja.jpg?v=20261123"
+      },
+      {
+        id: 3,
+        name: "Metalaxil + Mancozeb (Ridomil Gold)",
+        active: "Metalaxil 8% + Mancozeb 64%",
+        category: "fungicida",
+        unit: "bolsa 1 kg",
+        price: 95.00,
+        discount: 15,
+        stock: 65,
+        dose: "2.5 kg/ha",
+        desc: "Potente acción preventiva y curativa para mildiu y tizón tardío.",
+        photo: "assets/panel/cultivo-vid-hoja.jpg?v=20261123"
+      },
+      {
+        id: 4,
+        name: "Difenoconazol 250 EC",
+        active: "Difenoconazol",
+        category: "fungicida",
+        unit: "frasco 500 ml",
+        price: 110.00,
+        discount: 0,
+        stock: 45,
+        dose: "300 ml/ha",
+        desc: "Control selectivo de mancha negra en palto, alternaria y cercospora.",
+        photo: "assets/panel/cultivo-palta-fruto.jpg?v=20261123"
+      },
+      {
+        id: 5,
+        name: "Penconazol 100 EC (Topas)",
+        active: "Penconazol",
+        category: "fungicida",
+        unit: "frasco 250 ml",
+        price: 88.00,
+        discount: 10,
+        stock: 35,
+        dose: "250 ml/ha",
+        desc: "Curación rápida de micelios de oídio en hojas y racimos de vid.",
+        photo: "assets/panel/cultivo-uva-racimo.jpg?v=20261123"
+      },
+      {
+        id: 6,
+        name: "Trifloxistrobina 50 WG (Flint)",
+        active: "Trifloxistrobina",
+        category: "fungicida",
+        unit: "envase 200 g",
+        price: 140.00,
+        discount: 0,
+        stock: 28,
+        dose: "150 g/ha",
+        desc: "Gran fijación a la cutícula cerosa; protección prolongada contra oídio.",
+        photo: "assets/panel/botrytis-vid.jpg"
+      },
+      {
+        id: 7,
+        name: "Abamectina 018 EC (Vertimec)",
+        active: "Abamectina",
+        category: "acaricida",
+        unit: "frasco 1 L",
+        price: 125.00,
+        discount: 5,
+        stock: 8, // Stock crítico
+        dose: "500 ml/cilindro",
+        desc: "Control fulminante de arañita roja, ácaro del tostado y minador de hojas.",
+        photo: "assets/panel/aranita-palto.jpg"
+      },
+      {
+        id: 8,
+        name: "Spirodiclofen 240 SC (Envidor)",
+        active: "Spirodiclofen",
+        category: "acaricida",
+        unit: "frasco 250 ml",
+        price: 165.00,
+        discount: 0,
+        stock: 22,
+        dose: "200 ml/cilindro",
+        desc: "Inhibidor de síntesis de lípidos; excelente para huevos y ninfas de ácaros.",
+        photo: "assets/panel/aranita-palto.jpg"
+      },
+      {
+        id: 9,
+        name: "Imidacloprid 350 SC (Confidor)",
+        active: "Imidacloprid",
+        category: "insecticida",
+        unit: "frasco 500 ml",
+        price: 98.00,
+        discount: 10,
+        stock: 54,
+        dose: "300 ml/cilindro",
+        desc: "Sistémico de alta eficacia para querezas, pulgones y trips en frutales.",
+        photo: "assets/panel/botrytis-vid.jpg"
+      },
+      {
+        id: 10,
+        name: "Spinetoram 250 WG (Delegate)",
+        active: "Spinetoram",
+        category: "insecticida",
+        unit: "sobre 100 g",
+        price: 185.00,
+        discount: 0,
+        stock: 18,
+        dose: "100 g/ha",
+        desc: "Control selectivo de trips y polilla del racimo con perfil ecológico amigable.",
+        photo: "assets/panel/cultivo-uva-racimo.jpg?v=20261123"
+      },
+      {
+        id: 11,
+        name: "Bacillus subtilis QST 713 (Serenade)",
+        active: "Bacillus subtilis cepa QST 713",
+        category: "biologico",
+        unit: "botella 1 L",
+        price: 85.00,
+        discount: 0,
+        stock: 40,
+        dose: "2 L/ha",
+        desc: "Biofungicida preventivo sin residuos químicos (LMR exento), ideal para exportación.",
+        photo: "assets/panel/cultivo-palta-fruto.jpg?v=20261123"
+      },
+      {
+        id: 12,
+        name: "Trichoderma harzianum (Bio-Control)",
+        active: "Trichoderma harzianum cepa T-22",
+        category: "biologico",
+        unit: "bolsa 500 g",
+        price: 75.00,
+        discount: 0,
+        stock: 6, // Stock crítico
+        dose: "1 kg/ha al suelo",
+        desc: "Antagonista de patógenos radiculares (Phytophthora, Fusarium, Rhizoctonia).",
+        photo: "assets/panel/fundo-campo.jpg"
+      },
+      {
+        id: 13,
+        name: "Bioestimulante Aminoácidos Libres",
+        active: "Aminoácidos libres 24% + Nitrógeno",
+        category: "nutricion",
+        unit: "botella 1 L",
+        price: 52.00,
+        discount: 0,
+        stock: 110,
+        dose: "1.5 L/ha",
+        desc: "Superación rápida de estrés abiótico por calor, neblina o aplicaciones químicas.",
+        photo: "assets/panel/fundo-campo.jpg"
+      },
+      {
+        id: 14,
+        name: "Fosfito de Potasio 00-30-20",
+        active: "Fosfito de potasio + Fitoalexinas",
+        category: "nutricion",
+        unit: "galón 4 L",
+        price: 135.00,
+        discount: 10,
+        stock: 75,
+        dose: "3 L/ha",
+        desc: "Inductor de resistencia sistémica adquirida e inmunidad vegetal natural.",
+        photo: "assets/panel/fundo-campo.jpg"
+      }
+    ];
+
+    // Consultas Fitosanitarias de Ejemplo
+    const DEFAULT_CONSULTAS = [
+      {
+        code: "#DG-2026-1084",
+        date: "13/11/2026 14:32",
+        fundo: "Fundo Santa Rosa",
+        valle: "Ica &bull; San Juan Bautista",
+        cultivo: "🍇 Vid Red Globe",
+        patogeno: "Mildiu en Vid (Plasmopara viticola)",
+        urgency: "high",
+        urgencyLabel: "Alta Urgencia (38%)",
+        engineerReq: true,
+        engineerName: "Ing. Carlos Mendoza",
+        insumo: "Metalaxil + Mancozeb (Ridomil Gold)"
+      },
+      {
+        code: "#DG-2026-1083",
+        date: "13/11/2026 11:15",
+        fundo: "Fundo Los Viñedos de Ica",
+        valle: "Ica &bull; Villacurí",
+        cultivo: "🍇 Vid Superior",
+        patogeno: "Oídio en Vid (Erysiphe necator)",
+        urgency: "medium",
+        urgencyLabel: "Urgencia Media (22%)",
+        engineerReq: false,
+        engineerName: "Resuelto por IA",
+        insumo: "Azufre micronizado 80% WP"
+      },
+      {
+        code: "#DG-2026-1082",
+        date: "12/11/2026 16:40",
+        fundo: "Agrícola Palto Real",
+        valle: "Chincha &bull; El Carmen",
+        cultivo: "🥑 Palto Hass",
+        patogeno: "Mancha Negra (Pseudocercospora purpurea)",
+        urgency: "low",
+        urgencyLabel: "Baja Urgencia (12%)",
+        engineerReq: false,
+        engineerName: "Resuelto por IA",
+        insumo: "Difenoconazol 250 EC"
+      },
+      {
+        code: "#DG-2026-1081",
+        date: "12/11/2026 09:20",
+        fundo: "Fundo Doña María",
+        valle: "Cañete &bull; Imperial",
+        cultivo: "🍇 Vid Red Globe",
+        patogeno: "Botrytis / Pudrición Gris (Botrytis cinerea)",
+        urgency: "high",
+        urgencyLabel: "Alta Urgencia (34%)",
+        engineerReq: true,
+        engineerName: "Ing. Roberto Valdivia",
+        insumo: "Trifloxistrobina 50 WG (Flint)"
+      },
+      {
+        code: "#DG-2026-1080",
+        date: "11/11/2026 15:05",
+        fundo: "Fundo El Olivar",
+        valle: "Chincha &bull; Chincha Baja",
+        cultivo: "🥑 Palto Hass",
+        patogeno: "Arañita Roja (Oligonychus yothersi)",
+        urgency: "medium",
+        urgencyLabel: "Urgencia Media (26%)",
+        engineerReq: true,
+        engineerName: "Inga. Andrea Quispe",
+        insumo: "Abamectina 018 EC (Vertimec)"
+      },
+      {
+        code: "#DG-2026-1079",
+        date: "10/11/2026 10:50",
+        fundo: "Agrícola Verde Ica",
+        valle: "Pisco &bull; Independencia",
+        cultivo: "🌾 Espárrago Verde",
+        patogeno: "Roya del Espárrago (Puccinia asparagi)",
+        urgency: "low",
+        urgencyLabel: "Baja Urgencia (9%)",
+        engineerReq: false,
+        engineerName: "Resuelto por IA",
+        insumo: "Fosfito de Potasio 00-30-20"
+      }
+    ];
+
+    // Clientes Registrados
+    const DEFAULT_CLIENTS = [
+      {
+        name: "Ronaldo Guanilo",
+        fundo: "Fundo Santa Rosa",
+        valle: "Ica &bull; San Juan Bautista",
+        area: "10.00 ha",
+        crops: "🍇 Vid, 🥑 Palto, 🌾 Espárrago",
+        consultas: 8,
+        contact: "994 233 110 &bull; ronaldo@chiaway.pe"
+      },
+      {
+        name: "Alberto Falconí Peña",
+        fundo: "Agrícola Viña del Sur",
+        valle: "Ica &bull; Los Aquijes",
+        area: "35.50 ha",
+        crops: "🍇 Vid Quebranta & Red Globe",
+        consultas: 14,
+        contact: "956 123 456 &bull; afalconi@vinadelsur.com"
+      },
+      {
+        name: "Carmen Morales Echegaray",
+        fundo: "Fundo Las Paltas",
+        valle: "Chincha &bull; El Carmen",
+        area: "18.00 ha",
+        crops: "🥑 Palto Hass & Fuerte",
+        consultas: 6,
+        contact: "978 456 123 &bull; carmen@paltaschincha.pe"
+      },
+      {
+        name: "Miguel Ángel Benavides",
+        fundo: "Agroindustrial Cañete",
+        valle: "Cañete &bull; Imperial",
+        area: "52.00 ha",
+        crops: "🍇 Vid, 🌽 Maíz Amarillo, 🥔 Papa",
+        consultas: 19,
+        contact: "981 789 234 &bull; mbenavides@agrocanete.com"
+      },
+      {
+        name: "Jorge Sotomayor",
+        fundo: "Fundo Don Jorge",
+        valle: "Pisco &bull; Túpac Amaru Inca",
+        area: "12.50 ha",
+        crops: "🌾 Espárrago Verde, 🍇 Vid",
+        consultas: 4,
+        contact: "945 678 901 &bull; jsotomayor@donjorge.pe"
+      }
+    ];
+
+    // ==========================================
+    // HELPERS DE LOCALSTORAGE
+    // ==========================================
+    function getCollaborators() {
+      const stored = localStorage.getItem('chiaway_admin_collaborators');
+      if (stored) {
+        try { return JSON.parse(stored); } catch (e) { }
+      }
+      localStorage.setItem('chiaway_admin_collaborators', JSON.stringify(DEFAULT_COLLABORATORS));
+      return DEFAULT_COLLABORATORS;
+    }
+
+    function saveCollaborators(collabs) {
+      localStorage.setItem('chiaway_admin_collaborators', JSON.stringify(collabs));
+      renderCollaborators();
+      updateSidebarBadges();
+    }
+
+    function getStoreProducts() {
+      const stored = localStorage.getItem('chiaway_store_products');
+      if (stored) {
+        try { return JSON.parse(stored); } catch (e) { }
+      }
+      localStorage.setItem('chiaway_store_products', JSON.stringify(DEFAULT_STORE_PRODUCTS));
+      return DEFAULT_STORE_PRODUCTS;
+    }
+
+    function saveStoreProducts(prods) {
+      localStorage.setItem('chiaway_store_products', JSON.stringify(prods));
+      renderProductsTable();
+      updateStoreKpis();
+      updateSidebarBadges();
+    }
+
+    // ==========================================
+    // INICIALIZACIÓN AL CARGAR LA PÁGINA
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Cargar sesión admin si existe
+      loadAdminSession();
+
+      // Renderizar vistas
+      renderCollaborators();
+      renderProductsTable();
+      renderConsultasTable();
+      renderClientesTable();
+      updateStoreKpis();
+      updateSidebarBadges();
+
+      // Inicializar y renderizar gráficos Chart.js
+      initCharts();
+      applyGlobalFilters();
+    });
+
+    function loadAdminSession() {
+      try {
+        const stored = localStorage.getItem('chiaway_user');
+        if (stored) {
+          const u = JSON.parse(stored);
+          const topName = document.getElementById('top-admin-name');
+          const cfgName = document.getElementById('cfg-admin-name');
+          const cfgEmail = document.getElementById('cfg-admin-email');
+          if (topName && u.name) topName.innerText = u.name;
+          if (cfgName && u.name) cfgName.value = u.name;
+          if (cfgEmail && u.email) cfgEmail.value = u.email;
+        }
+
+        const avatar = localStorage.getItem('chiaway_admin_avatar') || localStorage.getItem('chiaway_user_avatar');
+        if (avatar) {
+          const topImg = document.getElementById('top-admin-avatar');
+          const cfgImg = document.getElementById('cfg-admin-avatar-preview');
+          if (topImg) topImg.src = avatar;
+          if (cfgImg) cfgImg.src = avatar;
+        }
+      } catch (e) { }
+    }
+
+    function updateSidebarBadges() {
+      const collabs = getCollaborators();
+      const prods = getStoreProducts();
+      const elCollab = document.getElementById('side-collab-count');
+      const elProd = document.getElementById('side-prod-count');
+      if (elCollab) elCollab.innerText = collabs.length;
+      if (elProd) elProd.innerText = prods.length;
+    }
+
+    // ==========================================
+    // NAVEGACIÓN SPA ENTRE SECCIONES
+    // ==========================================
+    function switchAdminView(viewId) {
+      document.querySelectorAll('.admin-content-view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
+
+      const target = document.getElementById('view-' + viewId);
+      const btn = document.getElementById('nav-btn-' + viewId);
+      const title = document.getElementById('topbar-view-title');
+      const subtitle = document.getElementById('topbar-view-subtitle');
+
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+
+      const titlesMap = {
+        'dashboard': { t: '📊 Dashboard General', s: 'Métricas en tiempo real, consultas fitosanitarias e inventario de insumos' },
+        'colaboradores': { t: '👨‍🌾 Gestión de Colaboradores & Asesores', s: 'Directorio de ingenieros agrónomos y técnicos asignados a fundos' },
+        'tienda': { t: '📦 Gestión de Tienda & Catálogo de Insumos', s: 'Control de inventario, precios, descuentos y stock en almacenes' },
+        'consultas': { t: '🔬 Registro de Consultas y Diagnósticos con IA', s: 'Historial fitopatológico de plagas detectadas y derivaciones a ingenieros' },
+        'clientes': { t: '🌾 Directorio de Clientes y Fundos', s: 'Padrón de productores agrícolas y monitoreo de hectáreas por valle' },
+        'configuracion': { t: '⚙️ Configuraciones Profesionales', s: 'Ajustes corporativos, parámetros del modelo IA y red de sedes' }
+      };
+
+      if (titlesMap[viewId] && title && subtitle) {
+        title.innerHTML = titlesMap[viewId].t;
+        subtitle.innerText = titlesMap[viewId].s;
+      }
+
+      // Si vuelve a dashboard, redibujar charts para evitar bugs de canvas
+      if (viewId === 'dashboard') {
+        setTimeout(() => {
+          if (chartLineGrowth) chartLineGrowth.resize();
+          if (chartBarComparative) chartBarComparative.resize();
+          if (chartDoughnutSedes) chartDoughnutSedes.resize();
+          if (chartBarDerivations) chartBarDerivations.resize();
+        }, 100);
+      }
+    }
+
+    // ==========================================
+    // FILTROS GLOBALES (FECHA Y SEDE)
+    // ==========================================
+    function setDateRange(range, btn) {
+      currentPeriod = range;
+      document.querySelectorAll('.date-range-segmented .date-range-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      applyGlobalFilters();
+    }
+
+    function applyGlobalFilters() {
+      const sedeSelect = document.getElementById('global-sede-select');
+      currentSede = sedeSelect ? sedeSelect.value : 'all';
+
+      // Factores multiplicadores según periodo y sede para simular datos reales
+      let multPeriod = 1.0;
+      let labelCompare = 'Mes Actual vs Mes Anterior';
+      let labelsLine = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+      let dataClients = [320, 390, 410, 480];
+      let dataConsultas = [950, 1180, 1340, 1580];
+
+      let compActual = [4892, 1428, 1180, 386];
+      let compPrevious = [3800, 1250, 1090, 323];
+
+      if (currentPeriod === 'diario') {
+        multPeriod = 0.04;
+        labelCompare = 'Hoy vs Ayer';
+        labelsLine = ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'];
+        dataClients = [5, 12, 18, 22, 19, 14, 8];
+        dataConsultas = [28, 45, 62, 78, 55, 42, 24];
+        compActual = [195, 48, 47, 18];
+        compPrevious = [162, 38, 39, 14];
+      } else if (currentPeriod === 'semanal') {
+        multPeriod = 0.25;
+        labelCompare = 'Semana Actual vs Semana Anterior';
+        labelsLine = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+        dataClients = [45, 58, 62, 71, 80, 65, 34];
+        dataConsultas = [180, 215, 240, 290, 310, 260, 145];
+        compActual = [1223, 357, 295, 96];
+        compPrevious = [980, 305, 240, 78];
+      } else if (currentPeriod === 'anual') {
+        multPeriod = 11.2;
+        labelCompare = 'Año 2026 vs Año 2025';
+        labelsLine = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
+        dataClients = [90, 110, 140, 180, 210, 240, 280, 310, 360, 410, 460, 520];
+        dataConsultas = [320, 410, 580, 690, 810, 940, 1100, 1280, 1450, 1680, 1890, 2100];
+        compActual = [54790, 16050, 13210, 4320];
+        compPrevious = [41200, 12100, 9800, 3150];
+      }
+
+      // Modificador por Sede
+      let sedeMult = 1.0;
+      let sedeName = 'Todas las Sedes';
+      if (currentSede === 'ica') { sedeMult = 0.38; sedeName = 'Sede Central Ica'; }
+      else if (currentSede === 'chincha') { sedeMult = 0.22; sedeName = 'Sede Chincha'; }
+      else if (currentSede === 'imperial') { sedeMult = 0.16; sedeName = 'Sede Imperial (Cañete)'; }
+      else if (currentSede === 'pisco') { sedeMult = 0.12; sedeName = 'Sede Pisco'; }
+      else if (currentSede === 'mala') { sedeMult = 0.08; sedeName = 'Sede Mala'; }
+      else if (currentSede === 'nazca') { sedeMult = 0.04; sedeName = 'Sede Nazca'; }
+
+      // Actualizar texto de etiquetas
+      const lblComp = document.getElementById('compare-period-label');
+      if (lblComp) lblComp.innerText = labelCompare + (currentSede !== 'all' ? ` (${sedeName})` : '');
+
+      // Recalcular KPIs
+      const totClients = Math.round(1428 * (currentPeriod === 'mensual' ? 1 : multPeriod) * (currentSede === 'all' ? 1 : sedeMult * 2.2));
+      const totConsultas = Math.round(4892 * (currentPeriod === 'mensual' ? 1 : multPeriod) * (currentSede === 'all' ? 1 : sedeMult * 2.2));
+      const totEngineer = Math.round(totConsultas * 0.241);
+      const totRevenue = Math.round(184520 * (currentPeriod === 'mensual' ? 1 : multPeriod) * (currentSede === 'all' ? 1 : sedeMult * 2.2));
+
+      document.getElementById('kpi-val-clients').innerText = totClients.toLocaleString('es-PE');
+      document.getElementById('kpi-val-consultas').innerText = totConsultas.toLocaleString('es-PE');
+      document.getElementById('kpi-val-engineer').innerText = totEngineer.toLocaleString('es-PE');
+      document.getElementById('kpi-val-revenue').innerText = `S/. ${totRevenue.toLocaleString('es-PE')}`;
+
+      // Actualizar Gráfico de Líneas
+      if (chartLineGrowth) {
+        chartLineGrowth.data.labels = labelsLine;
+        chartLineGrowth.data.datasets[0].data = dataClients.map(v => Math.round(v * (currentSede === 'all' ? 1 : sedeMult * 2.2)));
+        chartLineGrowth.data.datasets[1].data = dataConsultas.map(v => Math.round(v * (currentSede === 'all' ? 1 : sedeMult * 2.2)));
+        chartLineGrowth.update();
+      }
+
+      // Actualizar Gráfico Comparativo
+      if (chartBarComparative) {
+        chartBarComparative.data.datasets[0].data = compActual.map(v => Math.round(v * (currentSede === 'all' ? 1 : sedeMult * 2.2)));
+        chartBarComparative.data.datasets[1].data = compPrevious.map(v => Math.round(v * (currentSede === 'all' ? 1 : sedeMult * 2.2)));
+        chartBarComparative.update();
+      }
+
+      renderSedesTableSummary();
+    }
+
+    // ==========================================
+    // INICIALIZACIÓN DE CHART.JS
+    // ==========================================
+    function initCharts() {
+      // 1. Gráfico de Líneas (Crecimiento Clientes vs Consultas)
+      const ctxLine = document.getElementById('chartGrowthLine').getContext('2d');
+      const gradGreen = ctxLine.createLinearGradient(0, 0, 0, 300);
+      gradGreen.addColorStop(0, 'rgba(5, 150, 105, 0.35)');
+      gradGreen.addColorStop(1, 'rgba(5, 150, 105, 0.0)');
+
+      const gradBlue = ctxLine.createLinearGradient(0, 0, 0, 300);
+      gradBlue.addColorStop(0, 'rgba(2, 132, 199, 0.3)');
+      gradBlue.addColorStop(1, 'rgba(2, 132, 199, 0.0)');
+
+      chartLineGrowth = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+          datasets: [
+            {
+              label: 'Nuevos Clientes',
+              data: [320, 390, 410, 480],
+              borderColor: '#059669',
+              backgroundColor: gradGreen,
+              borderWidth: 3,
+              fill: true,
+              tension: 0.35,
+              pointBackgroundColor: '#059669',
+              pointRadius: 4,
+              pointHoverRadius: 6
+            },
+            {
+              label: 'Consultas Fitosanitarias IA',
+              data: [950, 1180, 1340, 1580],
+              borderColor: '#0284c7',
+              backgroundColor: gradBlue,
+              borderWidth: 3,
+              fill: true,
+              tension: 0.35,
+              pointBackgroundColor: '#0284c7',
+              pointRadius: 4,
+              pointHoverRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { font: { family: 'Plus Jakarta Sans', weight: '700', size: 12 } }
+            },
+            tooltip: {
+              backgroundColor: '#002e26',
+              titleFont: { family: 'Plus Jakarta Sans', weight: '800' },
+              padding: 12,
+              cornerRadius: 8
+            }
+          },
+          scales: {
+            y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
+            x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+          }
+        }
+      });
+
+      // 2. Gráfico de Barras Comparativo (Actual vs Anterior)
+      const ctxBar = document.getElementById('chartComparativeBar').getContext('2d');
+      chartBarComparative = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: ['Consultas Totales', 'Clientes Nuevos', 'Derivación Técnico', 'Pedidos Despacho'],
+          datasets: [
+            {
+              label: 'Periodo Actual',
+              data: [4892, 1428, 1180, 386],
+              backgroundColor: '#059669',
+              borderRadius: 6,
+              borderSkipped: false
+            },
+            {
+              label: 'Periodo Anterior',
+              data: [3800, 1250, 1090, 323],
+              backgroundColor: '#cbd5e1',
+              borderRadius: 6,
+              borderSkipped: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#002e26', padding: 12, cornerRadius: 8 }
+          },
+          scales: {
+            y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
+            x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+          }
+        }
+      });
+
+      // 3. Gráfico Dona Sedes
+      const ctxSedes = document.getElementById('chartSedesDoughnut').getContext('2d');
+      chartDoughnutSedes = new Chart(ctxSedes, {
+        type: 'doughnut',
+        data: {
+          labels: ['Ica (38%)', 'Chincha (22%)', 'Imperial (16%)', 'Pisco (12%)', 'Mala (8%)', 'Nazca (4%)'],
+          datasets: [{
+            data: [38, 22, 16, 12, 8, 4],
+            backgroundColor: ['#059669', '#10b981', '#0284c7', '#38bdf8', '#f59e0b', '#a855f7'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#002e26', padding: 10, cornerRadius: 8 }
+          },
+          cutout: '68%'
+        }
+      });
+
+      // 4. Gráfico Derivaciones por Cultivo
+      const ctxDeriv = document.getElementById('chartBarDerivations').getContext('2d');
+      chartBarDerivations = new Chart(ctxDeriv, {
+        type: 'bar',
+        data: {
+          labels: ['🍇 Vid de Mesa', '🥑 Palto Hass', '🌾 Espárrago', '🍋 Cítricos / Otros'],
+          datasets: [{
+            label: '% Derivadas a Ingeniero',
+            data: [52, 33, 15, 8],
+            backgroundColor: ['#7c3aed', '#10b981', '#059669', '#f59e0b'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#002e26', padding: 10, cornerRadius: 8 }
+          },
+          scales: {
+            x: { max: 60, grid: { color: '#f1f5f9' }, ticks: { callback: v => v + '%' } },
+            y: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '700' } } }
+          }
+        }
+      });
+    }
+
+    function renderSedesTableSummary() {
+      const tbody = document.getElementById('sedes-summary-tbody');
+      if (!tbody) return;
+      const sedes = [
+        { name: '📍 Central Ica', clients: 542, pct: 38, color: '#059669' },
+        { name: '📍 Chincha', clients: 314, pct: 22, color: '#10b981' },
+        { name: '📍 Imperial (Cañete)', clients: 228, pct: 16, color: '#0284c7' },
+        { name: '📍 Pisco', clients: 171, pct: 12, color: '#38bdf8' },
+        { name: '📍 Mala', clients: 114, pct: 8, color: '#f59e0b' },
+        { name: '📍 Nazca', clients: 59, pct: 4, color: '#a855f7' }
+      ];
+
+      tbody.innerHTML = '';
+      sedes.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${s.name}</strong></td>
+          <td>${s.clients} fundos</td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-weight:800; font-size:12px; min-width:28px;">${s.pct}%</span>
+              <div class="progress-bar-wrap" style="width:80px;">
+                <div class="progress-bar-fill" style="width:${s.pct}%; background:${s.color};"></div>
+              </div>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ==========================================
+    // VISTA 2: CRUD COLABORADORES (INGENIEROS Y TÉCNICOS)
+    // ==========================================
+    let tempCollabPhoto = null;
+
+    function renderCollaborators() {
+      const container = document.getElementById('collaborators-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const collabs = getCollaborators();
+      const search = (document.getElementById('collab-search')?.value || '').toLowerCase().trim();
+      const sedeFilter = document.getElementById('collab-sede-filter')?.value || 'all';
+
+      const filtered = collabs.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(search) ||
+                              c.specialty.toLowerCase().includes(search) ||
+                              c.cip.toLowerCase().includes(search) ||
+                              c.sede.toLowerCase().includes(search);
+        const matchesSede = (sedeFilter === 'all') || (c.sede.toLowerCase().includes(sedeFilter.toLowerCase()));
+        return matchesSearch && matchesSede;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align:center; padding:50px; background:#ffffff; border-radius:14px; border:1px solid #e2e8f0;">
+            <span style="font-size:36px;">🔍</span>
+            <h3 style="margin-top:10px; color:#0f172a;">No se encontraron colaboradores</h3>
+            <p style="color:#64748b; font-size:13px;">Prueba ajustando los términos de búsqueda o filtros.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'collab-card';
+        card.innerHTML = `
+          <div class="collab-card-banner">
+            <span class="collab-status-badge">
+              ${c.status === 'Activo' ? '🟢 Activo' : c.status === 'En Campo' ? '🚜 En Campo' : '⏰ Guardia'}
+            </span>
+          </div>
+          <div class="collab-card-body">
+            <div class="collab-avatar-overlap">
+              <img src="${c.photo || 'assets/panel/asesor-carlos.jpg'}" alt="${c.name}" onerror="this.src='assets/panel/asesor-carlos.jpg';">
+            </div>
+            <h3 class="collab-name-heading">${c.name}</h3>
+            <div class="collab-specialty-text">${c.specialty}</div>
+            <span class="collab-cip-tag">${c.cip} &bull; ${c.role}</span>
+
+            <div class="collab-details-list">
+              <div class="collab-detail-item">
+                <span>📍</span> <strong>Sede:</strong> Sede ${c.sede}
+              </div>
+              <div class="collab-detail-item">
+                <span>📞</span> <strong>Teléfono:</strong> ${c.phone}
+              </div>
+              <div class="collab-detail-item">
+                <span>✉️</span> <strong>Correo:</strong> ${c.email}
+              </div>
+            </div>
+
+            <div class="collab-actions-row">
+              <a href="https://wa.me/51${c.wsp}?text=Hola%20${encodeURIComponent(c.name)},%20te%20contacto%20desde%20la%20Administración%20Chiaway" target="_blank" class="btn-wsp-action">
+                <span>💬</span> WhatsApp
+              </a>
+              <button type="button" class="btn-icon-action" onclick="editCollaborator(${c.id})" title="Editar datos">
+                ✏️
+              </button>
+              <button type="button" class="btn-icon-action btn-icon-danger" onclick="deleteCollaborator(${c.id})" title="Dar de baja">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterCollaborators() {
+      renderCollaborators();
+    }
+
+    function openCollaboratorModal(editId = null) {
+      tempCollabPhoto = null;
+      document.getElementById('collab-form-id').value = editId || '';
+      const title = document.getElementById('collab-modal-title');
+      const preview = document.getElementById('collab-photo-preview');
+      document.getElementById('collab-url-input').value = '';
+
+      if (editId) {
+        title.innerText = '✏️ Editar Colaborador';
+        const collabs = getCollaborators();
+        const c = collabs.find(item => item.id == editId);
+        if (c) {
+          document.getElementById('collab-name').value = c.name;
+          document.getElementById('collab-role').value = c.role;
+          document.getElementById('collab-specialty').value = c.specialty;
+          document.getElementById('collab-cip').value = c.cip;
+          document.getElementById('collab-sede').value = c.sede;
+          document.getElementById('collab-status').value = c.status;
+          document.getElementById('collab-wsp').value = c.wsp;
+          document.getElementById('collab-phone').value = c.phone;
+          document.getElementById('collab-email').value = c.email;
+          preview.src = c.photo || 'assets/panel/asesor-carlos.jpg';
+          tempCollabPhoto = c.photo;
+        }
+      } else {
+        title.innerText = '👨‍🌾 Registrar Nuevo Colaborador';
+        document.getElementById('collab-name').value = '';
+        document.getElementById('collab-specialty').value = '';
+        document.getElementById('collab-cip').value = 'CIP ' + Math.floor(150000 + Math.random() * 90000);
+        document.getElementById('collab-wsp').value = '994233110';
+        document.getElementById('collab-phone').value = '998373240';
+        document.getElementById('collab-email').value = '';
+        preview.src = 'assets/panel/asesor-carlos.jpg';
+        tempCollabPhoto = 'assets/panel/asesor-carlos.jpg';
+      }
+
+      document.getElementById('modal-collaborator').style.display = 'flex';
+    }
+
+    function closeCollaboratorModal() {
+      document.getElementById('modal-collaborator').style.display = 'none';
+      tempCollabPhoto = null;
+    }
+
+    function handleCollabPhotoSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        tempCollabPhoto = evt.target.result;
+        document.getElementById('collab-photo-preview').src = tempCollabPhoto;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleCollabPhotoUrl(url) {
+      if (url && url.trim().length > 6) {
+        tempCollabPhoto = url.trim();
+        document.getElementById('collab-photo-preview').src = tempCollabPhoto;
+      }
+    }
+
+    function saveCollaborator() {
+      const id = document.getElementById('collab-form-id').value;
+      const name = document.getElementById('collab-name').value.trim();
+      const role = document.getElementById('collab-role').value;
+      const specialty = document.getElementById('collab-specialty').value.trim();
+      const cip = document.getElementById('collab-cip').value.trim();
+      const sede = document.getElementById('collab-sede').value;
+      const status = document.getElementById('collab-status').value;
+      const wsp = document.getElementById('collab-wsp').value.trim();
+      const phone = document.getElementById('collab-phone').value.trim();
+      const email = document.getElementById('collab-email').value.trim();
+
+      if (!name || !specialty || !wsp) {
+        alert('Por favor complete los campos obligatorios: Nombre, Especialidad y WhatsApp.');
+        return;
+      }
+
+      const collabs = getCollaborators();
+
+      if (id) {
+        // Editar
+        const index = collabs.findIndex(c => c.id == id);
+        if (index !== -1) {
+          collabs[index] = {
+            ...collabs[index],
+            name, role, specialty, cip, sede, status, wsp, phone, email,
+            photo: tempCollabPhoto || collabs[index].photo
+          };
+        }
+      } else {
+        // Crear
+        const newId = collabs.length > 0 ? Math.max(...collabs.map(c => c.id)) + 1 : 1;
+        collabs.push({
+          id: newId,
+          name, role, specialty, cip, sede, status, wsp, phone, email,
+          photo: tempCollabPhoto || 'assets/panel/asesor-carlos.jpg'
+        });
+      }
+
+      saveCollaborators(collabs);
+      closeCollaboratorModal();
+      alert('✅ Colaborador guardado exitosamente.');
+    }
+
+    function editCollaborator(id) {
+      openCollaboratorModal(id);
+    }
+
+    function deleteCollaborator(id) {
+      const collabs = getCollaborators();
+      const c = collabs.find(item => item.id == id);
+      if (!c) return;
+
+      if (confirm(`¿Confirma dar de baja o eliminar al colaborador "${c.name}"?`)) {
+        const updated = collabs.filter(item => item.id != id);
+        saveCollaborators(updated);
+        alert('🗑️ Colaborador eliminado del sistema.');
+      }
+    }
+
+    // ==========================================
+    // VISTA 3: CRUD PRODUCTOS (TIENDA CHIAWAY)
+    // ==========================================
+    let tempProdPhoto = null;
+
+    function renderProductsTable() {
+      const tbody = document.getElementById('products-table-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const prods = getStoreProducts();
+      const search = (document.getElementById('prod-search')?.value || '').toLowerCase().trim();
+      const catFilter = document.getElementById('prod-cat-filter')?.value || 'all';
+
+      const filtered = prods.filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(search) ||
+                              p.active.toLowerCase().includes(search) ||
+                              p.category.toLowerCase().includes(search) ||
+                              (p.desc && p.desc.toLowerCase().includes(search));
+        const matchesCat = (catFilter === 'all') || (p.category === catFilter);
+        return matchesSearch && matchesCat;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center; padding:40px; color:#64748b;">
+              No se encontraron productos coincidentes en el inventario.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const finalPrice = p.discount > 0 ? (p.price * (1 - p.discount / 100)) : p.price;
+        const stockClass = p.stock < 10 ? 'stock-low' : (p.stock < 30 ? 'stock-medium' : 'stock-high');
+        const catClass = 'cat-' + p.category;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div class="prod-thumb-box">
+              <img src="${p.photo || 'assets/panel/cultivo-vid-hoja.jpg?v=20261123'}" alt="${p.name}" onerror="this.src='assets/panel/cultivo-vid-hoja.jpg?v=20261123';">
+            </div>
+          </td>
+          <td>
+            <div class="prod-name-meta">
+              <span class="prod-table-name">${p.name}</span>
+              <span class="prod-table-active">${p.active} &bull; ${p.dose || 'Dosis estándar'}</span>
+            </div>
+          </td>
+          <td>
+            <span class="badge-category ${catClass}">${p.category.toUpperCase()}</span>
+          </td>
+          <td><strong>${p.unit}</strong></td>
+          <td>
+            <div class="price-discount-box">
+              <div>
+                <span class="price-final">S/. ${finalPrice.toFixed(2)}</span>
+                ${p.discount > 0 ? `<span class="discount-pill">-${p.discount}%</span>` : ''}
+              </div>
+              ${p.discount > 0 ? `<span class="price-original-striked">S/. ${p.price.toFixed(2)}</span>` : ''}
+            </div>
+          </td>
+          <td>
+            <span class="stock-badge ${stockClass}">
+              ${p.stock < 10 ? '⚠️' : '✓'} ${p.stock} unid.
+            </span>
+          </td>
+          <td style="text-align:right;">
+            <button type="button" class="btn-icon-action" onclick="editProduct(${p.id})" title="Editar producto">
+              ✏️
+            </button>
+            <button type="button" class="btn-icon-action btn-icon-danger" onclick="deleteProduct(${p.id})" title="Eliminar producto" style="margin-left:4px;">
+              🗑️
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterProductsTable() {
+      renderProductsTable();
+    }
+
+    function updateStoreKpis() {
+      const prods = getStoreProducts();
+      const elTot = document.getElementById('store-kpi-total');
+      const elDisc = document.getElementById('store-kpi-discount');
+      const elStock = document.getElementById('store-kpi-stock');
+      const elCrit = document.getElementById('store-kpi-critical');
+
+      const totalItems = prods.length;
+      const discounted = prods.filter(p => p.discount > 0).length;
+      const totalStock = prods.reduce((sum, p) => sum + (parseInt(p.stock) || 0), 0);
+      const critical = prods.filter(p => (parseInt(p.stock) || 0) < 10).length;
+
+      if (elTot) elTot.innerText = totalItems;
+      if (elDisc) elDisc.innerText = discounted;
+      if (elStock) elStock.innerText = `${totalStock.toLocaleString('es-PE')} unid.`;
+      if (elCrit) elCrit.innerText = `${critical} productos`;
+    }
+
+    function openProductModal(editId = null) {
+      tempProdPhoto = null;
+      document.getElementById('prod-form-id').value = editId || '';
+      const title = document.getElementById('product-modal-title');
+      const preview = document.getElementById('prod-photo-preview');
+      document.getElementById('prod-url-input').value = '';
+
+      if (editId) {
+        title.innerText = '✏️ Editar Insumo Fitosanitario';
+        const prods = getStoreProducts();
+        const p = prods.find(item => item.id == editId);
+        if (p) {
+          document.getElementById('prod-name').value = p.name;
+          document.getElementById('prod-active').value = p.active;
+          document.getElementById('prod-category').value = p.category;
+          document.getElementById('prod-unit').value = p.unit;
+          document.getElementById('prod-price').value = p.price;
+          document.getElementById('prod-discount').value = p.discount || 0;
+          document.getElementById('prod-stock').value = p.stock || 50;
+          document.getElementById('prod-dose').value = p.dose || '';
+          document.getElementById('prod-desc').value = p.desc || '';
+          preview.src = p.photo || 'assets/panel/cultivo-vid-hoja.jpg?v=20261123';
+          tempProdPhoto = p.photo;
+        }
+      } else {
+        title.innerText = '📦 Agregar Nuevo Insumo Fitosanitario';
+        document.getElementById('prod-name').value = '';
+        document.getElementById('prod-active').value = '';
+        document.getElementById('prod-category').value = 'fungicida';
+        document.getElementById('prod-unit').value = 'Bolsa 1 kg';
+        document.getElementById('prod-price').value = '90.00';
+        document.getElementById('prod-discount').value = '0';
+        document.getElementById('prod-stock').value = '50';
+        document.getElementById('prod-dose').value = '2.0 kg/ha';
+        document.getElementById('prod-desc').value = '';
+        preview.src = 'assets/panel/cultivo-vid-hoja.jpg?v=20261123';
+        tempProdPhoto = 'assets/panel/cultivo-vid-hoja.jpg?v=20261123';
+      }
+
+      calculateDiscountedPrice();
+      document.getElementById('modal-product').style.display = 'flex';
+    }
+
+    function closeProductModal() {
+      document.getElementById('modal-product').style.display = 'none';
+      tempProdPhoto = null;
+    }
+
+    function calculateDiscountedPrice() {
+      const price = parseFloat(document.getElementById('prod-price').value) || 0;
+      const disc = parseFloat(document.getElementById('prod-discount').value) || 0;
+      const finalPrice = disc > 0 ? (price * (1 - disc / 100)) : price;
+      const previewEl = document.getElementById('prod-calc-preview');
+      if (previewEl) previewEl.innerText = `S/. ${finalPrice.toFixed(2)}`;
+    }
+
+    function handleProdPhotoSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        tempProdPhoto = evt.target.result;
+        document.getElementById('prod-photo-preview').src = tempProdPhoto;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleProdPhotoUrl(url) {
+      if (url && url.trim().length > 6) {
+        tempProdPhoto = url.trim();
+        document.getElementById('prod-photo-preview').src = tempProdPhoto;
+      }
+    }
+
+    function saveProduct() {
+      const id = document.getElementById('prod-form-id').value;
+      const name = document.getElementById('prod-name').value.trim();
+      const active = document.getElementById('prod-active').value.trim();
+      const category = document.getElementById('prod-category').value;
+      const unit = document.getElementById('prod-unit').value.trim();
+      const price = parseFloat(document.getElementById('prod-price').value) || 0;
+      const discount = parseInt(document.getElementById('prod-discount').value) || 0;
+      const stock = parseInt(document.getElementById('prod-stock').value) || 0;
+      const dose = document.getElementById('prod-dose').value.trim();
+      const desc = document.getElementById('prod-desc').value.trim();
+
+      if (!name || !active || price <= 0) {
+        alert('Por favor ingrese el Nombre del Producto, Ingrediente Activo y un Precio válido.');
+        return;
+      }
+
+      const prods = getStoreProducts();
+
+      if (id) {
+        // Editar
+        const index = prods.findIndex(p => p.id == id);
+        if (index !== -1) {
+          prods[index] = {
+            ...prods[index],
+            name, active, category, unit, price, discount, stock, dose, desc,
+            photo: tempProdPhoto || prods[index].photo
+          };
+        }
+      } else {
+        // Crear
+        const newId = prods.length > 0 ? Math.max(...prods.map(p => p.id)) + 1 : 1;
+        prods.push({
+          id: newId,
+          name, active, category, unit, price, discount, stock, dose, desc,
+          photo: tempProdPhoto || 'assets/panel/cultivo-vid-hoja.jpg?v=20261123'
+        });
+      }
+
+      saveStoreProducts(prods);
+      closeProductModal();
+      alert('✅ Producto guardado en el catálogo.');
+    }
+
+    function editProduct(id) {
+      openProductModal(id);
+    }
+
+    function deleteProduct(id) {
+      const prods = getStoreProducts();
+      const p = prods.find(item => item.id == id);
+      if (!p) return;
+
+      if (confirm(`¿Confirma eliminar el insumo "${p.name}" del catálogo?`)) {
+        const updated = prods.filter(item => item.id != id);
+        saveStoreProducts(updated);
+        alert('🗑️ Producto eliminado correctamente.');
+      }
+    }
+
+    // ==========================================
+    // VISTA 4: CONSULTAS FITOSANITARIAS
+    // ==========================================
+    function renderConsultasTable() {
+      const tbody = document.getElementById('consultas-table-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const search = (document.getElementById('consulta-search')?.value || '').toLowerCase().trim();
+      const urgencyFilter = document.getElementById('consulta-urgency-filter')?.value || 'all';
+
+      const filtered = DEFAULT_CONSULTAS.filter(c => {
+        const matchesSearch = c.code.toLowerCase().includes(search) ||
+                              c.fundo.toLowerCase().includes(search) ||
+                              c.cultivo.toLowerCase().includes(search) ||
+                              c.patogeno.toLowerCase().includes(search);
+        const matchesUrgency = (urgencyFilter === 'all') || (c.urgency === urgencyFilter);
+        return matchesSearch && matchesUrgency;
+      });
+
+      filtered.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${c.code}</strong><div style="font-size:11.5px; color:#64748b;">${c.date}</div></td>
+          <td><strong>${c.fundo}</strong><div style="font-size:11.5px; color:#64748b;">${c.valle}</div></td>
+          <td><strong>${c.cultivo}</strong></td>
+          <td>${c.patogeno}</td>
+          <td>
+            <span class="stock-badge ${c.urgency === 'high' ? 'stock-low' : (c.urgency === 'medium' ? 'stock-medium' : 'stock-high')}">
+              ${c.urgencyLabel}
+            </span>
+          </td>
+          <td>
+            <span style="font-weight:700; color:${c.engineerReq ? '#059669' : '#0284c7'};">
+              ${c.engineerReq ? '👨‍🌾 ' + c.engineerName : '🤖 ' + c.engineerName}
+            </span>
+          </td>
+          <td>${c.insumo}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const countBadge = document.getElementById('total-consultas-badge');
+      if (countBadge) countBadge.innerText = filtered.length;
+    }
+
+    function filterConsultasTable() {
+      renderConsultasTable();
+    }
+
+    // ==========================================
+    // VISTA 5: CLIENTES Y FUNDOS
+    // ==========================================
+    function renderClientesTable() {
+      const tbody = document.getElementById('clientes-table-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const search = (document.getElementById('cliente-search')?.value || '').toLowerCase().trim();
+      const valleFilter = document.getElementById('cliente-valle-filter')?.value || 'all';
+
+      const filtered = DEFAULT_CLIENTS.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(search) ||
+                              c.fundo.toLowerCase().includes(search) ||
+                              c.valle.toLowerCase().includes(search);
+        const matchesValle = (valleFilter === 'all') || (c.valle.toLowerCase().includes(valleFilter.toLowerCase()));
+        return matchesSearch && matchesValle;
+      });
+
+      filtered.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${c.name}</strong></td>
+          <td>🏡 ${c.fundo}</td>
+          <td>📍 ${c.valle}</td>
+          <td><strong>${c.area}</strong></td>
+          <td>${c.crops}</td>
+          <td><span class="nav-counter-pill" style="background:#059669; color:#fff;">${c.consultas} análisis</span></td>
+          <td style="font-size:12px; color:#64748b;">${c.contact}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterClientesTable() {
+      renderClientesTable();
+    }
+
+    // ==========================================
+    // VISTA 6: CONFIGURACIONES PROFESIONALES
+    // ==========================================
+    function switchConfigTab(tabId) {
+      ['empresa', 'ia', 'sedes', 'perfil'].forEach(t => {
+        const content = document.getElementById('cfg-content-' + t);
+        const btn = document.getElementById('cfg-tab-' + t);
+        if (content) content.style.display = (t === tabId) ? 'block' : 'none';
+        if (btn) btn.classList.toggle('active', t === tabId);
+      });
+    }
+
+    function saveCompanyConfig() {
+      const razon = document.getElementById('cfg-razon').value.trim();
+      const ruc = document.getElementById('cfg-ruc').value.trim();
+      const wsp = document.getElementById('cfg-wsp').value.trim();
+      localStorage.setItem('chiaway_cfg_razon', razon);
+      localStorage.setItem('chiaway_cfg_ruc', ruc);
+      localStorage.setItem('chiaway_cfg_wsp', wsp);
+      alert('✅ Información corporativa de Chiaway Agro guardada.');
+    }
+
+    function handleAdminAvatarUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const dataUrl = evt.target.result;
+        document.getElementById('top-admin-avatar').src = dataUrl;
+        document.getElementById('cfg-admin-avatar-preview').src = dataUrl;
+        localStorage.setItem('chiaway_admin_avatar', dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveAdminProfile() {
+      const name = document.getElementById('cfg-admin-name').value.trim();
+      const email = document.getElementById('cfg-admin-email').value.trim();
+
+      if (name) {
+        document.getElementById('top-admin-name').innerText = name;
+        try {
+          const stored = localStorage.getItem('chiaway_user');
+          let u = stored ? JSON.parse(stored) : {};
+          u.name = name;
+          u.email = email;
+          u.role = 'ADMIN';
+          localStorage.setItem('chiaway_user', JSON.stringify(u));
+        } catch(e){}
+      }
+      alert('✅ Perfil de administrador actualizado.');
+    }
+
+    function logoutAdmin() {
+      if (confirm('¿Desea cerrar la sesión del Panel Administrador?')) {
+        localStorage.removeItem('chiaway_user');
+        window.location.href = 'login.html';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+
+# Firebase service accounts / credentials
+*serviceaccount*.json
+*serviceAccount*.json
+backend/serviceaccount*.json
+backend/serviceAccount*.json
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+venv/
+backend/venv/
+__pycache__/
+*.pyc
+
+# Build outputs & uploads
+frontend/dist/
+backend/uploads/
+uploads/
+backend-spring/uploads/
+target/
+backend-spring/target/
+temp_jar_update/
+backend-spring/temp_jar_update/
+*.log
+*.class
+*.jar
+*.war
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
