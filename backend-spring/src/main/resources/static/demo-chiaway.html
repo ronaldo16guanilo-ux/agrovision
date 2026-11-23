@@ -1531,15 +1531,148 @@
       color: #64748b;
     }
 
-    /* Responsive */
-    @media (max-width: 980px) {
-      .hero-container { grid-template-columns: 1fr; }
-      .nosotros-grid { grid-template-columns: 1fr; }
-      .footer-container { grid-template-columns: 1fr 1fr; }
-      .navbar { padding: 12px 16px; }
-      .nav-links { gap: 10px; }
-      .hero-stats { grid-template-columns: 1fr; gap: 12px; }
-      .ai-callout-banner { flex-direction: column; text-align: center; gap: 20px; }
+    /* Mobile Menu Toggle Button */
+    .mobile-nav-toggle {
+      display: none;
+      background: transparent;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      width: 42px;
+      height: 42px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+      transition: all 0.2s;
+    }
+    .mobile-nav-toggle:hover {
+      background: #f1f5f9;
+      border-color: #059669;
+    }
+    .mobile-nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2.5px;
+      background-color: #0f172a;
+      border-radius: 2px;
+      transition: all 0.25s ease;
+    }
+    .mobile-nav-toggle.open span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+    .mobile-nav-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .mobile-nav-toggle.open span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    /* Responsive Breakpoints & Adaptability */
+    @media (max-width: 992px) {
+      .hero-container { grid-template-columns: 1fr; gap: 32px; }
+      .nosotros-executive-grid { grid-template-columns: 1fr; }
+      .footer-container { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+      .mobile-nav-toggle { display: flex; }
+      .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px 20px 24px;
+        gap: 10px;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+        border-bottom: 3px solid #10b981;
+        display: none;
+        z-index: 9999;
+      }
+      .nav-links.mobile-open {
+        display: flex;
+        animation: slideDownNav 0.25s ease forwards;
+      }
+      .nav-links a, .nav-links button {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 18px !important;
+        font-size: 15px;
+      }
+      .frontis-tabs-bar {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 8px;
+        display: flex;
+        gap: 8px;
+      }
+      .frontis-tab {
+        flex-shrink: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .topbar {
+        flex-direction: column;
+        gap: 6px;
+        padding: 8px 14px;
+        font-size: 12px;
+        text-align: center;
+      }
+      .topbar-info {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+      }
+      .navbar {
+        padding: 12px 16px;
+      }
+      .hero-section {
+        padding: 30px 16px;
+      }
+      .hero-title {
+        font-size: 32px;
+      }
+      .sedes-grid {
+        grid-template-columns: 1fr;
+      }
+      .ai-callout-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 24px 18px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .footer-container {
+        grid-template-columns: 1fr;
+      }
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .filter-pills-bar {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        display: flex;
+        gap: 8px;
+      }
+      .filter-btn {
+        flex-shrink: 0;
+      }
+    }
+
+    @keyframes slideDownNav {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -1573,7 +1706,14 @@
       </div>
     </a>
 
-    <ul class="nav-links">
+    <!-- Botón Hamburguesa para Móviles y Tabletas -->
+    <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Abrir menú" onclick="toggleMobileNav()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <ul class="nav-links" id="main-nav-links">
       <li><a href="#home" class="active">Inicio</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#productos">Productos</a></li>
@@ -2883,9 +3023,48 @@
       });
     });
 
+    // Menú móvil responsive
+    function toggleMobileNav() {
+      const navLinks = document.getElementById('main-nav-links');
+      const toggleBtn = document.getElementById('mobile-nav-toggle');
+      if (navLinks) {
+        navLinks.classList.toggle('mobile-open');
+      }
+      if (toggleBtn) {
+        toggleBtn.classList.toggle('open');
+      }
+    }
+
+    // Cerrar menú móvil al hacer clic en un enlace o fuera de él
+    document.addEventListener('click', function(e) {
+      const navLinks = document.getElementById('main-nav-links');
+      const toggleBtn = document.getElementById('mobile-nav-toggle');
+      if (navLinks && navLinks.classList.contains('mobile-open')) {
+        if (!navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
+          navLinks.classList.remove('mobile-open');
+          if (toggleBtn) toggleBtn.classList.remove('open');
+        }
+      }
+    });
+
     // Si viene redirigido desde el login con ?openWidget=true y tiene sesión, abrir automáticamente el widget
     document.addEventListener('DOMContentLoaded', function () {
       updateActiveNavLink();
+
+      // Cerrar menú en móvil al hacer clic en cualquier opción
+      const navLinks = document.getElementById('main-nav-links');
+      const toggleBtn = document.getElementById('mobile-nav-toggle');
+      if (navLinks) {
+        navLinks.querySelectorAll('a, button').forEach(el => {
+          el.addEventListener('click', function() {
+            if (window.innerWidth <= 992) {
+              navLinks.classList.remove('mobile-open');
+              if (toggleBtn) toggleBtn.classList.remove('open');
+            }
+          });
+        });
+      }
+
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('openWidget') === 'true') {
         const userStr = localStorage.getItem('chiaway_user');
