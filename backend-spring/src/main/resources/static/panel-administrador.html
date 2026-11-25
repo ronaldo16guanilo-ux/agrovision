@@ -798,49 +798,82 @@
     }
 
     .collab-card-banner {
-      height: 80px;
-      background: linear-gradient(135deg, #022c22 0%, #064e3b 100%);
-      position: relative;
+      display: none !important;
     }
 
+    .collab-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 22px 22px 14px 22px;
+    }
+
+    .collab-avatar-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #f8fafc;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08), 0 0 0 1px #e2e8f0;
+      flex-shrink: 0;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .collab-card:hover .collab-avatar-box {
+      transform: scale(1.04);
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.2), 0 0 0 1.5px #10b981;
+    }
+
+    .collab-avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Insignias de estado elegantes tipo SaaS / Dashboard */
     .collab-status-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 10px;
-      border-radius: var(--radius-full);
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(4px);
-      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: 0.2px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+
+    .collab-status-badge.badge-activo {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .collab-status-badge.badge-campo {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .collab-status-badge.badge-guardia {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fde68a;
     }
 
     .collab-card-body {
-      padding: 0 20px 20px;
+      padding: 0 22px 22px 22px;
       display: flex;
       flex-direction: column;
       flex: 1;
     }
 
     .collab-avatar-overlap {
-      width: 76px;
-      height: 76px;
-      border-radius: 50%;
-      border: 3.5px solid #ffffff;
-      box-shadow: var(--shadow-md);
-      margin-top: -38px;
-      margin-bottom: 12px;
-      overflow: hidden;
-      background: #022c22;
-      align-self: flex-start;
-    }
-
-    .collab-avatar-overlap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      display: none !important;
     }
 
     .collab-name-heading {
@@ -3070,15 +3103,15 @@
         const card = document.createElement('div');
         card.className = 'collab-card';
         card.innerHTML = `
-          <div class="collab-card-banner">
-            <span class="collab-status-badge">
+          <div class="collab-card-header">
+            <div class="collab-avatar-box">
+              <img src="${c.photo || 'assets/panel/asesor-carlos.jpg'}" alt="${c.name}" onerror="this.src='assets/panel/asesor-carlos.jpg';">
+            </div>
+            <span class="collab-status-badge ${c.status === 'Activo' ? 'badge-activo' : c.status === 'En Campo' ? 'badge-campo' : 'badge-guardia'}">
               ${c.status === 'Activo' ? '🟢 Activo' : c.status === 'En Campo' ? '🚜 En Campo' : '⏰ Guardia'}
             </span>
           </div>
           <div class="collab-card-body">
-            <div class="collab-avatar-overlap">
-              <img src="${c.photo || 'assets/panel/asesor-carlos.jpg'}" alt="${c.name}" onerror="this.src='assets/panel/asesor-carlos.jpg';">
-            </div>
             <h3 class="collab-name-heading">${c.name}</h3>
             <div class="collab-specialty-text">${c.specialty}</div>
             <span class="collab-cip-tag">${c.cip} &bull; ${c.role}</span>
