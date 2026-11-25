@@ -1704,14 +1704,14 @@
           <a href="javascript:void(0)" onclick="switchView('pedidos')" id="nav-pedidos">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
             <span>Mis Pedidos</span>
-            <span class="sidebar-badge" id="sidebar-orders-badge">3</span>
+            <span class="sidebar-badge" id="sidebar-orders-badge">0</span>
           </a>
         </li>
         <li class="sidebar-item">
           <a href="javascript:void(0)" onclick="switchView('diagnosticos')" id="nav-diagnosticos">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M11 9h4"/><path d="M13 7v4"/><path d="m9 9 3 3"/><path d="m9 15 6-6"/></svg>
             <span>Mis Diagnósticos</span>
-            <span class="sidebar-badge">6</span>
+            <span class="sidebar-badge" id="sidebar-diags-badge">0</span>
           </a>
         </li>
         <li class="sidebar-item">
@@ -1821,52 +1821,9 @@
               </button>
             </div>
 
-            <!-- Fila de 3 Diagnósticos Reales -->
-            <div class="diag-cards-row">
-              <div class="diag-item-card" onclick="switchView('diagnosticos')">
-                <div class="diag-thumb-wrap">
-                  <img src="assets/panel/cultivo-vid-hoja.jpg?v=20261123" alt="Mildiu en Vid" class="diag-thumb-img">
-                </div>
-                <div class="diag-content">
-                  <div class="diag-crop-name">Mildiu en Vid</div>
-                  <span class="urgency-badge urgency-high">⚠️ Alta Urgencia</span>
-                  <div class="diag-rx-text">
-                    🧪 Recomendado:
-                    <div class="diag-rx-prod">Mancozeb + Metalaxil</div>
-                  </div>
-                  <div class="diag-date">📅 28 oct. 2026</div>
-                </div>
-              </div>
-
-              <div class="diag-item-card" onclick="switchView('diagnosticos')">
-                <div class="diag-thumb-wrap">
-                  <img src="assets/panel/cultivo-uva-racimo.jpg?v=20261123" alt="Oídio en Vid" class="diag-thumb-img">
-                </div>
-                <div class="diag-content">
-                  <div class="diag-crop-name">Oídio en Vid</div>
-                  <span class="urgency-badge urgency-medium">⬇️ Urgencia Media</span>
-                  <div class="diag-rx-text">
-                    🧪 Recomendado:
-                    <div class="diag-rx-prod">Azufre + Tebuconazol</div>
-                  </div>
-                  <div class="diag-date">📅 25 oct. 2026</div>
-                </div>
-              </div>
-
-              <div class="diag-item-card" onclick="switchView('diagnosticos')">
-                <div class="diag-thumb-wrap">
-                  <img src="assets/panel/cultivo-palta-fruto.jpg?v=20261123" alt="Mancha Negra en Palto" class="diag-thumb-img">
-                </div>
-                <div class="diag-content">
-                  <div class="diag-crop-name">Mancha Negra en Palto</div>
-                  <span class="urgency-badge urgency-low">✓ Baja Urgencia</span>
-                  <div class="diag-rx-text">
-                    🧪 Recomendado:
-                    <div class="diag-rx-prod">Difenoconazol</div>
-                  </div>
-                  <div class="diag-date">📅 20 oct. 2026</div>
-                </div>
-              </div>
+            <!-- Fila de Diagnósticos Dinámicos de la Cuenta -->
+            <div class="diag-cards-row" id="dash-diags-row">
+              <!-- Renderizado dinámico desde JS con los diagnósticos reales -->
             </div>
           </div>
         </div>
@@ -1902,10 +1859,10 @@
             </table>
           </div>
 
-          <div class="order-dispatch-alert" id="dash-dispatch-banner">
+          <div class="order-dispatch-alert" id="dash-dispatch-banner" style="display:none;">
             <div style="display:flex; align-items:center; gap:8px;">
               <span>🚛</span>
-              <span id="dash-dispatch-text">Tu pedido <strong>#CP-2026-1045</strong> está en camino al fundo.</span>
+              <span id="dash-dispatch-text">Tu pedido está en camino al fundo.</span>
             </div>
             <span>🌱</span>
           </div>
@@ -2062,11 +2019,11 @@
       <div class="kpi-row">
         <div class="kpi-card">
           <div class="kpi-label">Total Pedidos</div>
-          <div class="kpi-value" id="kpi-total-orders">3</div>
+          <div class="kpi-value" id="kpi-total-orders">0</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label" style="color:#0369a1;">En Despacho a Campo</div>
-          <div class="kpi-value" style="color:#0369a1;" id="kpi-dispatch-orders">1</div>
+          <div class="kpi-value" style="color:#0369a1;" id="kpi-dispatch-orders">0</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label" style="color:#dc2626;">Falta Pago (Pendientes)</div>
@@ -2074,7 +2031,7 @@
         </div>
         <div class="kpi-card">
           <div class="kpi-label" style="color:#065f46;">Inversión Total en Insumos</div>
-          <div class="kpi-value" style="color:#065f46;" id="kpi-total-spent">S/. 2,062.00</div>
+          <div class="kpi-value" style="color:#065f46;" id="kpi-total-spent">S/. 0.00</div>
         </div>
       </div>
 
@@ -2101,151 +2058,14 @@
         </button>
       </div>
 
-      <div class="filter-pills-bar">
-        <button class="filter-btn active" onclick="filterDiagnostics('all', this)">Todos (7)</button>
-        <button class="filter-btn" onclick="filterDiagnostics('high', this)">Alta Urgencia (3)</button>
-        <button class="filter-btn" onclick="filterDiagnostics('medium', this)">Urgencia Media (2)</button>
-        <button class="filter-btn" onclick="filterDiagnostics('low', this)">Baja Urgencia (2)</button>
-        <button class="filter-btn" onclick="filterDiagnostics('vid', this)">🍇 Vid</button>
-        <button class="filter-btn" onclick="filterDiagnostics('palto', this)">🥑 Palto</button>
-        <button class="filter-btn" onclick="filterDiagnostics('esparrago', this)">🌾 Espárrago</button>
-        <button class="filter-btn" onclick="filterDiagnostics('mandarina', this)">🍊 Mandarina</button>
+      <div class="filter-pills-bar" id="diags-filters-bar">
+        <!-- Renderizado dinámico de filtros con contadores reales -->
       </div>
 
-      <div class="diagnosticos-grid">
-        <!-- 1. Mildiu en Vid -->
-        <div class="product-card" data-urgency="high" data-crop="vid">
-          <div class="diag-card-media">
-            <img src="assets/panel/cultivo-vid-hoja.jpg?v=20261123" alt="Mildiu en Hoja de Vid">
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="prod-category-badge cat-fungicida">🍇 Vid Red Globe</span>
-            <span class="urgency-badge urgency-high">⚠️ Alta Urgencia</span>
-          </div>
-          <h3 class="prod-name">Mildiu en Vid (Plasmopara viticola)</h3>
-          <p class="prod-desc">Severidad foliar del 38% en hojas maduras. Condición favorecida por rocío matinal.</p>
-          <div class="prod-dose-box"><strong>Tratamiento:</strong> Mancozeb 80% WP (2.5 kg/ha) + Metalaxil 8%.</div>
-          <div class="prod-footer-row">
-            <button class="btn-add-cart" onclick="addCustomToCart(3, 'Metalaxil + Mancozeb (Ridomil Gold)', 95.00, 'kg')">
-              🛒 Pedir Insumo (S/. 95.00)
-            </button>
-          </div>
-        </div>
-
-        <!-- 2. Oídio en Vid -->
-        <div class="product-card" data-urgency="medium" data-crop="vid">
-          <div class="diag-card-media">
-            <img src="assets/panel/cultivo-uva-racimo.jpg?v=20261123" alt="Oídio en Racimo de Vid">
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="prod-category-badge cat-fungicida">🍇 Vid Superior</span>
-            <span class="urgency-badge urgency-medium">⬇️ Urgencia Media</span>
-          </div>
-          <h3 class="prod-name">Oídio en Vid (Erysiphe necator)</h3>
-          <p class="prod-desc">Micelio blanco harinoso en el 22% del follaje y racimos en floración temprana.</p>
-          <div class="prod-dose-box"><strong>Tratamiento:</strong> Azufre micronizado 80% (3 kg/ha) + Penconazol.</div>
-          <div class="prod-footer-row">
-            <button class="btn-add-cart" onclick="addCustomToCart(1, 'Azufre micronizado 80% WP', 45.00, 'bolsa 1kg')">
-              🛒 Pedir Insumo (S/. 45.00)
-            </button>
-          </div>
-        </div>
-
-        <!-- 3. Mancha Negra en Palto -->
-        <div class="product-card" data-urgency="low" data-crop="palto">
-          <div class="diag-card-media">
-            <img src="assets/panel/cultivo-palta-fruto.jpg?v=20261123" alt="Mancha Negra en Fruto de Palta">
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="prod-category-badge cat-fungicida">🥑 Palto Hass</span>
-            <span class="urgency-badge urgency-low">✓ Baja Urgencia</span>
-          </div>
-          <h3 class="prod-name">Mancha Negra (Pseudocercospora purpurea)</h3>
-          <p class="prod-desc">Lesiones angulares delimitadas por nervaduras en frutos y epidermis. Afección leve (12%).</p>
-          <div class="prod-dose-box"><strong>Tratamiento:</strong> Difenoconazol 250 EC (300 ml/ha) preventivo.</div>
-          <div class="prod-footer-row">
-            <button class="btn-add-cart" onclick="addCustomToCart(4, 'Difenoconazol 250 EC', 110.00, 'frasco 500ml')">
-              🛒 Pedir Insumo (S/. 110.00)
-            </button>
-          </div>
-        </div>
-
-        <!-- 4. Minador de Hoja en Mandarina -->
-        <div class="product-card" data-urgency="high" data-crop="mandarina">
-          <div class="diag-card-media">
-            <img src="assets/panel/cultivo-mandarina.jpg?v=20261123" alt="Minador en Hoja y Fruto de Mandarina">
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="prod-category-badge cat-insecticida">🍊 Mandarina W. Murcott</span>
-            <span class="urgency-badge urgency-high">⚠️ Alta Urgencia</span>
-          </div>
-          <h3 class="prod-name">Minador de los Cítricos (Phyllocnistis citrella)</h3>
-          <p class="prod-desc">Galerías sinuosas y enrollamiento en brotes tiernos y hojas jóvenes (29% daño foliar).</p>
-          <div class="prod-dose-box"><strong>Tratamiento:</strong> Abamectina 1.8 EC (300 ml/ha) + Aceite Agrícola (0.5%).</div>
-          <div class="prod-footer-row">
-            <button class="btn-add-cart" onclick="addCustomToCart(2, 'Abamectina 1.8% EC', 68.00, 'frasco 1L')">
-              🛒 Pedir Insumo (S/. 68.00)
-            </button>
-          </div>
-        </div>
-
-        <!-- 5. Arañita Roja en Palto -->
-        <div class="product-card" data-urgency="medium" data-crop="palto">
-          <div class="diag-card-media">
-            <img src="assets/panel/cultivo-palta-hoja.jpg?v=20261123" alt="Arañita Roja en Hojas de Palto">
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="prod-category-badge cat-acaricida">🥑 Palto Hass</span>
-            <span class="urgency-badge urgency-medium">⬇️ Urgencia Media</span>
-          </div>
-          <h3 class="prod-name">Arañita Roja (Oligonychus yothersi)</h3>
-          <p class="prod-desc">Bronceado y amarillamiento a lo largo de nervaduras del haz foliar en brotes (26% follaje).</p>
-          <div class="prod-dose-box"><strong>Tratamiento:</strong> Abamectina 1.8 EC (250 ml/ha) + Aceite Agrícola parafínico.</div>
-          <div class="prod-footer-row">
-            <button class="btn-add-cart" onclick="addCustomToCart(2, 'Abamectina 1.8% EC', 68.00, 'frasco 1L')">
-              🛒 Pedir Insumo (S/. 68.00)
-            </button>
-          </div>
-        </div>
-
-        <!-- 6. Roya del Espárrago -->
-        <div class="product-card" data-urgency="low" data-crop="esparrago">
-          <div class="diag-card-media">
-            <img src="assets/panel/cultivo-esparrago.jpg?v=20261123" alt="Roya en Planta de Espárrago">
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="prod-category-badge cat-fungicida">🌾 Espárrago UC-157</span>
-            <span class="urgency-badge urgency-low">✓ Baja Urgencia</span>
-          </div>
-          <h3 class="prod-name">Roya del Espárrago (Puccinia asparagi)</h3>
-          <p class="prod-desc">Pústulas de color canela en tallos y cladodios secundarios en etapa de brotación (14%).</p>
-          <div class="prod-dose-box"><strong>Tratamiento:</strong> Tebuconazol 250 EW (400 ml/ha) rotado con Azoxystrobin.</div>
-          <div class="prod-footer-row">
-            <button class="btn-add-cart" onclick="addCustomToCart(1, 'Tebuconazol 250 EW', 88.00, 'L')">
-              🛒 Pedir Insumo (S/. 88.00)
-            </button>
-          </div>
-        </div>
-
-        <!-- 7. Botrytis en Vid -->
-        <div class="product-card" data-urgency="high" data-crop="vid">
-          <div class="diag-card-media">
-            <img src="assets/panel/cultivo-vid-botrytis.jpg?v=20261123" alt="Botrytis en Racimo de Vid">
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="prod-category-badge cat-fungicida">🍇 Vid Red Globe</span>
-            <span class="urgency-badge urgency-high">⚠️ Alta Urgencia</span>
-          </div>
-          <h3 class="prod-name">Podredumbre Gris (Botrytis cinerea)</h3>
-          <p class="prod-desc">Pudrición acuosa y moho grisáceo en racimos compactos antes del envero (31% daño).</p>
-          <div class="prod-dose-box"><strong>Tratamiento:</strong> Pyrimethanil 400 SC (1.5 L/ha) o Fenhexamid 500 SC.</div>
-          <div class="prod-footer-row">
-            <button class="btn-add-cart" onclick="addCustomToCart(3, 'Pyrimethanil 400 SC (Botrytis)', 135.00, 'L')">
-              🛒 Pedir Insumo (S/. 135.00)
-            </button>
-          </div>
-        </div>
+      <div class="diagnosticos-grid" id="client-diagnostics-grid">
+        <!-- Renderizado dinámico de diagnósticos con fotos reales -->
       </div>
+    </section>
     </section>
 
     <!-- ======================================================== -->
@@ -2936,65 +2756,27 @@
     let selectedPayment = 'yape';
     let currentPayNowOrderCode = null;
 
-    // Pedidos iniciales por defecto (si localStorage está vacío)
-    const DEFAULT_ORDERS = [
-      {
-        code: "#CP-2026-1045",
-        date: "22/10/2026",
-        isPaid: true,
-        statusText: "En despacho a fundo (Camión en Ruta)",
-        statusType: "dispatch",
-        dispatchTruck: "Camión Hino Chiaway (Placa B7C-892) &bull; Conductor: Jorge R.",
-        sede: "Sede Central Ica (Av. San Martín 1026)",
-        destination: "Fundo Santa Rosa &bull; Km 298 Panamericana Sur",
-        items: [
-          { name: "Difenoconazol 250 EC", unitLabel: "Frasco 500 ml", unitPrice: 110.00, qty: 4, subtotal: 440.00 },
-          { name: "Oxicloruro de cobre 50% WP", unitLabel: "Bolsa 1 kg", unitPrice: 55.00, qty: 6, subtotal: 330.00 },
-          { name: "Aceite mineral agrícola parafinado", unitLabel: "Envase 1 Litro", unitPrice: 38.00, qty: 4, subtotal: 152.00 }
-        ],
-        total: 922.00
-      },
-      {
-        code: "#CP-2026-1046",
-        date: "25/10/2026",
-        isPaid: true,
-        statusText: "Cotizado y Pagado &bull; Programado para despacho",
-        statusType: "paid",
-        dispatchTruck: "Camión Reparto Chiaway &bull; Programado mañana 8:00 am",
-        sede: "Sede Central Ica",
-        destination: "Fundo Santa Rosa &bull; Valle de Ica",
-        items: [
-          { name: "Azufre micronizado 80% WP", unitLabel: "Bolsa 1 kg", unitPrice: 45.00, qty: 10, subtotal: 450.00 },
-          { name: "Penconazol 100 EC (Topas)", unitLabel: "Frasco 250 ml", unitPrice: 88.00, qty: 2, subtotal: 176.00 },
-          { name: "Bioestimulante Aminoácidos Libres", unitLabel: "Botella 1 Litro", unitPrice: 52.00, qty: 2, subtotal: 104.00 }
-        ],
-        total: 730.00
-      },
-      {
-        code: "#CP-2026-1047",
-        date: "28/10/2026",
-        isPaid: false, // PAGO PENDIENTE DE ORIGEN
-        statusText: "Falta Pago &bull; En espera de confirmación",
-        statusType: "pending",
-        dispatchTruck: "En espera de pago para asignar unidad",
-        sede: "Sede Central Ica",
-        destination: "Fundo Santa Rosa &bull; Valle de Ica",
-        items: [
-          { name: "Metalaxil + Mancozeb (Ridomil Gold)", unitLabel: "Bolsa 1 kg", unitPrice: 95.00, qty: 2, subtotal: 190.00 },
-          { name: "Oxicloruro de cobre 50% WP", unitLabel: "Bolsa 1 kg", unitPrice: 55.00, qty: 4, subtotal: 220.00 }
-        ],
-        total: 410.00
-      }
-    ];
+    // Pedidos iniciales (Vacío para cuenta nueva)
+    const DEFAULT_ORDERS = [];
 
     // Cargar o Inicializar Pedidos en LocalStorage
     function getOrders() {
       const stored = localStorage.getItem('chiaway_client_orders');
-      if (stored) {
-        try { return JSON.parse(stored); } catch (e) { }
+      if (stored !== null) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            // Si contenía pedidos mock iniciales de prueba previa, limpiamos para cuenta vacía
+            if (parsed.some(o => o.code === '#CP-2026-1045')) {
+              localStorage.setItem('chiaway_client_orders', JSON.stringify([]));
+              return [];
+            }
+            return parsed;
+          }
+        } catch (e) { }
       }
-      localStorage.setItem('chiaway_client_orders', JSON.stringify(DEFAULT_ORDERS));
-      return DEFAULT_ORDERS;
+      localStorage.setItem('chiaway_client_orders', JSON.stringify([]));
+      return [];
     }
 
     function saveOrders(orders) {
@@ -3010,6 +2792,7 @@
       renderOrdersList();
       renderDashboardOrders();
       updateKpis();
+      renderAllDiagnostics();
       loadFundoData();
       loadUserAvatar();
 
@@ -3353,6 +3136,22 @@
 
       const orders = getOrders();
 
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:16px; padding:48px 24px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:52px; margin-bottom:12px;">📦</div>
+            <h3 style="font-size:18px; font-weight:800; color:#1e293b; margin-bottom:6px;">No tienes pedidos registrados</h3>
+            <p style="font-size:13.5px; color:#64748b; max-width:480px; margin:0 auto 20px;">
+              Aún no has generado compras ni cotizaciones. Explora nuestra tienda de agroquímicos y bioinsumos autorizados por SENASA o cotiza la receta de tus diagnósticos fitosanitarios.
+            </p>
+            <button type="button" class="btn-checkout-pay" onclick="switchView('tienda')" style="padding:11px 26px; border-radius:50px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
+              <span>🛍️</span> Explorar Tienda Chiaway
+            </button>
+          </div>
+        `;
+        return;
+      }
+
       orders.forEach(order => {
         const card = document.createElement('div');
         card.className = 'order-card-detailed';
@@ -3544,6 +3343,25 @@
       tbody.innerHTML = '';
 
       const orders = getOrders().slice(0, 3); // Primeros 3 pedidos
+      const banner = document.getElementById('dash-dispatch-banner');
+      const bannerText = document.getElementById('dash-dispatch-text');
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align:center; padding:32px 16px; color:#64748b;">
+              <div style="font-size:26px; margin-bottom:6px;">📦</div>
+              <div style="font-weight:800; color:#1e293b; font-size:14px; margin-bottom:4px;">No tienes pedidos registrados</div>
+              <div style="font-size:12px; color:#64748b; margin-bottom:12px;">Tus órdenes de compra y cotizaciones aparecerán aquí en tiempo real.</div>
+              <button type="button" class="btn-checkout-pay" onclick="switchView('tienda')" style="padding:7px 18px; font-size:12px; border-radius:50px;">
+                Visitar Tienda &rarr;
+              </button>
+            </td>
+          </tr>
+        `;
+        if (banner) banner.style.display = 'none';
+        return;
+      }
 
       orders.forEach(order => {
         const tr = document.createElement('tr');
@@ -3566,9 +3384,13 @@
 
       // Actualizar banner de despacho en inicio
       const activeDispatch = getOrders().find(o => o.isPaid);
-      const bannerText = document.getElementById('dash-dispatch-text');
-      if (bannerText && activeDispatch) {
-        bannerText.innerHTML = `Tu pedido <strong>${activeDispatch.code}</strong> está en camino a tu fundo.`;
+      if (banner) {
+        if (activeDispatch) {
+          banner.style.display = 'flex';
+          if (bannerText) bannerText.innerHTML = `Tu pedido <strong>${activeDispatch.code}</strong> está en camino a tu fundo.`;
+        } else {
+          banner.style.display = 'none';
+        }
       }
     }
 
@@ -3868,23 +3690,216 @@
       alert('✅ Datos y fotografías actualizados correctamente.');
     }
 
-    function filterDiagnostics(filterType, btnEl) {
-      document.querySelectorAll('.filter-pills-bar .filter-btn').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
+    // ==========================================
+    // SISTEMA DINÁMICO DE DIAGNÓSTICOS CON IA
+    // ==========================================
+    let currentDiagFilter = 'all';
 
-      const cards = document.querySelectorAll('#view-diagnosticos .product-card');
-      cards.forEach(card => {
-        const urgency = card.getAttribute('data-urgency');
-        const crop = card.getAttribute('data-crop');
-        if (filterType === 'all') {
-          card.style.display = 'flex';
-        } else if (['high', 'medium', 'low'].includes(filterType)) {
-          card.style.display = (urgency === filterType) ? 'flex' : 'none';
-        } else if (['vid', 'palto', 'esparrago', 'mandarina'].includes(filterType)) {
-          card.style.display = (crop === filterType) ? 'flex' : 'none';
-        }
+    function getDiagnostics() {
+      const stored = localStorage.getItem('chiaway_client_diagnostics');
+      if (stored !== null) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (e) { }
+      }
+      localStorage.setItem('chiaway_client_diagnostics', JSON.stringify([]));
+      return [];
+    }
+
+    function saveDiagnostics(diags) {
+      localStorage.setItem('chiaway_client_diagnostics', JSON.stringify(diags));
+      renderAllDiagnostics();
+    }
+
+    function renderDashboardDiagnostics() {
+      const row = document.getElementById('dash-diags-row');
+      if (!row) return;
+      row.innerHTML = '';
+
+      const diags = getDiagnostics();
+      const recent = diags.slice(0, 3);
+
+      if (recent.length === 0) {
+        row.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:34px 16px; background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px;">
+            <div style="font-size:36px; margin-bottom:8px;">🔬</div>
+            <div style="font-weight:800; font-size:15px; color:#1e293b; margin-bottom:4px;">No tienes diagnósticos registrados</div>
+            <p style="font-size:12.5px; color:#64748b; max-width:440px; margin:0 auto 14px;">
+              Tus consultas con el Asesor IA de AgroVisión aparecerán aquí con su fotografía original, nivel de severidad y receta fitosanitaria.
+            </p>
+            <button type="button" class="btn-checkout-pay" onclick="openWidgetDiag()" style="padding:9px 22px; font-size:13px; border-radius:50px;">
+              📸 Realizar mi Primer Diagnóstico con IA
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      recent.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'diag-item-card';
+        card.onclick = () => switchView('diagnosticos');
+        card.innerHTML = `
+          <div class="diag-thumb-wrap">
+            <img src="${d.photo || 'assets/panel/cultivo-vid-hoja.jpg'}" alt="${d.diseaseName}" class="diag-thumb-img">
+          </div>
+          <div class="diag-content">
+            <div class="diag-crop-name">${d.diseaseName}</div>
+            <span class="urgency-badge urgency-${d.urgency}">${d.urgencyLabel || 'Urgencia Media'}</span>
+            <div class="diag-rx-text">
+              🧪 Recomendado:
+              <div class="diag-rx-prod">${d.recommendedProduct || 'Insumo SENASA'}</div>
+            </div>
+            <div class="diag-date">📅 ${d.date}</div>
+          </div>
+        `;
+        row.appendChild(card);
       });
     }
+
+    function renderDiagnosticsFilters() {
+      const bar = document.getElementById('diags-filters-bar');
+      if (!bar) return;
+
+      const diags = getDiagnostics();
+      const allCount = diags.length;
+      const highCount = diags.filter(d => d.urgency === 'high').length;
+      const medCount = diags.filter(d => d.urgency === 'medium').length;
+      const lowCount = diags.filter(d => d.urgency === 'low').length;
+      const vidCount = diags.filter(d => d.crop === 'vid').length;
+      const paltoCount = diags.filter(d => d.crop === 'palto').length;
+      const esparragoCount = diags.filter(d => d.crop === 'esparrago').length;
+      const mandarinaCount = diags.filter(d => d.crop === 'mandarina').length;
+
+      bar.innerHTML = `
+        <button class="filter-btn ${currentDiagFilter === 'all' ? 'active' : ''}" onclick="filterDiagnostics('all', this)">Todos (${allCount})</button>
+        <button class="filter-btn ${currentDiagFilter === 'high' ? 'active' : ''}" onclick="filterDiagnostics('high', this)">Alta Urgencia (${highCount})</button>
+        <button class="filter-btn ${currentDiagFilter === 'medium' ? 'active' : ''}" onclick="filterDiagnostics('medium', this)">Urgencia Media (${medCount})</button>
+        <button class="filter-btn ${currentDiagFilter === 'low' ? 'active' : ''}" onclick="filterDiagnostics('low', this)">Baja Urgencia (${lowCount})</button>
+        <button class="filter-btn ${currentDiagFilter === 'vid' ? 'active' : ''}" onclick="filterDiagnostics('vid', this)">🍇 Vid (${vidCount})</button>
+        <button class="filter-btn ${currentDiagFilter === 'palto' ? 'active' : ''}" onclick="filterDiagnostics('palto', this)">🥑 Palto (${paltoCount})</button>
+        <button class="filter-btn ${currentDiagFilter === 'esparrago' ? 'active' : ''}" onclick="filterDiagnostics('esparrago', this)">🌾 Espárrago (${esparragoCount})</button>
+        <button class="filter-btn ${currentDiagFilter === 'mandarina' ? 'active' : ''}" onclick="filterDiagnostics('mandarina', this)">🍊 Mandarina (${mandarinaCount})</button>
+      `;
+    }
+
+    function renderDiagnosticsList() {
+      const grid = document.getElementById('client-diagnostics-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const diags = getDiagnostics();
+
+      if (diags.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1; background:#ffffff; border:1px solid #e2e8f0; border-radius:16px; padding:48px 24px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:52px; margin-bottom:12px;">🔬</div>
+            <h3 style="font-size:18px; font-weight:800; color:#1e293b; margin-bottom:6px;">Historial de Diagnósticos Vacío</h3>
+            <p style="font-size:13.5px; color:#64748b; max-width:520px; margin:0 auto 20px;">
+              Aún no has registrado diagnósticos fitosanitarios. Utiliza nuestra Inteligencia Artificial para escanear hojas, frutos o tallos con síntomas de hongos o plagas y obtener la receta exacta de inmediato.
+            </p>
+            <button type="button" class="btn-checkout-pay" onclick="openWidgetDiag()" style="padding:11px 26px; border-radius:50px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
+              <span>📸</span> Realizar Diagnóstico con IA
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = diags.filter(d => {
+        if (currentDiagFilter === 'all') return true;
+        if (['high', 'medium', 'low'].includes(currentDiagFilter)) return d.urgency === currentDiagFilter;
+        if (['vid', 'palto', 'esparrago', 'mandarina'].includes(currentDiagFilter)) return d.crop === currentDiagFilter;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:36px; background:#f8fafc; border-radius:12px; color:#64748b;">
+            <div style="font-size:32px; margin-bottom:8px;">🔍</div>
+            <div style="font-weight:700; color:#334155;">No hay diagnósticos que coincidan con este filtro</div>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.setAttribute('data-urgency', d.urgency);
+        card.setAttribute('data-crop', d.crop);
+
+        const cropIconMap = { 'vid': '🍇', 'palto': '🥑', 'esparrago': '🌾', 'mandarina': '🍊' };
+        const cropIcon = cropIconMap[d.crop] || '🌱';
+
+        card.innerHTML = `
+          <div class="diag-card-media">
+            <img src="${d.photo || 'assets/panel/cultivo-vid-hoja.jpg'}" alt="${d.diseaseName}">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="prod-category-badge cat-fungicida">${cropIcon} ${d.cropName} &bull; ${d.organ || 'Hoja'}</span>
+            <span class="urgency-badge urgency-${d.urgency}">${d.urgencyLabel || 'Urgencia Media'}</span>
+          </div>
+          <h3 class="prod-name">${d.diseaseName}</h3>
+          <p class="prod-desc">${d.recommendation || 'Tratamiento fitosanitario evaluado por IA.'}</p>
+          <div class="prod-dose-box">
+            <strong>Tratamiento:</strong> ${d.recommendedProduct} (${d.productDose || 'Dosis técnica'}).
+            <div style="font-size:11.5px; color:#64748b; margin-top:3px;">📅 Registrado: ${d.date} &bull; Certeza: ${d.confidence || 90}%</div>
+          </div>
+          <div class="prod-footer-row">
+            <button class="btn-add-cart" onclick="addDiagnosisProductToCart('${(d.recommendedProduct || 'Insumo').replace(/'/g, "\\'")}', '${d.productPrice || 'S/. 65.00'}', 'unid')">
+              🛒 Pedir Insumo (${d.productPrice || 'S/. 65.00'})
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterDiagnostics(filterType, btnEl) {
+      currentDiagFilter = filterType;
+      renderDiagnosticsFilters();
+      renderDiagnosticsList();
+    }
+
+    function addDiagnosisProductToCart(productName, price, unit) {
+      const cleanPrice = parseFloat(String(price).replace(/[^0-9.]/g, '')) || 65.00;
+      const matched = CHIAWAY_PRODUCTS.find(p => p.name.toLowerCase().includes(productName.toLowerCase()) || productName.toLowerCase().includes(p.name.toLowerCase()));
+      if (matched) {
+        addToCart(matched.id);
+      } else {
+        const existing = cart.find(c => c.name === productName);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          cart.push({
+            id: 'custom-' + Date.now(),
+            name: productName,
+            unitPrice: cleanPrice,
+            unitLabel: unit || 'envase',
+            qty: 1
+          });
+        }
+        updateCartUI();
+        openCartModal();
+      }
+    }
+
+    function renderAllDiagnostics() {
+      renderDashboardDiagnostics();
+      renderDiagnosticsFilters();
+      renderDiagnosticsList();
+
+      const diags = getDiagnostics();
+      const badge = document.getElementById('sidebar-diags-badge');
+      if (badge) badge.innerText = diags.length;
+    }
+
+    window.refreshClientDiagnostics = function () {
+      renderAllDiagnostics();
+      updateKpis();
+    };
 
     function openWidgetDiag() {
       if (window.AgrovisionWidget) {

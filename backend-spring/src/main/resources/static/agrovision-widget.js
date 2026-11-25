@@ -17,7 +17,7 @@
 
   var AgrovisionWidget = {
     config: {
-      apiUrl: window.AGROVISION_API_URL || 'http://localhost:8080',
+      apiUrl: window.AGROVISION_API_URL || (window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('file:') ? window.location.origin : 'http://localhost:8080'),
       themeColor: '#15803d',
       buttonText: 'Diagnóstico de Cultivo AI',
       targetContainer: null
@@ -28,6 +28,7 @@
       selectedOrgan: 'leaf',
       selectedFile: null,
       previewUrl: null,
+      base64Photo: null,
       plantHint: '',
       isSubmitting: false,
       diagnosisResult: null,
@@ -305,6 +306,37 @@
 
       this.state.selectedFile = file;
       this.state.previewUrl = URL.createObjectURL(file);
+
+      // Convertir y optimizar a Base64 para almacenar en el historial del cliente
+      var self = this;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var rawDataUrl = e.target.result;
+        var img = new Image();
+        img.onload = function () {
+          var canvas = document.createElement('canvas');
+          var maxDim = 800;
+          var width = img.width;
+          var height = img.height;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          self.state.base64Photo = canvas.toDataURL('image/jpeg', 0.82);
+        };
+        img.src = rawDataUrl;
+      };
+      reader.readAsDataURL(file);
+
       this.renderUploadView();
     },
 
@@ -374,6 +406,10 @@
         }
 
         self.state.diagnosisResult = data;
+
+        // Guardar automáticamente el diagnóstico en el historial del panel del cliente
+        self.saveDiagnosisToClientHistory(data);
+
         self.renderResultsView(data);
       })
       .catch(function (err) {
@@ -386,6 +422,104 @@
             '</div>';
         }
       });
+    },
+
+    saveDiagnosisToClientHistory: function (data) {
+      try {
+        var diag = data.diagnosis || {};
+        var plant = data.plantIdentified || {};
+        var treat = data.treatment || {};
+        var products = (treat.products && treat.products.length > 0) ? treat.products : [];
+
+        // Identificar cultivo (código y nombre amigable)
+        var plantSpecies = ((plant.species || '') + ' ' + (this.state.plantHint || '') + ' ' + (diag.diseaseName || '')).toLowerCase();
+        var cropCode = 'otro';
+        var cropName = 'Cultivo Agrícola';
+
+        if (plantSpecies.includes('vitis') || plantSpecies.includes('vid') || plantSpecies.includes('uva')) {
+          cropCode = 'vid';
+          cropName = 'Vid';
+        } else if (plantSpecies.includes('persea') || plantSpecies.includes('palto') || plantSpecies.includes('aguacate') || plantSpecies.includes('palta')) {
+          cropCode = 'palto';
+          cropName = 'Palto';
+        } else if (plantSpecies.includes('asparagus') || plantSpecies.includes('esparrago')) {
+          cropCode = 'esparrago';
+          cropName = 'Espárrago';
+        } else if (plantSpecies.includes('citrus') || plantSpecies.includes('mandarina') || plantSpecies.includes('limon') || plantSpecies.includes('naranja')) {
+          cropCode = 'mandarina';
+          cropName = 'Mandarina / Cítricos';
+        } else if (this.state.plantHint) {
+          cropName = this.state.plantHint;
+        }
+
+        // Mapear órgano
+        var organMap = {
+          'leaf': 'Hoja',
+          'fruit': 'Fruto',
+          'flower': 'Flor',
+          'bark': 'Tallo',
+          'stem': 'Tallo',
+          'root': 'Raíz'
+        };
+        var organLabel = organMap[this.state.selectedOrgan] || 'Hoja';
+
+        // Determinar urgencia
+        var rawUrgency = (treat.urgency || 'media').toLowerCase();
+        var urgencyCode = 'medium';
+        var urgencyLabel = '⬇️ Urgencia Media';
+        if (rawUrgency.includes('alta') || rawUrgency.includes('high')) {
+          urgencyCode = 'high';
+          urgencyLabel = '⚠️ Alta Urgencia';
+        } else if (rawUrgency.includes('baja') || rawUrgency.includes('low')) {
+          urgencyCode = 'low';
+          urgencyLabel = '✓ Baja Urgencia';
+        }
+
+        // Fecha actual formateada (Perú)
+        var now = new Date();
+        var months = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'set.', 'oct.', 'nov.', 'dic.'];
+        var dateFormatted = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear() + ' - ' +
+          String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+        // Primer producto recomendado
+        var firstProd = products[0] || null;
+        var prodName = firstProd ? firstProd.name : 'Insumo Fitosanitario SENASA';
+        var prodDose = firstProd ? (firstProd.dose || '2.5 kg/ha') : 'Dosis según etiqueta';
+        var prodPrice = firstProd ? (firstProd.price || 'S/. 65.00') : 'S/. 65.00';
+
+        var newDiagRecord = {
+          id: data.diagnosisId || ('DIAG-' + Date.now()),
+          date: dateFormatted,
+          timestamp: Date.now(),
+          crop: cropCode,
+          cropName: cropName,
+          organ: organLabel,
+          diseaseName: diag.diseaseName || 'Diagnóstico Fitopatológico con IA',
+          confidence: Math.round((diag.diseaseConfidence || diag.confidence || 0.88) * 100),
+          urgency: urgencyCode,
+          urgencyLabel: urgencyLabel,
+          photo: this.state.base64Photo || 'assets/panel/cultivo-vid-hoja.jpg',
+          recommendation: treat.recommendation || 'Aplicar tratamiento fitosanitario curativo y preventivo según rotación de activos.',
+          followUpDays: treat.followUpDays || 7,
+          recommendedProduct: prodName,
+          productDose: prodDose,
+          productPrice: prodPrice,
+          allProducts: products
+        };
+
+        // Guardar en localStorage
+        var stored = localStorage.getItem('chiaway_client_diagnostics');
+        var list = stored ? JSON.parse(stored) : [];
+        list.unshift(newDiagRecord);
+        localStorage.setItem('chiaway_client_diagnostics', JSON.stringify(list));
+
+        // Refrescar vistas del panel en tiempo real si el usuario está en el panel
+        if (typeof window.refreshClientDiagnostics === 'function') {
+          window.refreshClientDiagnostics();
+        }
+      } catch (err) {
+        console.warn('Error guardando diagnóstico en historial de cliente:', err);
+      }
     },
 
     renderResultsView: function (data) {
@@ -464,15 +598,41 @@
             '</button>' +
           '</div>' +
 
+          '<div style="background:#ecfdf5; border:1.5px solid #a7f3d0; border-radius:10px; padding:12px 14px; margin:16px 0 10px 0; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">' +
+            '<div style="font-size:12.5px; color:#065f46; display:flex; align-items:center; gap:8px;">' +
+              '<span style="font-size:18px;">💾</span>' +
+              '<span><strong>Guardado en tu historial:</strong> Podrás revisar esta foto y receta en cualquier momento en tu Panel de Productor.</span>' +
+            '</div>' +
+            '<a href="panel-cliente.html#diagnosticos" id="cw-view-in-panel-btn" style="background:#059669; color:#ffffff; text-decoration:none; font-size:12px; font-weight:800; padding:8px 16px; border-radius:6px; white-space:nowrap; display:inline-block; transition:background 0.2s;">' +
+              'Ver en mi Panel ➔' +
+            '</a>' +
+          '</div>' +
+
           '<button type="button" class="cw-secondary-btn" id="cw-new-analysis-btn">Realizar nuevo diagnóstico</button>' +
         '</div>';
 
       // Bind actions
+      var viewInPanelBtn = document.getElementById('cw-view-in-panel-btn');
+      if (viewInPanelBtn) {
+        viewInPanelBtn.addEventListener('click', function (e) {
+          if (window.location.pathname.includes('panel-cliente.html') || window.location.href.includes('panel-cliente.html')) {
+            e.preventDefault();
+            self.closeModal();
+            if (typeof window.switchView === 'function') {
+              window.switchView('diagnosticos');
+            } else {
+              window.location.hash = '#diagnosticos';
+            }
+          }
+        });
+      }
+
       var newBtn = document.getElementById('cw-new-analysis-btn');
       if (newBtn) {
         newBtn.addEventListener('click', function () {
           self.state.selectedFile = null;
           self.state.previewUrl = null;
+          self.state.base64Photo = null;
           self.state.diagnosisResult = null;
           self.renderUploadView();
         });

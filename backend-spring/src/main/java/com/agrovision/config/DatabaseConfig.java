@@ -90,10 +90,30 @@ public class DatabaseConfig {
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
         config.setMaximumPoolSize(5);
         config.setMinimumIdle(1);
-        config.setConnectionTimeout(30000);
+        config.setConnectionTimeout(10000);
         config.setIdleTimeout(600000);
         config.setMaxLifetime(1800000);
 
-        return new HikariDataSource(config);
+        try {
+            HikariDataSource ds = new HikariDataSource(config);
+            try (java.sql.Connection conn = ds.getConnection()) {
+                log.info("Conexión MySQL establecida exitosamente con: {}", dbUrl);
+                return ds;
+            } catch (Exception e) {
+                log.warn("No se pudo conectar a MySQL en {}: {}. Activando fallback a base de datos H2 en memoria...", dbUrl, e.getMessage());
+                ds.close();
+            }
+        } catch (Exception e) {
+            log.warn("Error inicializando pool de MySQL: {}. Activando fallback a base de datos H2 en memoria...", e.getMessage());
+        }
+
+        // Fallback resiliente a H2 en memoria para evitar que la aplicación crashee
+        log.info("Iniciando DataSource H2 en memoria (Modo compatibilidad MySQL)...");
+        HikariConfig h2Config = new HikariConfig();
+        h2Config.setJdbcUrl("jdbc:h2:mem:agrovision_db;DB_CLOSE_DELAY=-1;MODE=MySQL");
+        h2Config.setUsername("sa");
+        h2Config.setPassword("");
+        h2Config.setDriverClassName("org.h2.Driver");
+        return new HikariDataSource(h2Config);
     }
 }
