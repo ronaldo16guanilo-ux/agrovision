@@ -2718,39 +2718,45 @@
     // NAVEGACIÓN SPA ENTRE SECCIONES
     // ==========================================
     function switchAdminView(viewId) {
-      document.querySelectorAll('.admin-content-view').forEach(v => v.classList.remove('active'));
-      document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
+      try {
+        document.querySelectorAll('.admin-content-view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
 
-      const target = document.getElementById('view-' + viewId);
-      const btn = document.getElementById('nav-btn-' + viewId);
-      const title = document.getElementById('topbar-view-title');
-      const subtitle = document.getElementById('topbar-view-subtitle');
+        const target = document.getElementById('view-' + viewId);
+        const btn = document.getElementById('nav-btn-' + viewId);
+        const title = document.getElementById('topbar-view-title');
+        const subtitle = document.getElementById('topbar-view-subtitle');
 
-      if (target) target.classList.add('active');
-      if (btn) btn.classList.add('active');
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
 
-      const titlesMap = {
-        'dashboard': { t: '📊 Dashboard General', s: 'Métricas en tiempo real, consultas fitosanitarias e inventario de insumos' },
-        'colaboradores': { t: '👨‍🌾 Gestión de Colaboradores & Asesores', s: 'Directorio de ingenieros agrónomos y técnicos asignados a fundos' },
-        'tienda': { t: '📦 Gestión de Tienda & Catálogo de Insumos', s: 'Control de inventario, precios, descuentos y stock en almacenes' },
-        'consultas': { t: '🔬 Registro de Consultas y Diagnósticos con IA', s: 'Historial fitopatológico de plagas detectadas y derivaciones a ingenieros' },
-        'clientes': { t: '🌾 Directorio de Clientes y Fundos', s: 'Padrón de productores agrícolas y monitoreo de hectáreas por valle' },
-        'configuracion': { t: '⚙️ Configuraciones Profesionales', s: 'Ajustes corporativos, parámetros del modelo IA y red de sedes' }
-      };
+        const titlesMap = {
+          'dashboard': { t: '📊 Dashboard General', s: 'Métricas en tiempo real, consultas fitosanitarias e inventario de insumos' },
+          'colaboradores': { t: '👨‍🌾 Gestión de Colaboradores & Asesores', s: 'Directorio de ingenieros agrónomos y técnicos asignados a fundos' },
+          'tienda': { t: '📦 Gestión de Tienda & Catálogo de Insumos', s: 'Control de inventario, precios, descuentos y stock en almacenes' },
+          'consultas': { t: '🔬 Registro de Consultas y Diagnósticos con IA', s: 'Historial fitopatológico de plagas detectadas y derivaciones a ingenieros' },
+          'clientes': { t: '🌾 Directorio de Clientes y Fundos', s: 'Padrón de productores agrícolas y monitoreo de hectáreas por valle' },
+          'configuracion': { t: '⚙️ Configuraciones Profesionales', s: 'Ajustes corporativos, parámetros del modelo IA y red de sedes' }
+        };
 
-      if (titlesMap[viewId] && title && subtitle) {
-        title.innerHTML = titlesMap[viewId].t;
-        subtitle.innerText = titlesMap[viewId].s;
-      }
+        if (titlesMap[viewId] && title && subtitle) {
+          title.innerHTML = titlesMap[viewId].t;
+          subtitle.innerText = titlesMap[viewId].s;
+        }
 
-      // Si vuelve a dashboard, redibujar charts para evitar bugs de canvas
-      if (viewId === 'dashboard') {
-        setTimeout(() => {
-          if (chartLineGrowth) chartLineGrowth.resize();
-          if (chartBarComparative) chartBarComparative.resize();
-          if (chartDoughnutSedes) chartDoughnutSedes.resize();
-          if (chartBarDerivations) chartBarDerivations.resize();
-        }, 100);
+        // Si vuelve a dashboard, redibujar charts para evitar bugs de canvas
+        if (viewId === 'dashboard') {
+          setTimeout(() => {
+            try {
+              if (chartLineGrowth && typeof chartLineGrowth.resize === 'function') chartLineGrowth.resize();
+              if (chartBarComparative && typeof chartBarComparative.resize === 'function') chartBarComparative.resize();
+              if (chartDoughnutSedes && typeof chartDoughnutSedes.resize === 'function') chartDoughnutSedes.resize();
+              if (chartBarDerivations && typeof chartBarDerivations.resize === 'function') chartBarDerivations.resize();
+            } catch(e){}
+          }, 100);
+        }
+      } catch (err) {
+        console.error('Error switching view:', err);
       }
     }
 
@@ -2758,264 +2764,305 @@
     // FILTROS GLOBALES (FECHA Y SEDE)
     // ==========================================
     function setDateRange(range, btn) {
-      currentPeriod = range;
-      document.querySelectorAll('.date-range-segmented .date-range-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      applyGlobalFilters();
+      try {
+        currentPeriod = range;
+        document.querySelectorAll('.date-range-segmented .date-range-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        applyGlobalFilters();
+      } catch(e) {
+        console.error('Error setting date range:', e);
+      }
     }
 
     function applyGlobalFilters() {
-      const sedeSelect = document.getElementById('global-sede-select');
-      currentSede = sedeSelect ? sedeSelect.value : 'all';
-
-      const clients = getClients();
-      const consultas = getConsultas();
-      let orders = [];
       try {
-        const storedOrders = localStorage.getItem('chiaway_client_orders');
-        if (storedOrders) orders = JSON.parse(storedOrders);
-      } catch(e){}
+        const sedeSelect = document.getElementById('global-sede-select');
+        currentSede = sedeSelect ? sedeSelect.value : 'all';
 
-      // Filtrar por sede si está seleccionada
-      let filteredClients = clients;
-      let filteredConsultas = consultas;
-      let filteredOrders = orders;
+        const clients = getClients();
+        const consultas = getConsultas();
+        let orders = [];
+        try {
+          const storedOrders = localStorage.getItem('chiaway_client_orders');
+          if (storedOrders) orders = JSON.parse(storedOrders);
+        } catch(e){}
 
-      if (currentSede !== 'all') {
-        const sedeTerm = currentSede.toLowerCase();
-        filteredClients = clients.filter(c => (c.valle || '').toLowerCase().includes(sedeTerm) || (c.fundo || '').toLowerCase().includes(sedeTerm));
-        filteredConsultas = consultas.filter(c => (c.valle || '').toLowerCase().includes(sedeTerm) || (c.clientFarm || '').toLowerCase().includes(sedeTerm));
-      }
+        // Filtrar por sede si está seleccionada
+        let filteredClients = clients;
+        let filteredConsultas = consultas;
+        let filteredOrders = orders;
 
-      // Totales reales
-      const totClients = filteredClients.length;
-      const totConsultas = filteredConsultas.length;
-      const totEngineer = filteredConsultas.filter(c => c.urgency === 'high').length;
-      const totRevenue = filteredOrders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
-
-      const elClients = document.getElementById('kpi-val-clients');
-      const elConsultas = document.getElementById('kpi-val-consultas');
-      const elEngineer = document.getElementById('kpi-val-engineer');
-      const elRevenue = document.getElementById('kpi-val-revenue');
-
-      if (elClients) elClients.innerText = totClients.toLocaleString('es-PE');
-      if (elConsultas) elConsultas.innerText = totConsultas.toLocaleString('es-PE');
-      if (elEngineer) elEngineer.innerText = totEngineer.toLocaleString('es-PE');
-      if (elRevenue) elRevenue.innerText = `S/. ${totRevenue.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-      // Subtextos dinámicos
-      const subClients = document.getElementById('kpi-sub-clients');
-      const subConsultas = document.getElementById('kpi-sub-consultas');
-      const subEngineer = document.getElementById('kpi-sub-engineer');
-      const subRevenue = document.getElementById('kpi-sub-revenue');
-
-      if (subClients) subClients.innerText = `${totClients} ${totClients === 1 ? 'productor agrícola conectado' : 'productores agrícolas conectados'}`;
-      if (subConsultas) subConsultas.innerText = `${totConsultas} ${totConsultas === 1 ? 'consulta fitosanitaria analizada' : 'consultas fitosanitarias analizadas'}`;
-      if (subEngineer) subEngineer.innerText = `${totEngineer} ${totEngineer === 1 ? 'caso derivado a ingeniero' : 'casos derivados a agrónomo'}`;
-      if (subRevenue) subRevenue.innerText = `${filteredOrders.length} ${filteredOrders.length === 1 ? 'pedido de insumos gestionado' : 'pedidos de insumos gestionados'}`;
-
-      // Actualizar Gráfico de Líneas con datos reales
-      if (chartLineGrowth) {
-        let labelsLine = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
-        let lineClients = [0, 0, 0, totClients];
-        let lineConsultas = [0, 0, 0, totConsultas];
-
-        if (currentPeriod === 'diario') {
-          labelsLine = ['08:00', '12:00', '16:00', '20:00'];
-          lineClients = [0, 0, 0, totClients];
-          lineConsultas = [0, 0, 0, totConsultas];
-        } else if (currentPeriod === 'semanal') {
-          labelsLine = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-          lineClients = [0, 0, 0, 0, 0, 0, totClients];
-          lineConsultas = [0, 0, 0, 0, 0, 0, totConsultas];
-        } else if (currentPeriod === 'anual') {
-          labelsLine = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
-          lineClients = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, totClients];
-          lineConsultas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, totConsultas];
+        if (currentSede !== 'all') {
+          const sedeTerm = currentSede.toLowerCase();
+          filteredClients = clients.filter(c => (c.valle || '').toLowerCase().includes(sedeTerm) || (c.fundo || '').toLowerCase().includes(sedeTerm));
+          filteredConsultas = consultas.filter(c => (c.valle || '').toLowerCase().includes(sedeTerm) || (c.clientFarm || '').toLowerCase().includes(sedeTerm));
         }
 
-        chartLineGrowth.data.labels = labelsLine;
-        chartLineGrowth.data.datasets[0].data = lineClients;
-        chartLineGrowth.data.datasets[1].data = lineConsultas;
-        chartLineGrowth.update();
+        // Totales reales
+        const totClients = filteredClients.length;
+        const totConsultas = filteredConsultas.length;
+        const totEngineer = filteredConsultas.filter(c => c.urgency === 'high').length;
+        const totRevenue = filteredOrders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+
+        const elClients = document.getElementById('kpi-val-clients');
+        const elConsultas = document.getElementById('kpi-val-consultas');
+        const elEngineer = document.getElementById('kpi-val-engineer');
+        const elRevenue = document.getElementById('kpi-val-revenue');
+
+        if (elClients) elClients.innerText = totClients.toLocaleString('es-PE');
+        if (elConsultas) elConsultas.innerText = totConsultas.toLocaleString('es-PE');
+        if (elEngineer) elEngineer.innerText = totEngineer.toLocaleString('es-PE');
+        if (elRevenue) elRevenue.innerText = `S/. ${totRevenue.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        // Subtextos dinámicos
+        const subClients = document.getElementById('kpi-sub-clients');
+        const subConsultas = document.getElementById('kpi-sub-consultas');
+        const subEngineer = document.getElementById('kpi-sub-engineer');
+        const subRevenue = document.getElementById('kpi-sub-revenue');
+
+        if (subClients) subClients.innerText = `${totClients} ${totClients === 1 ? 'productor agrícola conectado' : 'productores agrícolas conectados'}`;
+        if (subConsultas) subConsultas.innerText = `${totConsultas} ${totConsultas === 1 ? 'consulta fitosanitaria analizada' : 'consultas fitosanitarias analizadas'}`;
+        if (subEngineer) subEngineer.innerText = `${totEngineer} ${totEngineer === 1 ? 'caso derivado a ingeniero' : 'casos derivados a agrónomo'}`;
+        if (subRevenue) subRevenue.innerText = `${filteredOrders.length} ${filteredOrders.length === 1 ? 'pedido de insumos gestionado' : 'pedidos de insumos gestionados'}`;
+
+        // Actualizar Gráfico de Líneas con datos reales
+        if (chartLineGrowth && chartLineGrowth.data) {
+          let labelsLine = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+          let lineClients = [0, 0, 0, totClients];
+          let lineConsultas = [0, 0, 0, totConsultas];
+
+          if (currentPeriod === 'diario') {
+            labelsLine = ['08:00', '12:00', '16:00', '20:00'];
+            lineClients = [0, 0, 0, totClients];
+            lineConsultas = [0, 0, 0, totConsultas];
+          } else if (currentPeriod === 'semanal') {
+            labelsLine = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+            lineClients = [0, 0, 0, 0, 0, 0, totClients];
+            lineConsultas = [0, 0, 0, 0, 0, 0, totConsultas];
+          } else if (currentPeriod === 'anual') {
+            labelsLine = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
+            lineClients = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, totClients];
+            lineConsultas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, totConsultas];
+          }
+
+          chartLineGrowth.data.labels = labelsLine;
+          chartLineGrowth.data.datasets[0].data = lineClients;
+          chartLineGrowth.data.datasets[1].data = lineConsultas;
+          chartLineGrowth.update();
+        }
+
+        // Actualizar Gráfico Comparativo con métricas reales
+        if (chartBarComparative && chartBarComparative.data) {
+          chartBarComparative.data.datasets[0].data = [totConsultas, totClients, totEngineer, filteredOrders.length];
+          chartBarComparative.data.datasets[1].data = [0, 0, 0, 0];
+          chartBarComparative.update();
+        }
+
+        // Actualizar Gráfico Derivaciones por Cultivo con datos reales
+        if (chartBarDerivations && chartBarDerivations.data) {
+          const vidCount = filteredConsultas.filter(c => (c.crop || '').includes('vid')).length;
+          const paltoCount = filteredConsultas.filter(c => (c.crop || '').includes('palto')).length;
+          const esparragoCount = filteredConsultas.filter(c => (c.crop || '').includes('esparrago')).length;
+          const otrosCount = filteredConsultas.length - (vidCount + paltoCount + esparragoCount);
+
+          chartBarDerivations.data.datasets[0].data = [vidCount, paltoCount, esparragoCount, Math.max(0, otrosCount)];
+          chartBarDerivations.update();
+        }
+
+        renderSedesTableSummary();
+      } catch(err) {
+        console.error('Error in applyGlobalFilters:', err);
       }
-
-      // Actualizar Gráfico Comparativo con métricas reales
-      if (chartBarComparative) {
-        chartBarComparative.data.datasets[0].data = [totConsultas, totClients, totEngineer, filteredOrders.length];
-        chartBarComparative.data.datasets[1].data = [0, 0, 0, 0];
-        chartBarComparative.update();
-      }
-
-      // Actualizar Gráfico Derivaciones por Cultivo con datos reales
-      if (chartBarDerivations) {
-        const vidCount = filteredConsultas.filter(c => (c.crop || '').includes('vid')).length;
-        const paltoCount = filteredConsultas.filter(c => (c.crop || '').includes('palto')).length;
-        const esparragoCount = filteredConsultas.filter(c => (c.crop || '').includes('esparrago')).length;
-        const otrosCount = filteredConsultas.length - (vidCount + paltoCount + esparragoCount);
-
-        chartBarDerivations.data.datasets[0].data = [vidCount, paltoCount, esparragoCount, Math.max(0, otrosCount)];
-        chartBarDerivations.update();
-      }
-
-      renderSedesTableSummary();
     }
 
     // ==========================================
     // INICIALIZACIÓN DE CHART.JS
     // ==========================================
     function initCharts() {
+      if (typeof Chart === 'undefined') {
+        console.warn('Chart.js no está disponible aún');
+        return;
+      }
+
       // 1. Gráfico de Líneas (Crecimiento Clientes vs Consultas)
-      const ctxLine = document.getElementById('chartGrowthLine').getContext('2d');
-      const gradGreen = ctxLine.createLinearGradient(0, 0, 0, 300);
-      gradGreen.addColorStop(0, 'rgba(5, 150, 105, 0.35)');
-      gradGreen.addColorStop(1, 'rgba(5, 150, 105, 0.0)');
+      const elLine = document.getElementById('chartGrowthLine');
+      if (elLine) {
+        try {
+          const ctxLine = elLine.getContext('2d');
+          const gradGreen = ctxLine.createLinearGradient(0, 0, 0, 300);
+          gradGreen.addColorStop(0, 'rgba(5, 150, 105, 0.35)');
+          gradGreen.addColorStop(1, 'rgba(5, 150, 105, 0.0)');
 
-      const gradBlue = ctxLine.createLinearGradient(0, 0, 0, 300);
-      gradBlue.addColorStop(0, 'rgba(2, 132, 199, 0.3)');
-      gradBlue.addColorStop(1, 'rgba(2, 132, 199, 0.0)');
+          const gradBlue = ctxLine.createLinearGradient(0, 0, 0, 300);
+          gradBlue.addColorStop(0, 'rgba(2, 132, 199, 0.3)');
+          gradBlue.addColorStop(1, 'rgba(2, 132, 199, 0.0)');
 
-      chartLineGrowth = new Chart(ctxLine, {
-        type: 'line',
-        data: {
-          labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
-          datasets: [
-            {
-              label: 'Nuevos Clientes',
-              data: [0, 0, 0, 1],
-              borderColor: '#059669',
-              backgroundColor: gradGreen,
-              borderWidth: 3,
-              fill: true,
-              tension: 0.35,
-              pointBackgroundColor: '#059669',
-              pointRadius: 4,
-              pointHoverRadius: 6
+          chartLineGrowth = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+              labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+              datasets: [
+                {
+                  label: 'Nuevos Clientes',
+                  data: [0, 0, 0, 1],
+                  borderColor: '#059669',
+                  backgroundColor: gradGreen,
+                  borderWidth: 3,
+                  fill: true,
+                  tension: 0.35,
+                  pointBackgroundColor: '#059669',
+                  pointRadius: 4,
+                  pointHoverRadius: 6
+                },
+                {
+                  label: 'Consultas Fitosanitarias IA',
+                  data: [0, 0, 0, 0],
+                  borderColor: '#0284c7',
+                  backgroundColor: gradBlue,
+                  borderWidth: 3,
+                  fill: true,
+                  tension: 0.35,
+                  pointBackgroundColor: '#0284c7',
+                  pointRadius: 4,
+                  pointHoverRadius: 6
+                }
+              ]
             },
-            {
-              label: 'Consultas Fitosanitarias IA',
-              data: [0, 0, 0, 0],
-              borderColor: '#0284c7',
-              backgroundColor: gradBlue,
-              borderWidth: 3,
-              fill: true,
-              tension: 0.35,
-              pointBackgroundColor: '#0284c7',
-              pointRadius: 4,
-              pointHoverRadius: 6
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top',
+                  labels: { font: { family: 'Plus Jakarta Sans', weight: '700', size: 12 } }
+                },
+                tooltip: {
+                  backgroundColor: '#002e26',
+                  titleFont: { family: 'Plus Jakarta Sans', weight: '800' },
+                  padding: 12,
+                  cornerRadius: 8
+                }
+              },
+              scales: {
+                y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
+                x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+              }
             }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              labels: { font: { family: 'Plus Jakarta Sans', weight: '700', size: 12 } }
-            },
-            tooltip: {
-              backgroundColor: '#002e26',
-              titleFont: { family: 'Plus Jakarta Sans', weight: '800' },
-              padding: 12,
-              cornerRadius: 8
-            }
-          },
-          scales: {
-            y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
-            x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } } }
-          }
+          });
+        } catch(e) {
+          console.warn('Error inicializando chartGrowthLine:', e);
         }
-      });
+      }
 
       // 2. Gráfico de Barras Comparativo (Actual vs Anterior)
-      const ctxBar = document.getElementById('chartComparativeBar').getContext('2d');
-      chartBarComparative = new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-          labels: ['Consultas Totales', 'Clientes Nuevos', 'Derivación Técnico', 'Pedidos Despacho'],
-          datasets: [
-            {
-              label: 'Periodo Actual',
-              data: [0, 1, 0, 0],
-              backgroundColor: '#059669',
-              borderRadius: 6,
-              borderSkipped: false
+      const elBar = document.getElementById('chartComparativeBar');
+      if (elBar) {
+        try {
+          const ctxBar = elBar.getContext('2d');
+          chartBarComparative = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+              labels: ['Consultas Totales', 'Clientes Nuevos', 'Derivación Técnico', 'Pedidos Despacho'],
+              datasets: [
+                {
+                  label: 'Periodo Actual',
+                  data: [0, 1, 0, 0],
+                  backgroundColor: '#059669',
+                  borderRadius: 6,
+                  borderSkipped: false
+                },
+                {
+                  label: 'Periodo Anterior',
+                  data: [0, 0, 0, 0],
+                  backgroundColor: '#cbd5e1',
+                  borderRadius: 6,
+                  borderSkipped: false
+                }
+              ]
             },
-            {
-              label: 'Periodo Anterior',
-              data: [0, 0, 0, 0],
-              backgroundColor: '#cbd5e1',
-              borderRadius: 6,
-              borderSkipped: false
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#002e26', padding: 12, cornerRadius: 8 }
+              },
+              scales: {
+                y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
+                x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } } }
+              }
             }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { backgroundColor: '#002e26', padding: 12, cornerRadius: 8 }
-          },
-          scales: {
-            y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
-            x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } } }
-          }
+          });
+        } catch(e) {
+          console.warn('Error inicializando chartComparativeBar:', e);
         }
-      });
+      }
 
       // 3. Gráfico Dona Sedes
-      const ctxSedes = document.getElementById('chartSedesDoughnut').getContext('2d');
-      chartDoughnutSedes = new Chart(ctxSedes, {
-        type: 'doughnut',
-        data: {
-          labels: ['Ica (100%)', 'Chincha (0%)', 'Imperial (0%)', 'Pisco (0%)', 'Mala (0%)', 'Nazca (0%)'],
-          datasets: [{
-            data: [1, 0, 0, 0, 0, 0],
-            backgroundColor: ['#059669', '#10b981', '#0284c7', '#38bdf8', '#f59e0b', '#a855f7'],
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { backgroundColor: '#002e26', padding: 10, cornerRadius: 8 }
-          },
-          cutout: '68%'
+      const elSedes = document.getElementById('chartSedesDoughnut');
+      if (elSedes) {
+        try {
+          const ctxSedes = elSedes.getContext('2d');
+          chartDoughnutSedes = new Chart(ctxSedes, {
+            type: 'doughnut',
+            data: {
+              labels: ['Ica (100%)', 'Chincha (0%)', 'Imperial (0%)', 'Pisco (0%)', 'Mala (0%)', 'Nazca (0%)'],
+              datasets: [{
+                data: [1, 0, 0, 0, 0, 0],
+                backgroundColor: ['#059669', '#10b981', '#0284c7', '#38bdf8', '#f59e0b', '#a855f7'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#002e26', padding: 10, cornerRadius: 8 }
+              },
+              cutout: '68%'
+            }
+          });
+        } catch(e) {
+          console.warn('Error inicializando chartSedesDoughnut:', e);
         }
-      });
+      }
 
       // 4. Gráfico Derivaciones por Cultivo
-      const ctxDeriv = document.getElementById('chartBarDerivations').getContext('2d');
-      chartBarDerivations = new Chart(ctxDeriv, {
-        type: 'bar',
-        data: {
-          labels: ['🍇 Vid de Mesa', '🥑 Palto Hass', '🌾 Espárrago', '🍋 Cítricos / Otros'],
-          datasets: [{
-            label: 'Consultas por Cultivo',
-            data: [0, 0, 0, 0],
-            backgroundColor: ['#7c3aed', '#10b981', '#059669', '#f59e0b'],
-            borderRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: { backgroundColor: '#002e26', padding: 10, cornerRadius: 8 }
-          },
-          scales: {
-            x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
-            y: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '700' } } }
-          }
+      const elDeriv = document.getElementById('chartDerivationsBar') || document.getElementById('chartBarDerivations');
+      if (elDeriv) {
+        try {
+          const ctxDeriv = elDeriv.getContext('2d');
+          chartBarDerivations = new Chart(ctxDeriv, {
+            type: 'bar',
+            data: {
+              labels: ['🍇 Vid de Mesa', '🥑 Palto Hass', '🌾 Espárrago', '🍋 Cítricos / Otros'],
+              datasets: [{
+                label: 'Consultas por Cultivo',
+                data: [0, 0, 0, 0],
+                backgroundColor: ['#7c3aed', '#10b981', '#059669', '#f59e0b'],
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              indexAxis: 'y',
+              plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: '#002e26', padding: 10, cornerRadius: 8 }
+              },
+              scales: {
+                x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
+                y: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '700' } } }
+              }
+            }
+          });
+        } catch(e) {
+          console.warn('Error inicializando chartDerivationsBar:', e);
         }
-      });
+      }
     }
 
     function renderSedesTableSummary() {
@@ -3049,22 +3096,6 @@
               <span style="font-weight:800; font-size:12px; min-width:28px;">${pct}%</span>
               <div class="progress-bar-wrap" style="width:80px;">
                 <div class="progress-bar-fill" style="width:${pct}%; background:${s.color};"></div>
-              </div>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${s.name}</strong></td>
-          <td>${s.clients} fundos</td>
-          <td>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-weight:800; font-size:12px; min-width:28px;">${s.pct}%</span>
-              <div class="progress-bar-wrap" style="width:80px;">
-                <div class="progress-bar-fill" style="width:${s.pct}%; background:${s.color};"></div>
               </div>
             </div>
           </td>
