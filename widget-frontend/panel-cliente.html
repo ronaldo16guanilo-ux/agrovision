@@ -1884,29 +1884,32 @@
             </div>
 
             <div class="fundo-card-layout">
-              <div class="fundo-photo-box" onclick="switchView('fundo')" style="cursor:pointer;" title="Click para ver la Ficha Completa">
-                <img src="assets/panel/fundo-campo.jpg" alt="Fundo Santa Rosa" class="fundo-photo-img" id="fundo-dash-thumb">
+              <div class="fundo-photo-box" onclick="openEditFundoModal('fundo')" style="cursor:pointer;" title="Click para agregar o cambiar foto de tu fundo">
+                <img src="assets/panel/fundo-campo.jpg" alt="Foto del Fundo" class="fundo-photo-img" id="fundo-dash-thumb" style="display:none;">
+                <div id="fundo-dash-photo-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; min-height:120px; background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px; padding:10px; text-align:center;">
+                  <span style="font-size:26px; margin-bottom:4px;">📷</span>
+                  <span style="font-size:11.5px; font-weight:700; color:#059669;">+ Subir foto de mi fundo</span>
+                  <span style="font-size:10px; color:#94a3b8; margin-top:2px;">(Clic para agregar)</span>
+                </div>
               </div>
 
               <div class="fundo-info-list">
                 <div class="fundo-info-item">
                   <span class="fundo-info-label">🏡 Nombre del Fundo:</span>
-                  <span class="fundo-info-val" id="fundo-val-name">Santa Rosa</span>
+                  <span class="fundo-info-val" id="fundo-val-name">Por registrar</span>
                 </div>
                 <div class="fundo-info-item">
                   <span class="fundo-info-label">📍 Valle Agrícola:</span>
-                  <span class="fundo-info-val" id="fundo-val-valley">Ica</span>
+                  <span class="fundo-info-val" id="fundo-val-valley">Por registrar</span>
                 </div>
                 <div class="fundo-info-item">
                   <span class="fundo-info-label">📐 Hectáreas:</span>
-                  <span class="fundo-info-val" id="fundo-val-area">10.00 ha</span>
+                  <span class="fundo-info-val" id="fundo-val-area">Por registrar</span>
                 </div>
                 <div>
                   <span class="fundo-info-label" style="display:block; margin-bottom:4px;">🌱 Cultivos Principales:</span>
                   <div class="crop-pills-wrap" id="crop-pills-container">
-                    <span class="crop-pill">Vid</span>
-                    <span class="crop-pill">Palto</span>
-                    <span class="crop-pill">Espárrago</span>
+                    <span style="color:#94a3b8; font-size:12px; font-style:italic;">Sin cultivos registrados</span>
                   </div>
                 </div>
               </div>
@@ -1929,19 +1932,20 @@
               </button>
             </div>
 
-            <div class="advisor-dash-layout">
+            <div class="advisor-dash-layout" id="dash-advisor-layout">
               <div class="advisor-avatar-circle-lg">
-                <img src="assets/panel/asesor-carlos.jpg" alt="Ing. Carlos Mendoza" class="advisor-avatar-img">
+                <img src="assets/panel/asesor-carlos.jpg" alt="Asesor Técnico" class="advisor-avatar-img" id="dash-advisor-img">
               </div>
 
               <div class="advisor-details">
-                <div class="advisor-name">Ing. Carlos Mendoza</div>
-                <div class="advisor-role">Ingeniero Agrónomo &bull; Chiaway Agro</div>
-                <div class="advisor-zone">📍 Zona de Atención: Valle de Ica</div>
+                <div class="advisor-name" id="dash-advisor-name">Ing. Carlos Mendoza</div>
+                <div class="advisor-role" id="dash-advisor-role">Ingeniero Agrónomo &bull; Chiaway Agro</div>
+                <div class="advisor-zone" id="dash-advisor-zone">📍 Asesor Técnico General</div>
+                <div id="dash-advisor-match-pill"></div>
               </div>
 
               <div>
-                <a href="https://wa.me/51994233110?text=Hola%20Ing.%20Carlos%20Mendoza,%20le%20escribo%20desde%20el%20Panel%20Chiaway%20para%20solicitar%20asesor%C3%ADa%20fitosanitaria%20para%20mi%20fundo." target="_blank" class="btn-wsp-direct">
+                <a href="https://wa.me/51994233110" target="_blank" class="btn-wsp-direct" id="dash-advisor-wsp-btn">
                   💬 WhatsApp
                 </a>
               </div>
@@ -2073,16 +2077,16 @@
     <!-- ======================================================== -->
     <section id="view-fundo" class="panel-view">
       <div class="fundo-hero-card">
-        <div class="fundo-hero-banner">
-          <img src="assets/panel/fundo-campo.jpg" alt="Fundo Agrícola Chiaway" id="fundo-hero-banner-img">
+        <div class="fundo-hero-banner" style="background:linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%); position:relative;">
+          <img src="" alt="Fundo Agrícola" id="fundo-hero-banner-img" style="display:none; width:100%; height:100%; object-fit:cover;">
           <button type="button" class="fundo-banner-change-btn" onclick="openEditFundoModal('fundo')" title="Cambiar Foto de Portada">
             📷 Cambiar Foto de Portada
           </button>
         </div>
         <div class="fundo-hero-content">
           <div class="fundo-hero-title">
-            <h2 id="fundo-title-hero">Fundo Santa Rosa</h2>
-            <p>Valle Agrícola de Ica &bull; Sector San Juan Bautista &bull; Coordenadas: 14°04'12"S 75°43'55"W</p>
+            <h2 id="fundo-title-hero">Mi Fundo Agrícola</h2>
+            <p id="fundo-hero-subtitle">Valle Agrícola: Por registrar &bull; Haz clic en "Editar Datos del Fundo" para completar tu ficha</p>
           </div>
 
           <div style="display:flex; gap:10px;">
@@ -2104,31 +2108,11 @@
                 <div class="card-icon-chip icon-chip-green">🌱</div>
                 <h3>Lotes y Variedades Instaladas</h3>
               </div>
-              <span class="crop-pill" style="background:#059669; color:#ffffff;" id="fundo-area-badge">10.00 ha Totales</span>
+              <span class="crop-pill" style="background:#059669; color:#ffffff;" id="fundo-area-badge">Área: Por registrar</span>
             </div>
 
-            <div class="lotes-list">
-              <div class="lote-item">
-                <div class="lote-info">
-                  <h4>🍇 Lote A: Vid Red Globe & Superior</h4>
-                  <p>4.50 ha &bull; Parral español &bull; Marco 3.5m x 2.0m &bull; Riego por goteo doble línea</p>
-                </div>
-                <div class="lote-badge">4.50 ha</div>
-              </div>
-              <div class="lote-item">
-                <div class="lote-info">
-                  <h4>🥑 Lote B: Palto Hass</h4>
-                  <p>3.50 ha &bull; Patrón antillano resistente &bull; Marco 6.0m x 3.0m</p>
-                </div>
-                <div class="lote-badge">3.50 ha</div>
-              </div>
-              <div class="lote-item">
-                <div class="lote-info">
-                  <h4>🌾 Lote C: Espárrago Verde UC-157</h4>
-                  <p>2.00 ha &bull; Densidad 28,000 plantas/ha &bull; Riego presurizado</p>
-                </div>
-                <div class="lote-badge">2.00 ha</div>
-              </div>
+            <div class="lotes-list" id="fundo-lotes-list">
+              <!-- Renderizado dinámicamente según los cultivos registrados -->
             </div>
           </div>
         </div>
@@ -2761,26 +2745,40 @@
 
     // Cargar o Inicializar Pedidos en LocalStorage
     function getOrders() {
+      const u = getCurrentUser();
+      const userEmail = u ? (u.email || '').toLowerCase().trim() : '';
+
       const stored = localStorage.getItem('chiaway_client_orders');
       if (stored !== null) {
         try {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed)) {
-            // Si contenía pedidos mock iniciales de prueba previa, limpiamos para cuenta vacía
-            if (parsed.some(o => o.code === '#CP-2026-1045')) {
-              localStorage.setItem('chiaway_client_orders', JSON.stringify([]));
-              return [];
-            }
-            return parsed;
+            if (!userEmail) return [];
+            return parsed.filter(o => {
+              if (!o) return false;
+              const oEmail = (o.clientEmail || '').toLowerCase().trim();
+              return oEmail === userEmail;
+            });
           }
         } catch (e) { }
       }
-      localStorage.setItem('chiaway_client_orders', JSON.stringify([]));
       return [];
     }
 
-    function saveOrders(orders) {
-      localStorage.setItem('chiaway_client_orders', JSON.stringify(orders));
+    function saveOrders(userOrders) {
+      const u = getCurrentUser();
+      const userEmail = u ? (u.email || '').toLowerCase().trim() : '';
+
+      let allOrders = [];
+      try {
+        const stored = localStorage.getItem('chiaway_client_orders');
+        if (stored) allOrders = JSON.parse(stored);
+      } catch (e) { }
+
+      allOrders = allOrders.filter(o => (o.clientEmail || '').toLowerCase().trim() !== userEmail);
+      allOrders = [...userOrders, ...allOrders];
+
+      localStorage.setItem('chiaway_client_orders', JSON.stringify(allOrders));
       renderOrdersList();
       renderDashboardOrders();
       updateKpis();
@@ -3077,8 +3075,11 @@
       const today = new Date();
       const dateStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
 
-      const farmName = localStorage.getItem('chiaway_farm_name') || 'Fundo Santa Rosa';
-      const farmValley = localStorage.getItem('chiaway_farm_valley') || 'Ica';
+      const fundoData = getFundoData();
+      const u = getCurrentUser();
+      const userEmail = u ? (u.email || '').toLowerCase().trim() : '';
+      const farmName = fundoData.name || (u ? u.companyOrFarm || u.name : 'Mi Fundo');
+      const farmValley = fundoData.valley || 'Valle Agrícola';
 
       const itemsClone = cart.map(item => ({
         name: item.name,
@@ -3092,6 +3093,8 @@
 
       const newOrder = {
         code: orderCode,
+        clientEmail: userEmail,
+        clientName: u ? u.name : 'Cliente',
         date: dateStr,
         isPaid: isPaid,
         statusText: isPaid 
@@ -3496,44 +3499,180 @@
       } catch (e) { }
     }
 
-    function loadFundoData() {
-      const name = localStorage.getItem('chiaway_farm_name') || 'Fundo Santa Rosa';
-      const valley = localStorage.getItem('chiaway_farm_valley') || 'Ica';
-      const area = localStorage.getItem('chiaway_farm_area') || '10.00 ha';
-      const crops = localStorage.getItem('chiaway_farm_crops') || 'Vid, Palto, Espárrago';
-      const banner = localStorage.getItem('chiaway_farm_banner') || 'assets/panel/fundo-campo.jpg';
+    function getCurrentUser() {
+      try {
+        const stored = localStorage.getItem('chiaway_user');
+        if (stored) return JSON.parse(stored);
+      } catch (e) { }
+      return null;
+    }
 
+    function getFundoData() {
+      const u = getCurrentUser();
+      const userEmail = u ? (u.email || '').toLowerCase().trim() : 'guest';
+      const scopedKey = 'chiaway_farm_data_' + userEmail;
+
+      const stored = localStorage.getItem(scopedKey);
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) { }
+      }
+
+      // Nombre inicial: tomar el que se ingresó en el registro si existe
+      const defaultFarmName = (u && (u.companyOrFarm || u.farm)) ? (u.companyOrFarm || u.farm) : '';
+
+      const initial = {
+        name: defaultFarmName,
+        valley: '',
+        area: '',
+        crops: '',
+        banner: ''
+      };
+      try {
+        localStorage.setItem(scopedKey, JSON.stringify(initial));
+      } catch (e) { }
+      return initial;
+    }
+
+    function saveFundoDataObj(dataObj) {
+      const u = getCurrentUser();
+      const userEmail = u ? (u.email || '').toLowerCase().trim() : 'guest';
+      const scopedKey = 'chiaway_farm_data_' + userEmail;
+
+      try {
+        localStorage.setItem(scopedKey, JSON.stringify(dataObj));
+      } catch (e) { }
+
+      // Actualizar también en la lista general de clientes registrados para panel administrador
+      try {
+        let clients = JSON.parse(localStorage.getItem('chiaway_registered_clients') || '[]');
+        const idx = clients.findIndex(c => (c.email || '').toLowerCase().trim() === userEmail);
+        if (idx !== -1) {
+          if (dataObj.name) clients[idx].fundo = dataObj.name;
+          if (dataObj.valley) clients[idx].valle = dataObj.valley;
+          if (dataObj.area) clients[idx].area = dataObj.area;
+          if (dataObj.crops) clients[idx].crops = dataObj.crops;
+          localStorage.setItem('chiaway_registered_clients', JSON.stringify(clients));
+        }
+      } catch (e) { }
+    }
+
+    function loadFundoData() {
+      const fundo = getFundoData();
+      const u = getCurrentUser();
+
+      const name = fundo.name ? fundo.name.trim() : '';
+      const valley = fundo.valley ? fundo.valley.trim() : '';
+      const area = fundo.area ? fundo.area.trim() : '';
+      const crops = fundo.crops ? fundo.crops.trim() : '';
+      const banner = fundo.banner ? fundo.banner.trim() : '';
+
+      // 1. Dashboard: Ficha y Datos de mi Fundo
       const elName = document.getElementById('fundo-val-name');
       const elValley = document.getElementById('fundo-val-valley');
       const elArea = document.getElementById('fundo-val-area');
-      const elTitleHero = document.getElementById('fundo-title-hero');
-      const elAreaBadge = document.getElementById('fundo-area-badge');
+      const dashPhotoBox = document.querySelector('.fundo-photo-box');
 
-      if (elName) elName.innerText = name;
-      if (elValley) elValley.innerText = valley;
-      if (elArea) elArea.innerText = area;
-      if (elTitleHero) elTitleHero.innerText = name;
-      if (elAreaBadge) elAreaBadge.innerText = area + ' Totales';
-
-      // Actualizar imágenes de banner y miniatura
-      const heroBanner = document.getElementById('fundo-hero-banner-img');
-      if (heroBanner) {
-        heroBanner.src = banner;
-        heroBanner.onerror = function() { this.src = 'assets/panel/fundo-campo.jpg'; };
-      }
-      const dashThumb = document.getElementById('fundo-dash-thumb');
-      if (dashThumb) {
-        dashThumb.src = banner;
-        dashThumb.onerror = function() { this.src = 'assets/panel/fundo-campo.jpg'; };
+      if (elName) {
+        if (name) {
+          elName.innerText = name;
+          elName.style.color = '#0f172a';
+          elName.style.fontStyle = 'normal';
+        } else {
+          elName.innerHTML = '<span style="color:#94a3b8; font-style:italic; font-size:12px;">Sin registrar (clic en Editar)</span>';
+        }
       }
 
+      if (elValley) {
+        if (valley) {
+          elValley.innerText = valley;
+          elValley.style.color = '#0f172a';
+          elValley.style.fontStyle = 'normal';
+        } else {
+          elValley.innerHTML = '<span style="color:#94a3b8; font-style:italic; font-size:12px;">Por definir (clic en Editar)</span>';
+        }
+      }
+
+      if (elArea) {
+        if (area) {
+          elArea.innerText = area;
+          elArea.style.color = '#0f172a';
+          elArea.style.fontStyle = 'normal';
+        } else {
+          elArea.innerHTML = '<span style="color:#94a3b8; font-style:italic; font-size:12px;">Sin especificar (clic en Editar)</span>';
+        }
+      }
+
+      // Foto miniatura en Dashboard
+      if (dashPhotoBox) {
+        if (banner) {
+          dashPhotoBox.innerHTML = `<img src="${banner}" alt="${name || 'Fundo'}" class="fundo-photo-img" id="fundo-dash-thumb">`;
+        } else {
+          dashPhotoBox.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; min-height:120px; background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px; padding:10px; text-align:center;">
+              <span style="font-size:26px; margin-bottom:4px;">📷</span>
+              <span style="font-size:11.5px; font-weight:700; color:#059669;">+ Subir foto de mi fundo</span>
+              <span style="font-size:10px; color:#94a3b8; margin-top:2px;">(Clic para agregar)</span>
+            </div>
+          `;
+        }
+      }
+
+      // Pills de cultivos en Dashboard
       renderCropTags(crops);
+
+      // 2. Vista Hero en Mi Fundo (view-fundo)
+      const elTitleHero = document.getElementById('fundo-title-hero');
+      const elHeroSubtitle = document.getElementById('fundo-hero-subtitle');
+      const elAreaBadge = document.getElementById('fundo-area-badge');
+      const heroBannerImg = document.getElementById('fundo-hero-banner-img');
+      const bannerContainer = document.querySelector('.fundo-hero-banner');
+
+      if (elTitleHero) {
+        elTitleHero.innerText = name ? name : 'Mi Fundo Agrícola';
+      }
+
+      if (elHeroSubtitle) {
+        if (valley) {
+          elHeroSubtitle.innerText = `Valle Agrícola: ${valley} • Ficha Oficial en Chiaway Agro`;
+        } else {
+          elHeroSubtitle.innerText = `Valle Agrícola: Sin registrar • Haz clic en "Editar Datos del Fundo" para completar tu ficha`;
+        }
+      }
+
+      if (elAreaBadge) {
+        elAreaBadge.innerText = area ? `${area} Totales` : 'Área: Sin registrar';
+      }
+
+      if (heroBannerImg && bannerContainer) {
+        if (banner) {
+          heroBannerImg.src = banner;
+          heroBannerImg.style.display = 'block';
+          bannerContainer.style.background = 'transparent';
+        } else {
+          heroBannerImg.style.display = 'none';
+          bannerContainer.style.background = 'linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%)';
+        }
+      }
+
+      // 3. Renderizar Lotes Dinámicos según los cultivos registrados
+      renderLotesList(crops, area);
+
+      // 4. Asignar Asesor Técnico según la clase de cultivos que tenga en su fundo
+      renderAssignedAdvisor(crops, valley);
     }
 
     function renderCropTags(cropsStr) {
       const container = document.getElementById('crop-pills-container');
       if (!container) return;
       container.innerHTML = '';
+
+      if (!cropsStr || !cropsStr.trim()) {
+        container.innerHTML = `<span style="color:#94a3b8; font-size:12px; font-style:italic;">Sin cultivos registrados. Haz clic en "Editar" para registrar tus cultivos.</span>`;
+        return;
+      }
+
       const list = cropsStr.split(',').map(s => s.trim()).filter(Boolean);
       list.forEach(c => {
         const span = document.createElement('span');
@@ -3543,42 +3682,232 @@
       });
     }
 
+    function renderLotesList(cropsStr, areaStr) {
+      const container = document.getElementById('fundo-lotes-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!cropsStr || !cropsStr.trim()) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:28px 16px; background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px;">
+            <div style="font-size:32px; margin-bottom:8px;">🌱</div>
+            <div style="font-weight:800; font-size:14px; color:#1e293b; margin-bottom:4px;">No tienes cultivos ni lotes configurados</div>
+            <p style="font-size:12.5px; color:#64748b; max-width:420px; margin:0 auto 12px;">
+              Registra los cultivos principales de tu predio para activar el monitoreo agronómico y la asesoría personalizada.
+            </p>
+            <button type="button" class="btn-checkout-pay" onclick="openEditFundoModal('fundo')" style="padding:8px 20px; font-size:12px; border-radius:50px;">
+              ✏️ Configurar Cultivos Ahora
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const cropsList = cropsStr.split(',').map(s => s.trim()).filter(Boolean);
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+      cropsList.forEach((crop, idx) => {
+        const letter = letters[idx % letters.length];
+        const lowerCrop = crop.toLowerCase();
+
+        let icon = '🌱';
+        let detail = 'Variedad comercial &bull; Manejo agronómico tecnificado';
+
+        if (lowerCrop.includes('vid') || lowerCrop.includes('uva')) {
+          icon = '🍇';
+          detail = 'Parral español / Open Gable &bull; Riego presurizado &bull; Manejo preventivo';
+        } else if (lowerCrop.includes('palto') || lowerCrop.includes('palta')) {
+          icon = '🥑';
+          detail = 'Patrón antillano/clonado &bull; Riego por goteo &bull; Monitoreo fitosanitario';
+        } else if (lowerCrop.includes('esparrago') || lowerCrop.includes('espárrago')) {
+          icon = '🌾';
+          detail = 'Turiones verdes &bull; Riego presurizado &bull; Cosecha y brotación';
+        } else if (lowerCrop.includes('citrico') || lowerCrop.includes('cítrico') || lowerCrop.includes('mandarina') || lowerCrop.includes('naranja') || lowerCrop.includes('limon') || lowerCrop.includes('limón')) {
+          icon = '🍊';
+          detail = 'Patrón tolerante &bull; Riego localizado &bull; Manejo nutricional';
+        }
+
+        const item = document.createElement('div');
+        item.className = 'lote-item';
+        item.innerHTML = `
+          <div class="lote-info">
+            <h4>${icon} Lote ${letter}: ${crop}</h4>
+            <p>${detail}</p>
+          </div>
+          <div class="lote-badge">Activo</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    const CHIAWAY_ADVISORS = [
+      {
+        id: 1,
+        name: "Ing. Carlos Mendoza Alva",
+        role: "Ingeniero Agrónomo &bull; Chiaway Agro",
+        specialty: "Fitopatología y Sanidad en Vid y Frutales",
+        zone: "Zona de Atención: Valle de Ica y Red Central",
+        photo: "assets/panel/asesor-carlos.jpg",
+        cip: "CIP 184520",
+        phone: "994233110",
+        keywords: ["vid", "uva", "frutal"],
+        wspMsg: "Hola Ing. Carlos Mendoza, le escribo desde el Panel Chiaway para solicitar asesoría técnica para mi cultivo de Vid / Frutales."
+      },
+      {
+        id: 2,
+        name: "Inga. Andrea Quispe Ramos",
+        role: "Especialista Fitosanitaria &bull; Chiaway Agro",
+        specialty: "Nutrición Vegetal y Riego Tecnificado en Palto y Cítricos",
+        zone: "Zona de Atención: Valle de Chincha",
+        photo: "assets/panel/asesor-andrea.jpg",
+        cip: "CIP 204118",
+        phone: "994233110",
+        keywords: ["palto", "palta", "cítrico", "citrico", "mandarina", "limon", "limón", "naranja", "riego"],
+        wspMsg: "Hola Inga. Andrea Quispe, le escribo desde el Panel Chiaway para solicitar asesoría en nutrición y sanidad de Palto y Cítricos."
+      },
+      {
+        id: 3,
+        name: "Ing. Roberto Valdivia Soto",
+        role: "Ingeniero Agrónomo &bull; Chiaway Agro",
+        specialty: "Manejo Integrado de Plagas (MIP) y Sanidad Vegetal",
+        zone: "Zona de Atención: Valle de Cañete / Imperial",
+        photo: "assets/panel/asesor-roberto.jpg",
+        cip: "CIP 162940",
+        phone: "994233110",
+        keywords: ["plaga", "sanidad"],
+        wspMsg: "Hola Ing. Roberto Valdivia, le escribo desde el Panel Chiaway para solicitar asistencia en control fitosanitario."
+      },
+      {
+        id: 4,
+        name: "Ing. Manuel Carranza Peña",
+        role: "Técnico Agrícola de Campo &bull; Chiaway Agro",
+        specialty: "Fisiología y Cosecha en Espárrago y Hortalizas",
+        zone: "Zona de Atención: Valle de Pisco",
+        photo: "assets/panel/asesor-manuel.jpg",
+        cip: "CIP 198302",
+        phone: "994233110",
+        keywords: ["esparrago", "espárrago", "hortaliza", "cebolla", "tomate", "ají", "aji", "pimiento", "grano", "maiz", "maíz"],
+        wspMsg: "Hola Ing. Manuel Carranza, le escribo desde el Panel Chiaway para solicitar asesoría técnica en espárrago y hortalizas."
+      }
+    ];
+
+    function renderAssignedAdvisor(cropsStr, valleyStr) {
+      const imgEl = document.getElementById('dash-advisor-img');
+      const nameEl = document.getElementById('dash-advisor-name');
+      const roleEl = document.getElementById('dash-advisor-role');
+      const zoneEl = document.getElementById('dash-advisor-zone');
+      const pillEl = document.getElementById('dash-advisor-match-pill');
+      const wspBtn = document.getElementById('dash-advisor-wsp-btn');
+
+      if (!imgEl || !nameEl) return;
+
+      const lowerCrops = (cropsStr || '').toLowerCase();
+      let chosenAdvisor = null;
+      let matchBadgeHtml = '';
+
+      if (!cropsStr || !cropsStr.trim()) {
+        chosenAdvisor = CHIAWAY_ADVISORS[0]; // Ing. Carlos Mendoza
+        matchBadgeHtml = `
+          <div style="font-size:11.5px; font-weight:700; color:#b45309; background:#fef3c7; padding:3px 9px; border-radius:12px; display:inline-block; margin-top:4px;">
+            🌱 Asignación pendiente según cultivo &bull; Registra tus cultivos para asignar especialista
+          </div>
+        `;
+      } else if (lowerCrops.includes('vid') || lowerCrops.includes('uva')) {
+        chosenAdvisor = CHIAWAY_ADVISORS[0]; // Carlos Mendoza (Vid)
+        matchBadgeHtml = `
+          <div style="font-size:11.5px; font-weight:800; color:#059669; background:#ecfdf5; padding:3px 9px; border-radius:12px; display:inline-block; margin-top:4px;">
+            🍇 Especialista asignado según tu cultivo de Vid
+          </div>
+        `;
+      } else if (lowerCrops.includes('palto') || lowerCrops.includes('palta') || lowerCrops.includes('citrico') || lowerCrops.includes('cítrico') || lowerCrops.includes('mandarina') || lowerCrops.includes('limon') || lowerCrops.includes('limón') || lowerCrops.includes('naranja')) {
+        chosenAdvisor = CHIAWAY_ADVISORS[1]; // Andrea Quispe (Palto y Cítricos)
+        matchBadgeHtml = `
+          <div style="font-size:11.5px; font-weight:800; color:#059669; background:#ecfdf5; padding:3px 9px; border-radius:12px; display:inline-block; margin-top:4px;">
+            🥑 Especialista asignada según tu cultivo de Palto / Cítricos
+          </div>
+        `;
+      } else if (lowerCrops.includes('esparrago') || lowerCrops.includes('espárrago') || lowerCrops.includes('hortaliza') || lowerCrops.includes('cebolla') || lowerCrops.includes('tomate') || lowerCrops.includes('aji') || lowerCrops.includes('ají')) {
+        chosenAdvisor = CHIAWAY_ADVISORS[3]; // Manuel Carranza (Espárrago y Hortalizas)
+        matchBadgeHtml = `
+          <div style="font-size:11.5px; font-weight:800; color:#059669; background:#ecfdf5; padding:3px 9px; border-radius:12px; display:inline-block; margin-top:4px;">
+            🌾 Especialista asignado según tu cultivo de Espárrago / Hortalizas
+          </div>
+        `;
+      } else {
+        for (const adv of CHIAWAY_ADVISORS) {
+          if (adv.keywords.some(k => lowerCrops.includes(k))) {
+            chosenAdvisor = adv;
+            break;
+          }
+        }
+        if (!chosenAdvisor) chosenAdvisor = CHIAWAY_ADVISORS[2];
+        matchBadgeHtml = `
+          <div style="font-size:11.5px; font-weight:800; color:#059669; background:#ecfdf5; padding:3px 9px; border-radius:12px; display:inline-block; margin-top:4px;">
+            🛡️ Especialista asignado para Sanidad y Control Fitosanitario
+          </div>
+        `;
+      }
+
+      imgEl.src = chosenAdvisor.photo;
+      imgEl.alt = chosenAdvisor.name;
+      nameEl.innerText = chosenAdvisor.name;
+      roleEl.innerHTML = chosenAdvisor.role;
+      zoneEl.innerText = (valleyStr && valleyStr.trim()) ? `📍 Zona de Atención: ${valleyStr}` : chosenAdvisor.zone;
+
+      if (pillEl) pillEl.innerHTML = matchBadgeHtml;
+
+      if (wspBtn) {
+        const msg = encodeURIComponent(chosenAdvisor.wspMsg);
+        wspBtn.href = `https://wa.me/51${chosenAdvisor.phone}?text=${msg}`;
+      }
+    }
+
     function openEditFundoModal(initialTab = 'fundo') {
       tempFundoImage = null;
       tempProfileImage = null;
 
-      document.getElementById('edit-fundo-name').value = localStorage.getItem('chiaway_farm_name') || 'Fundo Santa Rosa';
-      document.getElementById('edit-fundo-valley').value = localStorage.getItem('chiaway_farm_valley') || 'Ica';
-      document.getElementById('edit-fundo-area').value = localStorage.getItem('chiaway_farm_area') || '10.00 ha';
-      document.getElementById('edit-fundo-crops').value = localStorage.getItem('chiaway_farm_crops') || 'Vid, Palto, Espárrago';
+      const fundo = getFundoData();
+      const u = getCurrentUser();
 
-      const currentBanner = localStorage.getItem('chiaway_farm_banner') || 'assets/panel/fundo-campo.jpg';
+      const elName = document.getElementById('edit-fundo-name');
+      const elValley = document.getElementById('edit-fundo-valley');
+      const elArea = document.getElementById('edit-fundo-area');
+      const elCrops = document.getElementById('edit-fundo-crops');
+      const elProfileName = document.getElementById('edit-profile-name');
+
+      if (elName) elName.value = fundo.name || '';
+      if (elValley) elValley.value = fundo.valley || '';
+      if (elArea) elArea.value = fundo.area || '';
+      if (elCrops) elCrops.value = fundo.crops || '';
+      if (elProfileName && u) elProfileName.value = u.name || '';
+
       const previewFundo = document.getElementById('edit-fundo-preview');
-      if (previewFundo) previewFundo.src = currentBanner;
+      if (previewFundo) {
+        if (fundo.banner) {
+          previewFundo.src = fundo.banner;
+          previewFundo.style.display = 'block';
+        } else {
+          previewFundo.src = '';
+          previewFundo.style.display = 'none';
+        }
+      }
       const urlFundoInput = document.getElementById('edit-fundo-img-url');
       if (urlFundoInput) urlFundoInput.value = '';
 
-      const currentAvatar = localStorage.getItem('chiaway_user_avatar') || 'assets/panel/perfil-productor.jpg';
+      const currentAvatar = localStorage.getItem('chiaway_user_avatar_' + (u ? u.email : '')) || localStorage.getItem('chiaway_user_avatar') || 'assets/panel/perfil-productor.jpg';
       const previewProfile = document.getElementById('edit-profile-preview');
       if (previewProfile) previewProfile.src = currentAvatar;
       const urlProfileInput = document.getElementById('edit-profile-img-url');
       if (urlProfileInput) urlProfileInput.value = '';
 
-      try {
-        const stored = localStorage.getItem('chiaway_user');
-        if (stored) {
-          const u = JSON.parse(stored);
-          const pNameInput = document.getElementById('edit-profile-name');
-          if (pNameInput) pNameInput.value = u.name || '';
-        }
-      } catch (e) { }
-
       switchFundoModalTab(initialTab);
-      document.getElementById('modal-edit-fundo').style.display = 'flex';
+      const modal = document.getElementById('modal-edit-fundo');
+      if (modal) modal.style.display = 'flex';
     }
 
     function closeEditFundoModal() {
-      document.getElementById('modal-edit-fundo').style.display = 'none';
+      const modal = document.getElementById('modal-edit-fundo');
+      if (modal) modal.style.display = 'none';
       tempFundoImage = null;
       tempProfileImage = null;
     }
@@ -3598,7 +3927,10 @@
       reader.onload = function(evt) {
         tempFundoImage = evt.target.result;
         const preview = document.getElementById('edit-fundo-preview');
-        if (preview) preview.src = tempFundoImage;
+        if (preview) {
+          preview.src = tempFundoImage;
+          preview.style.display = 'block';
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -3607,14 +3939,20 @@
       if (url && url.trim().length > 6) {
         tempFundoImage = url.trim();
         const preview = document.getElementById('edit-fundo-preview');
-        if (preview) preview.src = tempFundoImage;
+        if (preview) {
+          preview.src = tempFundoImage;
+          preview.style.display = 'block';
+        }
       }
     }
 
     function resetFundoBannerDefault() {
-      tempFundoImage = 'assets/panel/fundo-campo.jpg';
+      tempFundoImage = '';
       const preview = document.getElementById('edit-fundo-preview');
-      if (preview) preview.src = tempFundoImage;
+      if (preview) {
+        preview.src = '';
+        preview.style.display = 'none';
+      }
       const inputUrl = document.getElementById('edit-fundo-img-url');
       if (inputUrl) inputUrl.value = '';
     }
@@ -3656,29 +3994,34 @@
     }
 
     function saveFundoData() {
-      const name = document.getElementById('edit-fundo-name').value.trim() || 'Fundo Santa Rosa';
-      const valley = document.getElementById('edit-fundo-valley').value.trim() || 'Ica';
-      const area = document.getElementById('edit-fundo-area').value.trim() || '10.00 ha';
-      const crops = document.getElementById('edit-fundo-crops').value.trim() || 'Vid, Palto, Espárrago';
+      const name = document.getElementById('edit-fundo-name').value.trim();
+      const valley = document.getElementById('edit-fundo-valley').value.trim();
+      const area = document.getElementById('edit-fundo-area').value.trim();
+      const crops = document.getElementById('edit-fundo-crops').value.trim();
 
-      localStorage.setItem('chiaway_farm_name', name);
-      localStorage.setItem('chiaway_farm_valley', valley);
-      localStorage.setItem('chiaway_farm_area', area);
-      localStorage.setItem('chiaway_farm_crops', crops);
+      const fundo = getFundoData();
+      fundo.name = name;
+      fundo.valley = valley;
+      fundo.area = area;
+      fundo.crops = crops;
 
-      if (tempFundoImage) {
-        localStorage.setItem('chiaway_farm_banner', tempFundoImage);
+      if (tempFundoImage !== null) {
+        fundo.banner = tempFundoImage;
       }
 
+      saveFundoDataObj(fundo);
+
+      const u = getCurrentUser();
+      const userKey = u ? (u.email || '').toLowerCase().trim() : 'guest';
+
       if (tempProfileImage) {
+        localStorage.setItem('chiaway_user_avatar_' + userKey, tempProfileImage);
         localStorage.setItem('chiaway_user_avatar', tempProfileImage);
       }
 
       const newProfileName = document.getElementById('edit-profile-name').value.trim();
-      if (newProfileName) {
+      if (newProfileName && u) {
         try {
-          const stored = localStorage.getItem('chiaway_user');
-          let u = stored ? JSON.parse(stored) : {};
           u.name = newProfileName;
           localStorage.setItem('chiaway_user', JSON.stringify(u));
         } catch(e){}
@@ -3687,7 +4030,7 @@
       loadFundoData();
       loadUserAvatar();
       closeEditFundoModal();
-      alert('✅ Datos y fotografías actualizados correctamente.');
+      alert('✅ Ficha y datos de tu fundo actualizados con éxito.');
     }
 
     // ==========================================
@@ -3696,19 +4039,40 @@
     let currentDiagFilter = 'all';
 
     function getDiagnostics() {
+      const u = getCurrentUser();
+      const userEmail = u ? (u.email || '').toLowerCase().trim() : '';
+
       const stored = localStorage.getItem('chiaway_client_diagnostics');
       if (stored !== null) {
         try {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) return parsed;
+          if (Array.isArray(parsed)) {
+            if (!userEmail) return [];
+            return parsed.filter(d => {
+              if (!d) return false;
+              const dEmail = (d.clientEmail || '').toLowerCase().trim();
+              return dEmail === userEmail;
+            });
+          }
         } catch (e) { }
       }
-      localStorage.setItem('chiaway_client_diagnostics', JSON.stringify([]));
       return [];
     }
 
-    function saveDiagnostics(diags) {
-      localStorage.setItem('chiaway_client_diagnostics', JSON.stringify(diags));
+    function saveDiagnostics(userDiags) {
+      const u = getCurrentUser();
+      const userEmail = u ? (u.email || '').toLowerCase().trim() : '';
+
+      let allDiags = [];
+      try {
+        const stored = localStorage.getItem('chiaway_client_diagnostics');
+        if (stored) allDiags = JSON.parse(stored);
+      } catch (e) { }
+
+      allDiags = allDiags.filter(d => (d.clientEmail || '').toLowerCase().trim() !== userEmail);
+      allDiags = [...userDiags, ...allDiags];
+
+      localStorage.setItem('chiaway_client_diagnostics', JSON.stringify(allDiags));
       renderAllDiagnostics();
     }
 

@@ -483,10 +483,10 @@
 
         // Obtener datos del cliente actual
         var userStr = localStorage.getItem('chiaway_user');
-        var clientName = 'Fundo Agrícola El Sol';
-        var clientFarm = 'Fundo El Sol - Palta y Vid';
-        var clientEmail = 'cliente@fundo.pe';
-        var clientPhone = '+51 945 112 233';
+        var clientName = 'Fundo Agrícola';
+        var clientFarm = 'Mi Fundo';
+        var clientEmail = '';
+        var clientPhone = '';
         if (userStr) {
           try {
             var u = JSON.parse(userStr);
@@ -494,6 +494,15 @@
             if (u.companyOrFarm) clientFarm = u.companyOrFarm;
             if (u.email) clientEmail = u.email;
             if (u.phone) clientPhone = u.phone;
+          } catch(e) {}
+        }
+        if (clientEmail) {
+          try {
+            var fData = localStorage.getItem('chiaway_farm_data_' + clientEmail.toLowerCase().trim());
+            if (fData) {
+              var fd = JSON.parse(fData);
+              if (fd.name) clientFarm = fd.name;
+            }
           } catch(e) {}
         }
 

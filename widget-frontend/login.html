@@ -1085,16 +1085,30 @@
 
         localStorage.setItem('chiaway_user', JSON.stringify(data));
 
+        const userEmail = (data.email || '').toLowerCase().trim();
+        const initialFarmName = farm || data.companyOrFarm || '';
+
+        // Inicializar ficha de fundo limpia y vacía para el nuevo usuario
+        const initialFarmData = {
+          name: initialFarmName,
+          valley: '',
+          area: '',
+          crops: '',
+          banner: ''
+        };
+
         try {
+          localStorage.setItem('chiaway_farm_data_' + userEmail, JSON.stringify(initialFarmData));
+
           let clientList = JSON.parse(localStorage.getItem('chiaway_registered_clients') || '[]');
-          if (!clientList.some(c => c.email === data.email)) {
+          if (!clientList.some(c => (c.email || '').toLowerCase() === userEmail)) {
             clientList.push({
               id: data.id || Date.now(),
               name: data.name,
-              fundo: data.companyOrFarm || farm || 'Fundo Agrícola',
-              valle: 'Ica • San Juan Bautista',
-              area: '10.00 ha',
-              crops: '🍇 Vid, 🥑 Palto, 🌾 Espárrago',
+              fundo: initialFarmName || 'Por registrar',
+              valle: 'Por registrar',
+              area: 'Por registrar',
+              crops: 'Por registrar',
               email: data.email,
               phone: data.phone || phone,
               createdAt: new Date().toISOString()
