@@ -481,6 +481,22 @@
         var dateFormatted = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear() + ' - ' +
           String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
 
+        // Obtener datos del cliente actual
+        var userStr = localStorage.getItem('chiaway_user');
+        var clientName = 'Fundo Agrícola El Sol';
+        var clientFarm = 'Fundo El Sol - Palta y Vid';
+        var clientEmail = 'cliente@fundo.pe';
+        var clientPhone = '+51 945 112 233';
+        if (userStr) {
+          try {
+            var u = JSON.parse(userStr);
+            if (u.name) clientName = u.name;
+            if (u.companyOrFarm) clientFarm = u.companyOrFarm;
+            if (u.email) clientEmail = u.email;
+            if (u.phone) clientPhone = u.phone;
+          } catch(e) {}
+        }
+
         // Primer producto recomendado
         var firstProd = products[0] || null;
         var prodName = firstProd ? firstProd.name : 'Insumo Fitosanitario SENASA';
@@ -491,6 +507,10 @@
           id: data.diagnosisId || ('DIAG-' + Date.now()),
           date: dateFormatted,
           timestamp: Date.now(),
+          clientName: clientName,
+          clientFarm: clientFarm,
+          clientEmail: clientEmail,
+          clientPhone: clientPhone,
           crop: cropCode,
           cropName: cropName,
           organ: organLabel,

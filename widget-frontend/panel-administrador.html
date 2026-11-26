@@ -1456,11 +1456,13 @@
         <button type="button" class="nav-item-btn" onclick="switchAdminView('consultas')" id="nav-btn-consultas">
           <span class="nav-icon">🔬</span>
           <span>Consultas Fitosanitarias</span>
+          <span class="nav-counter-pill" id="side-consultas-count" style="background:#0284c7;">0</span>
         </button>
 
         <button type="button" class="nav-item-btn" onclick="switchAdminView('clientes')" id="nav-btn-clientes">
           <span class="nav-icon">🌾</span>
           <span>Clientes & Fundos</span>
+          <span class="nav-counter-pill" id="side-clients-count" style="background:#059669;">1</span>
         </button>
 
         <button type="button" class="nav-item-btn" onclick="switchAdminView('configuracion')" id="nav-btn-configuracion">
@@ -1554,10 +1556,10 @@
             <div class="kpi-icon-badge kpi-icon-green">👥</div>
           </div>
           <div class="kpi-value-row">
-            <span class="kpi-main-number" id="kpi-val-clients">1,428</span>
-            <span class="kpi-delta-tag delta-up" id="kpi-delta-clients">↑ +14.2%</span>
+            <span class="kpi-main-number" id="kpi-val-clients">1</span>
+            <span class="kpi-delta-tag delta-up" id="kpi-delta-clients">✓ Activo</span>
           </div>
-          <div class="kpi-subtext" id="kpi-sub-clients">vs. periodo anterior (1,250 productores)</div>
+          <div class="kpi-subtext" id="kpi-sub-clients">1 productor agrícola conectado</div>
         </div>
 
         <!-- KPI 2: Total Consultas IA -->
@@ -1567,10 +1569,10 @@
             <div class="kpi-icon-badge kpi-icon-blue">🔬</div>
           </div>
           <div class="kpi-value-row">
-            <span class="kpi-main-number" id="kpi-val-consultas">4,892</span>
-            <span class="kpi-delta-tag delta-up" id="kpi-delta-consultas">↑ +28.6%</span>
+            <span class="kpi-main-number" id="kpi-val-consultas">0</span>
+            <span class="kpi-delta-tag delta-up" id="kpi-delta-consultas">Tiempo Real</span>
           </div>
-          <div class="kpi-subtext" id="kpi-sub-consultas">Hojas y racimos analizados por visión IA</div>
+          <div class="kpi-subtext" id="kpi-sub-consultas">0 consultas fitosanitarias analizadas</div>
         </div>
 
         <!-- KPI 3: Derivación a Ingenieros / Asistencias -->
@@ -1580,10 +1582,10 @@
             <div class="kpi-icon-badge kpi-icon-amber">👨‍🌾</div>
           </div>
           <div class="kpi-value-row">
-            <span class="kpi-main-number" id="kpi-val-engineer">1,180</span>
-            <span class="kpi-delta-tag delta-up" id="kpi-rate-engineer">24.1% tasa</span>
+            <span class="kpi-main-number" id="kpi-val-engineer">0</span>
+            <span class="kpi-delta-tag delta-up" id="kpi-rate-engineer">0% tasa</span>
           </div>
-          <div class="kpi-subtext" id="kpi-sub-engineer">Productores que solicitaron visita o WhatsApp técnico</div>
+          <div class="kpi-subtext" id="kpi-sub-engineer">0 casos de alta urgencia derivados</div>
         </div>
 
         <!-- KPI 4: Ventas Tienda Insumos -->
@@ -1593,10 +1595,10 @@
             <div class="kpi-icon-badge kpi-icon-purple">💰</div>
           </div>
           <div class="kpi-value-row">
-            <span class="kpi-main-number" id="kpi-val-revenue">S/. 184,520</span>
-            <span class="kpi-delta-tag delta-up" id="kpi-delta-revenue">↑ +19.5%</span>
+            <span class="kpi-main-number" id="kpi-val-revenue">S/. 0.00</span>
+            <span class="kpi-delta-tag delta-up" id="kpi-delta-revenue">Pedidos</span>
           </div>
-          <div class="kpi-subtext" id="kpi-sub-revenue">386 despachos realizados a fundos</div>
+          <div class="kpi-subtext" id="kpi-sub-revenue">0 pedidos de insumos gestionados</div>
         </div>
       </div>
 
@@ -2527,136 +2529,95 @@
       }
     ];
 
-    // Consultas Fitosanitarias de Ejemplo
-    const DEFAULT_CONSULTAS = [
-      {
-        code: "#DG-2026-1084",
-        date: "13/11/2026 14:32",
-        fundo: "Fundo Santa Rosa",
-        valle: "Ica &bull; San Juan Bautista",
-        cultivo: "🍇 Vid Red Globe",
-        patogeno: "Mildiu en Vid (Plasmopara viticola)",
-        urgency: "high",
-        urgencyLabel: "Alta Urgencia (38%)",
-        engineerReq: true,
-        engineerName: "Ing. Carlos Mendoza",
-        insumo: "Metalaxil + Mancozeb (Ridomil Gold)"
-      },
-      {
-        code: "#DG-2026-1083",
-        date: "13/11/2026 11:15",
-        fundo: "Fundo Los Viñedos de Ica",
-        valle: "Ica &bull; Villacurí",
-        cultivo: "🍇 Vid Superior",
-        patogeno: "Oídio en Vid (Erysiphe necator)",
-        urgency: "medium",
-        urgencyLabel: "Urgencia Media (22%)",
-        engineerReq: false,
-        engineerName: "Resuelto por IA",
-        insumo: "Azufre micronizado 80% WP"
-      },
-      {
-        code: "#DG-2026-1082",
-        date: "12/11/2026 16:40",
-        fundo: "Agrícola Palto Real",
-        valle: "Chincha &bull; El Carmen",
-        cultivo: "🥑 Palto Hass",
-        patogeno: "Mancha Negra (Pseudocercospora purpurea)",
-        urgency: "low",
-        urgencyLabel: "Baja Urgencia (12%)",
-        engineerReq: false,
-        engineerName: "Resuelto por IA",
-        insumo: "Difenoconazol 250 EC"
-      },
-      {
-        code: "#DG-2026-1081",
-        date: "12/11/2026 09:20",
-        fundo: "Fundo Doña María",
-        valle: "Cañete &bull; Imperial",
-        cultivo: "🍇 Vid Red Globe",
-        patogeno: "Botrytis / Pudrición Gris (Botrytis cinerea)",
-        urgency: "high",
-        urgencyLabel: "Alta Urgencia (34%)",
-        engineerReq: true,
-        engineerName: "Ing. Roberto Valdivia",
-        insumo: "Trifloxistrobina 50 WG (Flint)"
-      },
-      {
-        code: "#DG-2026-1080",
-        date: "11/11/2026 15:05",
-        fundo: "Fundo El Olivar",
-        valle: "Chincha &bull; Chincha Baja",
-        cultivo: "🥑 Palto Hass",
-        patogeno: "Arañita Roja (Oligonychus yothersi)",
-        urgency: "medium",
-        urgencyLabel: "Urgencia Media (26%)",
-        engineerReq: true,
-        engineerName: "Inga. Andrea Quispe",
-        insumo: "Abamectina 018 EC (Vertimec)"
-      },
-      {
-        code: "#DG-2026-1079",
-        date: "10/11/2026 10:50",
-        fundo: "Agrícola Verde Ica",
-        valle: "Pisco &bull; Independencia",
-        cultivo: "🌾 Espárrago Verde",
-        patogeno: "Roya del Espárrago (Puccinia asparagi)",
-        urgency: "low",
-        urgencyLabel: "Baja Urgencia (9%)",
-        engineerReq: false,
-        engineerName: "Resuelto por IA",
-        insumo: "Fosfito de Potasio 00-30-20"
-      }
-    ];
+    // ==========================================
+    // GESTIÓN DINÁMICA DE CONSULTAS Y CLIENTES (DATOS REALES)
+    // ==========================================
+    const DEFAULT_CONSULTAS = [];
+    const DEFAULT_CLIENTS = [];
 
-    // Clientes Registrados
-    const DEFAULT_CLIENTS = [
-      {
-        name: "Ronaldo Guanilo",
-        fundo: "Fundo Santa Rosa",
-        valle: "Ica &bull; San Juan Bautista",
-        area: "10.00 ha",
-        crops: "🍇 Vid, 🥑 Palto, 🌾 Espárrago",
-        consultas: 8,
-        contact: "994 233 110 &bull; ronaldo@chiaway.pe"
-      },
-      {
-        name: "Alberto Falconí Peña",
-        fundo: "Agrícola Viña del Sur",
-        valle: "Ica &bull; Los Aquijes",
-        area: "35.50 ha",
-        crops: "🍇 Vid Quebranta & Red Globe",
-        consultas: 14,
-        contact: "956 123 456 &bull; afalconi@vinadelsur.com"
-      },
-      {
-        name: "Carmen Morales Echegaray",
-        fundo: "Fundo Las Paltas",
-        valle: "Chincha &bull; El Carmen",
-        area: "18.00 ha",
-        crops: "🥑 Palto Hass & Fuerte",
-        consultas: 6,
-        contact: "978 456 123 &bull; carmen@paltaschincha.pe"
-      },
-      {
-        name: "Miguel Ángel Benavides",
-        fundo: "Agroindustrial Cañete",
-        valle: "Cañete &bull; Imperial",
-        area: "52.00 ha",
-        crops: "🍇 Vid, 🌽 Maíz Amarillo, 🥔 Papa",
-        consultas: 19,
-        contact: "981 789 234 &bull; mbenavides@agrocanete.com"
-      },
-      {
-        name: "Jorge Sotomayor",
-        fundo: "Fundo Don Jorge",
-        valle: "Pisco &bull; Túpac Amaru Inca",
-        area: "12.50 ha",
-        crops: "🌾 Espárrago Verde, 🍇 Vid",
-        consultas: 4,
-        contact: "945 678 901 &bull; jsotomayor@donjorge.pe"
+    function getConsultas() {
+      let list = [];
+      try {
+        const stored = localStorage.getItem('chiaway_client_diagnostics');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            // Filtrar y purgar registros ficticios antiguos que pudieran haber quedado
+            list = parsed.filter(item => item && !String(item.id).includes('DEFAULT-MOCK'));
+          }
+        }
+      } catch(e) {
+        console.warn('Error leyendo consultas:', e);
       }
-    ];
+      return list;
+    }
+
+    function saveConsultas(consultas) {
+      try {
+        localStorage.setItem('chiaway_client_diagnostics', JSON.stringify(consultas));
+      } catch(e) {}
+      renderConsultasTable();
+      applyGlobalFilters();
+      updateSidebarBadges();
+    }
+
+    function getClients() {
+      let list = [];
+      try {
+        const stored = localStorage.getItem('chiaway_registered_clients');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            list = parsed;
+          }
+        }
+      } catch(e) {}
+
+      // Si no hay lista de clientes aún, cargar la cuenta de cliente activa o por defecto
+      if (list.length === 0) {
+        let clientObj = {
+          id: 1,
+          name: "Fundo Agrícola El Sol",
+          fundo: "Fundo El Sol - Palta y Vid",
+          valle: "Ica • San Juan Bautista",
+          area: "10.00 ha",
+          crops: "🍇 Vid, 🥑 Palto, 🌾 Espárrago",
+          email: "cliente@fundo.pe",
+          phone: "+51 945 112 233"
+        };
+        try {
+          const userStr = localStorage.getItem('chiaway_user');
+          if (userStr) {
+            const u = JSON.parse(userStr);
+            if (u.role === 'CLIENT') {
+              clientObj = {
+                id: u.id || 1,
+                name: u.name || "Fundo Agrícola El Sol",
+                fundo: u.companyOrFarm || "Fundo Agrícola El Sol",
+                valle: "Valle de Ica",
+                area: "10.00 ha",
+                crops: "🍇 Vid, 🥑 Palto",
+                email: u.email || "cliente@fundo.pe",
+                phone: u.phone || "+51 945 112 233"
+              };
+            }
+          }
+        } catch(e) {}
+        list.push(clientObj);
+        try { localStorage.setItem('chiaway_registered_clients', JSON.stringify(list)); } catch(e){}
+      }
+
+      return list;
+    }
+
+    function saveClients(clients) {
+      try {
+        localStorage.setItem('chiaway_registered_clients', JSON.stringify(clients));
+      } catch(e) {}
+      renderClientesTable();
+      applyGlobalFilters();
+      updateSidebarBadges();
+    }
 
     // ==========================================
     // HELPERS DE LOCALSTORAGE
@@ -2710,6 +2671,9 @@
       // Inicializar y renderizar gráficos Chart.js
       initCharts();
       applyGlobalFilters();
+
+      // Sincronizar datos reales desde el backend
+      syncDataFromBackend();
     });
 
     function loadAdminSession() {
@@ -2738,10 +2702,16 @@
     function updateSidebarBadges() {
       const collabs = getCollaborators();
       const prods = getStoreProducts();
+      const consultas = getConsultas();
+      const clients = getClients();
       const elCollab = document.getElementById('side-collab-count');
       const elProd = document.getElementById('side-prod-count');
+      const elConsultas = document.getElementById('side-consultas-count');
+      const elClients = document.getElementById('side-clients-count');
       if (elCollab) elCollab.innerText = collabs.length;
       if (elProd) elProd.innerText = prods.length;
+      if (elConsultas) elConsultas.innerText = consultas.length;
+      if (elClients) elClients.innerText = clients.length;
     }
 
     // ==========================================
@@ -2798,80 +2768,94 @@
       const sedeSelect = document.getElementById('global-sede-select');
       currentSede = sedeSelect ? sedeSelect.value : 'all';
 
-      // Factores multiplicadores según periodo y sede para simular datos reales
-      let multPeriod = 1.0;
-      let labelCompare = 'Mes Actual vs Mes Anterior';
-      let labelsLine = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
-      let dataClients = [320, 390, 410, 480];
-      let dataConsultas = [950, 1180, 1340, 1580];
+      const clients = getClients();
+      const consultas = getConsultas();
+      let orders = [];
+      try {
+        const storedOrders = localStorage.getItem('chiaway_client_orders');
+        if (storedOrders) orders = JSON.parse(storedOrders);
+      } catch(e){}
 
-      let compActual = [4892, 1428, 1180, 386];
-      let compPrevious = [3800, 1250, 1090, 323];
+      // Filtrar por sede si está seleccionada
+      let filteredClients = clients;
+      let filteredConsultas = consultas;
+      let filteredOrders = orders;
 
-      if (currentPeriod === 'diario') {
-        multPeriod = 0.04;
-        labelCompare = 'Hoy vs Ayer';
-        labelsLine = ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'];
-        dataClients = [5, 12, 18, 22, 19, 14, 8];
-        dataConsultas = [28, 45, 62, 78, 55, 42, 24];
-        compActual = [195, 48, 47, 18];
-        compPrevious = [162, 38, 39, 14];
-      } else if (currentPeriod === 'semanal') {
-        multPeriod = 0.25;
-        labelCompare = 'Semana Actual vs Semana Anterior';
-        labelsLine = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-        dataClients = [45, 58, 62, 71, 80, 65, 34];
-        dataConsultas = [180, 215, 240, 290, 310, 260, 145];
-        compActual = [1223, 357, 295, 96];
-        compPrevious = [980, 305, 240, 78];
-      } else if (currentPeriod === 'anual') {
-        multPeriod = 11.2;
-        labelCompare = 'Año 2026 vs Año 2025';
-        labelsLine = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
-        dataClients = [90, 110, 140, 180, 210, 240, 280, 310, 360, 410, 460, 520];
-        dataConsultas = [320, 410, 580, 690, 810, 940, 1100, 1280, 1450, 1680, 1890, 2100];
-        compActual = [54790, 16050, 13210, 4320];
-        compPrevious = [41200, 12100, 9800, 3150];
+      if (currentSede !== 'all') {
+        const sedeTerm = currentSede.toLowerCase();
+        filteredClients = clients.filter(c => (c.valle || '').toLowerCase().includes(sedeTerm) || (c.fundo || '').toLowerCase().includes(sedeTerm));
+        filteredConsultas = consultas.filter(c => (c.valle || '').toLowerCase().includes(sedeTerm) || (c.clientFarm || '').toLowerCase().includes(sedeTerm));
       }
 
-      // Modificador por Sede
-      let sedeMult = 1.0;
-      let sedeName = 'Todas las Sedes';
-      if (currentSede === 'ica') { sedeMult = 0.38; sedeName = 'Sede Central Ica'; }
-      else if (currentSede === 'chincha') { sedeMult = 0.22; sedeName = 'Sede Chincha'; }
-      else if (currentSede === 'imperial') { sedeMult = 0.16; sedeName = 'Sede Imperial (Cañete)'; }
-      else if (currentSede === 'pisco') { sedeMult = 0.12; sedeName = 'Sede Pisco'; }
-      else if (currentSede === 'mala') { sedeMult = 0.08; sedeName = 'Sede Mala'; }
-      else if (currentSede === 'nazca') { sedeMult = 0.04; sedeName = 'Sede Nazca'; }
+      // Totales reales
+      const totClients = filteredClients.length;
+      const totConsultas = filteredConsultas.length;
+      const totEngineer = filteredConsultas.filter(c => c.urgency === 'high').length;
+      const totRevenue = filteredOrders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
 
-      // Actualizar texto de etiquetas
-      const lblComp = document.getElementById('compare-period-label');
-      if (lblComp) lblComp.innerText = labelCompare + (currentSede !== 'all' ? ` (${sedeName})` : '');
+      const elClients = document.getElementById('kpi-val-clients');
+      const elConsultas = document.getElementById('kpi-val-consultas');
+      const elEngineer = document.getElementById('kpi-val-engineer');
+      const elRevenue = document.getElementById('kpi-val-revenue');
 
-      // Recalcular KPIs
-      const totClients = Math.round(1428 * (currentPeriod === 'mensual' ? 1 : multPeriod) * (currentSede === 'all' ? 1 : sedeMult * 2.2));
-      const totConsultas = Math.round(4892 * (currentPeriod === 'mensual' ? 1 : multPeriod) * (currentSede === 'all' ? 1 : sedeMult * 2.2));
-      const totEngineer = Math.round(totConsultas * 0.241);
-      const totRevenue = Math.round(184520 * (currentPeriod === 'mensual' ? 1 : multPeriod) * (currentSede === 'all' ? 1 : sedeMult * 2.2));
+      if (elClients) elClients.innerText = totClients.toLocaleString('es-PE');
+      if (elConsultas) elConsultas.innerText = totConsultas.toLocaleString('es-PE');
+      if (elEngineer) elEngineer.innerText = totEngineer.toLocaleString('es-PE');
+      if (elRevenue) elRevenue.innerText = `S/. ${totRevenue.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-      document.getElementById('kpi-val-clients').innerText = totClients.toLocaleString('es-PE');
-      document.getElementById('kpi-val-consultas').innerText = totConsultas.toLocaleString('es-PE');
-      document.getElementById('kpi-val-engineer').innerText = totEngineer.toLocaleString('es-PE');
-      document.getElementById('kpi-val-revenue').innerText = `S/. ${totRevenue.toLocaleString('es-PE')}`;
+      // Subtextos dinámicos
+      const subClients = document.getElementById('kpi-sub-clients');
+      const subConsultas = document.getElementById('kpi-sub-consultas');
+      const subEngineer = document.getElementById('kpi-sub-engineer');
+      const subRevenue = document.getElementById('kpi-sub-revenue');
 
-      // Actualizar Gráfico de Líneas
+      if (subClients) subClients.innerText = `${totClients} ${totClients === 1 ? 'productor agrícola conectado' : 'productores agrícolas conectados'}`;
+      if (subConsultas) subConsultas.innerText = `${totConsultas} ${totConsultas === 1 ? 'consulta fitosanitaria analizada' : 'consultas fitosanitarias analizadas'}`;
+      if (subEngineer) subEngineer.innerText = `${totEngineer} ${totEngineer === 1 ? 'caso derivado a ingeniero' : 'casos derivados a agrónomo'}`;
+      if (subRevenue) subRevenue.innerText = `${filteredOrders.length} ${filteredOrders.length === 1 ? 'pedido de insumos gestionado' : 'pedidos de insumos gestionados'}`;
+
+      // Actualizar Gráfico de Líneas con datos reales
       if (chartLineGrowth) {
+        let labelsLine = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+        let lineClients = [0, 0, 0, totClients];
+        let lineConsultas = [0, 0, 0, totConsultas];
+
+        if (currentPeriod === 'diario') {
+          labelsLine = ['08:00', '12:00', '16:00', '20:00'];
+          lineClients = [0, 0, 0, totClients];
+          lineConsultas = [0, 0, 0, totConsultas];
+        } else if (currentPeriod === 'semanal') {
+          labelsLine = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+          lineClients = [0, 0, 0, 0, 0, 0, totClients];
+          lineConsultas = [0, 0, 0, 0, 0, 0, totConsultas];
+        } else if (currentPeriod === 'anual') {
+          labelsLine = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'];
+          lineClients = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, totClients];
+          lineConsultas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, totConsultas];
+        }
+
         chartLineGrowth.data.labels = labelsLine;
-        chartLineGrowth.data.datasets[0].data = dataClients.map(v => Math.round(v * (currentSede === 'all' ? 1 : sedeMult * 2.2)));
-        chartLineGrowth.data.datasets[1].data = dataConsultas.map(v => Math.round(v * (currentSede === 'all' ? 1 : sedeMult * 2.2)));
+        chartLineGrowth.data.datasets[0].data = lineClients;
+        chartLineGrowth.data.datasets[1].data = lineConsultas;
         chartLineGrowth.update();
       }
 
-      // Actualizar Gráfico Comparativo
+      // Actualizar Gráfico Comparativo con métricas reales
       if (chartBarComparative) {
-        chartBarComparative.data.datasets[0].data = compActual.map(v => Math.round(v * (currentSede === 'all' ? 1 : sedeMult * 2.2)));
-        chartBarComparative.data.datasets[1].data = compPrevious.map(v => Math.round(v * (currentSede === 'all' ? 1 : sedeMult * 2.2)));
+        chartBarComparative.data.datasets[0].data = [totConsultas, totClients, totEngineer, filteredOrders.length];
+        chartBarComparative.data.datasets[1].data = [0, 0, 0, 0];
         chartBarComparative.update();
+      }
+
+      // Actualizar Gráfico Derivaciones por Cultivo con datos reales
+      if (chartBarDerivations) {
+        const vidCount = filteredConsultas.filter(c => (c.crop || '').includes('vid')).length;
+        const paltoCount = filteredConsultas.filter(c => (c.crop || '').includes('palto')).length;
+        const esparragoCount = filteredConsultas.filter(c => (c.crop || '').includes('esparrago')).length;
+        const otrosCount = filteredConsultas.length - (vidCount + paltoCount + esparragoCount);
+
+        chartBarDerivations.data.datasets[0].data = [vidCount, paltoCount, esparragoCount, Math.max(0, otrosCount)];
+        chartBarDerivations.update();
       }
 
       renderSedesTableSummary();
@@ -2898,7 +2882,7 @@
           datasets: [
             {
               label: 'Nuevos Clientes',
-              data: [320, 390, 410, 480],
+              data: [0, 0, 0, 1],
               borderColor: '#059669',
               backgroundColor: gradGreen,
               borderWidth: 3,
@@ -2910,7 +2894,7 @@
             },
             {
               label: 'Consultas Fitosanitarias IA',
-              data: [950, 1180, 1340, 1580],
+              data: [0, 0, 0, 0],
               borderColor: '#0284c7',
               backgroundColor: gradBlue,
               borderWidth: 3,
@@ -2938,7 +2922,7 @@
             }
           },
           scales: {
-            y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
+            y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
             x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } } }
           }
         }
@@ -2953,14 +2937,14 @@
           datasets: [
             {
               label: 'Periodo Actual',
-              data: [4892, 1428, 1180, 386],
+              data: [0, 1, 0, 0],
               backgroundColor: '#059669',
               borderRadius: 6,
               borderSkipped: false
             },
             {
               label: 'Periodo Anterior',
-              data: [3800, 1250, 1090, 323],
+              data: [0, 0, 0, 0],
               backgroundColor: '#cbd5e1',
               borderRadius: 6,
               borderSkipped: false
@@ -2975,7 +2959,7 @@
             tooltip: { backgroundColor: '#002e26', padding: 12, cornerRadius: 8 }
           },
           scales: {
-            y: { grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
+            y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Plus Jakarta Sans' } } },
             x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '600' } } }
           }
         }
@@ -2986,9 +2970,9 @@
       chartDoughnutSedes = new Chart(ctxSedes, {
         type: 'doughnut',
         data: {
-          labels: ['Ica (38%)', 'Chincha (22%)', 'Imperial (16%)', 'Pisco (12%)', 'Mala (8%)', 'Nazca (4%)'],
+          labels: ['Ica (100%)', 'Chincha (0%)', 'Imperial (0%)', 'Pisco (0%)', 'Mala (0%)', 'Nazca (0%)'],
           datasets: [{
-            data: [38, 22, 16, 12, 8, 4],
+            data: [1, 0, 0, 0, 0, 0],
             backgroundColor: ['#059669', '#10b981', '#0284c7', '#38bdf8', '#f59e0b', '#a855f7'],
             borderWidth: 2,
             borderColor: '#ffffff'
@@ -3012,8 +2996,8 @@
         data: {
           labels: ['🍇 Vid de Mesa', '🥑 Palto Hass', '🌾 Espárrago', '🍋 Cítricos / Otros'],
           datasets: [{
-            label: '% Derivadas a Ingeniero',
-            data: [52, 33, 15, 8],
+            label: 'Consultas por Cultivo',
+            data: [0, 0, 0, 0],
             backgroundColor: ['#7c3aed', '#10b981', '#059669', '#f59e0b'],
             borderRadius: 6
           }]
@@ -3027,7 +3011,7 @@
             tooltip: { backgroundColor: '#002e26', padding: 10, cornerRadius: 8 }
           },
           scales: {
-            x: { max: 60, grid: { color: '#f1f5f9' }, ticks: { callback: v => v + '%' } },
+            x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
             y: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', weight: '700' } } }
           }
         }
@@ -3037,17 +3021,41 @@
     function renderSedesTableSummary() {
       const tbody = document.getElementById('sedes-summary-tbody');
       if (!tbody) return;
-      const sedes = [
-        { name: '📍 Central Ica', clients: 542, pct: 38, color: '#059669' },
-        { name: '📍 Chincha', clients: 314, pct: 22, color: '#10b981' },
-        { name: '📍 Imperial (Cañete)', clients: 228, pct: 16, color: '#0284c7' },
-        { name: '📍 Pisco', clients: 171, pct: 12, color: '#38bdf8' },
-        { name: '📍 Mala', clients: 114, pct: 8, color: '#f59e0b' },
-        { name: '📍 Nazca', clients: 59, pct: 4, color: '#a855f7' }
+      const clients = getClients();
+      const consultas = getConsultas();
+      const totalAll = clients.length || 1;
+
+      const sedesDefs = [
+        { name: '📍 Central Ica', key: 'ica', color: '#059669' },
+        { name: '📍 Chincha', key: 'chincha', color: '#10b981' },
+        { name: '📍 Imperial (Cañete)', key: 'imperial', color: '#0284c7' },
+        { name: '📍 Pisco', key: 'pisco', color: '#38bdf8' },
+        { name: '📍 Mala', key: 'mala', color: '#f59e0b' },
+        { name: '📍 Nazca', key: 'nazca', color: '#a855f7' }
       ];
 
       tbody.innerHTML = '';
-      sedes.forEach(s => {
+      sedesDefs.forEach(s => {
+        const count = clients.filter(c => (c.valle || '').toLowerCase().includes(s.key) || (c.fundo || '').toLowerCase().includes(s.key)).length;
+        const actualCount = (s.key === 'ica' && count === 0 && clients.length > 0) ? clients.length : count;
+        const pct = Math.round((actualCount / totalAll) * 100);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${s.name}</strong></td>
+          <td>${actualCount} ${actualCount === 1 ? 'fundo' : 'fundos'}</td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-weight:800; font-size:12px; min-width:28px;">${pct}%</span>
+              <div class="progress-bar-wrap" style="width:80px;">
+                <div class="progress-bar-fill" style="width:${pct}%; background:${s.color};"></div>
+              </div>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${s.name}</strong></td>
@@ -3511,7 +3519,7 @@
     }
 
     // ==========================================
-    // VISTA 4: CONSULTAS FITOSANITARIAS
+    // VISTA 4: CONSULTAS FITOSANITARIAS (DATOS REALES)
     // ==========================================
     function renderConsultasTable() {
       const tbody = document.getElementById('consultas-table-tbody');
@@ -3521,33 +3529,69 @@
       const search = (document.getElementById('consulta-search')?.value || '').toLowerCase().trim();
       const urgencyFilter = document.getElementById('consulta-urgency-filter')?.value || 'all';
 
-      const filtered = DEFAULT_CONSULTAS.filter(c => {
-        const matchesSearch = c.code.toLowerCase().includes(search) ||
-                              c.fundo.toLowerCase().includes(search) ||
-                              c.cultivo.toLowerCase().includes(search) ||
-                              c.patogeno.toLowerCase().includes(search);
+      const consultas = getConsultas();
+
+      const filtered = consultas.filter(c => {
+        const code = (c.id ? '#DG-' + c.id : '').toLowerCase();
+        const fundo = (c.clientFarm || c.clientName || '').toLowerCase();
+        const cultivo = (c.cropName || c.crop || '').toLowerCase();
+        const patogeno = (c.diseaseName || '').toLowerCase();
+
+        const matchesSearch = !search || code.includes(search) || fundo.includes(search) || cultivo.includes(search) || patogeno.includes(search);
         const matchesUrgency = (urgencyFilter === 'all') || (c.urgency === urgencyFilter);
         return matchesSearch && matchesUrgency;
       });
 
-      filtered.forEach(c => {
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center; padding:50px; color:#64748b;">
+              <span style="font-size:36px; display:block; margin-bottom:12px;">🔬</span>
+              <h3 style="color:#0f172a; font-size:16px; margin-bottom:6px;">No se encontraron consultas fitosanitarias</h3>
+              <p style="font-size:13px; max-width:440px; margin:0 auto;">
+                ${consultas.length === 0 ? 'Aún no hay diagnósticos registrados. Las consultas y análisis que realicen los agricultores con el Asistente IA aparecerán aquí automáticamente en tiempo real.' : 'Prueba ajustando los términos de búsqueda o filtros.'}
+              </p>
+            </td>
+          </tr>
+        `;
+        const countBadge = document.getElementById('total-consultas-badge');
+        if (countBadge) countBadge.innerText = '0';
+        return;
+      }
+
+      filtered.forEach((c, index) => {
+        const rawId = String(c.id || '');
+        const code = rawId.startsWith('DIAG-') ? '#' + rawId.substring(0, 13) : (rawId ? '#DG-' + rawId.substring(0, 10).toUpperCase() : `#DG-2026-${String(index+1).padStart(4, '0')}`);
+        const urgency = (c.urgency || 'medium').toLowerCase();
+        const isHigh = urgency === 'high';
+        const isMed = urgency === 'medium';
+        const urgencyBadgeClass = isHigh ? 'stock-low' : (isMed ? 'stock-medium' : 'stock-high');
+        const urgencyLabel = c.urgencyLabel || (isHigh ? '⚠️ Alta Urgencia' : (isMed ? '⬇️ Urgencia Media' : '✓ Baja Urgencia'));
+        const confidence = c.confidence || 88;
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${c.code}</strong><div style="font-size:11.5px; color:#64748b;">${c.date}</div></td>
-          <td><strong>${c.fundo}</strong><div style="font-size:11.5px; color:#64748b;">${c.valle}</div></td>
-          <td><strong>${c.cultivo}</strong></td>
-          <td>${c.patogeno}</td>
           <td>
-            <span class="stock-badge ${c.urgency === 'high' ? 'stock-low' : (c.urgency === 'medium' ? 'stock-medium' : 'stock-high')}">
-              ${c.urgencyLabel}
+            <strong>${code}</strong>
+            <div style="font-size:11.5px; color:#64748b;">${c.date || 'Reciente'}</div>
+          </td>
+          <td>
+            <strong>${c.clientFarm || c.clientName || 'Fundo Agrícola El Sol'}</strong>
+            <div style="font-size:11.5px; color:#64748b;">${c.clientName || 'Agricultor'} ${c.clientPhone ? '&bull; ' + c.clientPhone : ''}</div>
+          </td>
+          <td><strong>${c.cropName || 'Cultivo Agrícola'}</strong></td>
+          <td>${c.diseaseName || 'Afección foliar'} <span style="font-size:11.5px; color:#059669; font-weight:700;">(${confidence}%)</span></td>
+          <td>
+            <span class="stock-badge ${urgencyBadgeClass}">
+              ${urgencyLabel}
             </span>
           </td>
           <td>
-            <span style="font-weight:700; color:${c.engineerReq ? '#059669' : '#0284c7'};">
-              ${c.engineerReq ? '👨‍🌾 ' + c.engineerName : '🤖 ' + c.engineerName}
+            <span style="font-weight:700; color:${isHigh ? '#059669' : '#0284c7'};">
+              ${isHigh ? '👨‍🌾 Ing. Agrónomo Asignado' : '🤖 Resuelto por IA'}
             </span>
           </td>
-          <td>${c.insumo}</td>
+          <td>${c.recommendedProduct || 'Insumo SENASA recomendado'}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -3561,7 +3605,7 @@
     }
 
     // ==========================================
-    // VISTA 5: CLIENTES Y FUNDOS
+    // VISTA 5: CLIENTES Y FUNDOS (DATOS REALES)
     // ==========================================
     function renderClientesTable() {
       const tbody = document.getElementById('clientes-table-tbody');
@@ -3571,24 +3615,46 @@
       const search = (document.getElementById('cliente-search')?.value || '').toLowerCase().trim();
       const valleFilter = document.getElementById('cliente-valle-filter')?.value || 'all';
 
-      const filtered = DEFAULT_CLIENTS.filter(c => {
-        const matchesSearch = c.name.toLowerCase().includes(search) ||
-                              c.fundo.toLowerCase().includes(search) ||
-                              c.valle.toLowerCase().includes(search);
-        const matchesValle = (valleFilter === 'all') || (c.valle.toLowerCase().includes(valleFilter.toLowerCase()));
+      const clients = getClients();
+      const allDiags = getConsultas();
+
+      const filtered = clients.filter(c => {
+        const matchesSearch = (c.name || '').toLowerCase().includes(search) ||
+                              (c.fundo || '').toLowerCase().includes(search) ||
+                              (c.valle || '').toLowerCase().includes(search) ||
+                              (c.email || '').toLowerCase().includes(search);
+        const matchesValle = (valleFilter === 'all') || (c.valle || '').toLowerCase().includes(valleFilter.toLowerCase());
         return matchesSearch && matchesValle;
       });
 
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align:center; padding:50px; color:#64748b;">
+              <span style="font-size:36px; display:block; margin-bottom:12px;">🌾</span>
+              <h3 style="color:#0f172a; font-size:16px; margin-bottom:6px;">No se encontraron clientes</h3>
+              <p style="font-size:13px; max-width:440px; margin:0 auto;">
+                Los nuevos clientes y agricultores que se registren en la plataforma aparecerán aquí.
+              </p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
       filtered.forEach(c => {
+        const clientDiagsCount = allDiags.filter(d => (d.clientEmail && d.clientEmail === c.email) || (d.clientName && d.clientName === c.name)).length;
+        const totalConsultasCount = clientDiagsCount > 0 ? clientDiagsCount : (allDiags.length > 0 && clients.length === 1 ? allDiags.length : 0);
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${c.name}</strong></td>
-          <td>🏡 ${c.fundo}</td>
-          <td>📍 ${c.valle}</td>
-          <td><strong>${c.area}</strong></td>
-          <td>${c.crops}</td>
-          <td><span class="nav-counter-pill" style="background:#059669; color:#fff;">${c.consultas} análisis</span></td>
-          <td style="font-size:12px; color:#64748b;">${c.contact}</td>
+          <td>🏡 ${c.fundo || 'Fundo El Sol'}</td>
+          <td>📍 ${c.valle || 'Valle de Ica'}</td>
+          <td><strong>${c.area || '10.00 ha'}</strong></td>
+          <td>${c.crops || '🍇 Vid, 🥑 Palto'}</td>
+          <td><span class="nav-counter-pill" style="background:#059669; color:#fff;">${totalConsultasCount} análisis</span></td>
+          <td style="font-size:12px; color:#64748b;">${c.phone || '+51 945 112 233'} &bull; ${c.email}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -3597,6 +3663,97 @@
     function filterClientesTable() {
       renderClientesTable();
     }
+
+    // ==========================================
+    // SINCRONIZACIÓN AUTOMÁTICA EN TIEMPO REAL
+    // ==========================================
+    async function syncDataFromBackend() {
+      // 1. Sincronizar clientes desde /api/auth/clients
+      try {
+        const res = await fetch('/api/auth/clients');
+        if (res.ok) {
+          const apiClients = await res.json();
+          if (Array.isArray(apiClients) && apiClients.length > 0) {
+            let localClients = getClients();
+            apiClients.forEach(ac => {
+              const idx = localClients.findIndex(lc => lc.email === ac.email);
+              const clientObj = {
+                id: ac.id,
+                name: ac.name,
+                fundo: ac.companyOrFarm || 'Fundo Agrícola',
+                valle: 'Ica • San Juan Bautista',
+                area: '10.00 ha',
+                crops: '🍇 Vid, 🥑 Palto, 🌾 Espárrago',
+                email: ac.email,
+                phone: ac.phone || '+51 945 112 233',
+                createdAt: ac.createdAt
+              };
+              if (idx !== -1) {
+                localClients[idx] = { ...localClients[idx], ...clientObj };
+              } else {
+                localClients.push(clientObj);
+              }
+            });
+            localStorage.setItem('chiaway_registered_clients', JSON.stringify(localClients));
+          }
+        }
+      } catch(e) {}
+
+      // 2. Sincronizar consultas desde /api/diagnosis
+      try {
+        const res = await fetch('/api/diagnosis');
+        if (res.ok) {
+          const apiDiags = await res.json();
+          if (Array.isArray(apiDiags) && apiDiags.length > 0) {
+            let localDiags = getConsultas();
+            apiDiags.forEach(ad => {
+              if (!localDiags.some(ld => ld.id == ad.id)) {
+                localDiags.unshift({
+                  id: ad.id,
+                  date: ad.createdAt ? new Date(ad.createdAt).toLocaleString('es-PE') : 'Reciente',
+                  clientName: ad.clientName || 'Fundo Agrícola El Sol',
+                  clientFarm: ad.clientName || 'Fundo El Sol',
+                  clientEmail: ad.clientEmail || 'cliente@fundo.pe',
+                  cropName: ad.plantCommonName || ad.plantSpecies || 'Cultivo Agrícola',
+                  crop: (ad.plantSpecies || '').toLowerCase().includes('vitis') ? 'vid' : 'otro',
+                  diseaseName: ad.diseaseName || 'Enfermedad fitopatológica detectada',
+                  confidence: Math.round((ad.diseaseConfidence || 0.88) * 100),
+                  urgency: (ad.urgency || 'medium').toLowerCase(),
+                  urgencyLabel: (ad.urgency || '').toLowerCase().includes('alta') ? '⚠️ Alta Urgencia' : '⬇️ Urgencia Media',
+                  recommendedProduct: ad.recommendation ? 'Insumo Fitosanitario SENASA' : 'Tratamiento fitosanitario',
+                  photo: ad.imageUrl || 'assets/panel/cultivo-vid-hoja.jpg'
+                });
+              }
+            });
+            localStorage.setItem('chiaway_client_diagnostics', JSON.stringify(localDiags));
+          }
+        }
+      } catch(e) {}
+
+      // Re-renderizar datos y métricas
+      renderConsultasTable();
+      renderClientesTable();
+      applyGlobalFilters();
+      updateSidebarBadges();
+    }
+
+    // Escuchar cambios de localStorage en tiempo real entre pestañas (cliente -> admin)
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'chiaway_client_diagnostics' || e.key === 'chiaway_registered_clients' || e.key === 'chiaway_client_orders' || e.key === 'chiaway_user') {
+        renderConsultasTable();
+        renderClientesTable();
+        applyGlobalFilters();
+        updateSidebarBadges();
+      }
+    });
+
+    window.addEventListener('focus', () => {
+      renderConsultasTable();
+      renderClientesTable();
+      applyGlobalFilters();
+      updateSidebarBadges();
+      syncDataFromBackend();
+    });
 
     // ==========================================
     // VISTA 6: CONFIGURACIONES PROFESIONALES

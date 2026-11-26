@@ -3,9 +3,12 @@ package com.agrovision.controller;
 import com.agrovision.dto.AuthResponseDTO;
 import com.agrovision.dto.LoginRequestDTO;
 import com.agrovision.dto.RegisterRequestDTO;
+import com.agrovision.model.User;
 import com.agrovision.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,5 +36,10 @@ public class AuthController {
             return ResponseEntity.badRequest().body(response);
         }
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/clients")
+    public ResponseEntity<List<User>> getAllClients() {
+        return ResponseEntity.ok(authService.getAllClients());
     }
 }

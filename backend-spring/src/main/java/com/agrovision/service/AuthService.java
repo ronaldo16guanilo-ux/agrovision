@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -125,5 +126,12 @@ public class AuthService {
         } catch (Exception e) {
             return password; // Fallback
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getAllClients() {
+        List<User> clients = userRepository.findByRoleIgnoreCase("CLIENT");
+        clients.forEach(u -> u.setPasswordHash(null));
+        return clients;
     }
 }

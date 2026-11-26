@@ -1010,6 +1010,27 @@
 
         // Save session
         localStorage.setItem('chiaway_user', JSON.stringify(data));
+
+        if (data.role === 'CLIENT') {
+          try {
+            let clientList = JSON.parse(localStorage.getItem('chiaway_registered_clients') || '[]');
+            if (!clientList.some(c => c.email === data.email)) {
+              clientList.push({
+                id: data.id || Date.now(),
+                name: data.name || 'Fundo Agrícola El Sol',
+                fundo: data.companyOrFarm || 'Fundo El Sol - Palta y Vid',
+                valle: 'Ica • San Juan Bautista',
+                area: '10.00 ha',
+                crops: '🍇 Vid, 🥑 Palto, 🌾 Espárrago',
+                email: data.email || 'cliente@fundo.pe',
+                phone: data.phone || '+51 945 112 233',
+                createdAt: new Date().toISOString()
+              });
+              localStorage.setItem('chiaway_registered_clients', JSON.stringify(clientList));
+            }
+          } catch(e) {}
+        }
+
         showSigninAlert('✅ ¡Bienvenido! Redirigiendo...', true);
 
         setTimeout(() => {
@@ -1063,6 +1084,25 @@
         }
 
         localStorage.setItem('chiaway_user', JSON.stringify(data));
+
+        try {
+          let clientList = JSON.parse(localStorage.getItem('chiaway_registered_clients') || '[]');
+          if (!clientList.some(c => c.email === data.email)) {
+            clientList.push({
+              id: data.id || Date.now(),
+              name: data.name,
+              fundo: data.companyOrFarm || farm || 'Fundo Agrícola',
+              valle: 'Ica • San Juan Bautista',
+              area: '10.00 ha',
+              crops: '🍇 Vid, 🥑 Palto, 🌾 Espárrago',
+              email: data.email,
+              phone: data.phone || phone,
+              createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('chiaway_registered_clients', JSON.stringify(clientList));
+          }
+        } catch(e) {}
+
         showSignupAlert('🎉 ¡Cuenta creada con éxito! Redirigiendo...', true);
 
         setTimeout(() => {
